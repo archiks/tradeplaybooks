@@ -12,7 +12,7 @@ export const AdminDashboard: React.FC = () => {
     const [currentView, setCurrentView] = useState<View>('DASHBOARD');
 
     return (
-        <div className="flex h-screen bg-dark-900 text-white overflow-hidden font-sans selection:bg-gold-500 selection:text-black">
+        <div className="flex h-screen bg-dark-900 text-white overflow-hidden font-sans selection:bg-accent-cyan selection:text-black">
             {/* Sidebar */}
             <aside className="w-64 border-r border-white/10 bg-dark-800 flex flex-col">
                 <div className="p-6 border-b border-white/10">
@@ -289,7 +289,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             <textarea
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold-500/50 min-h-[60px]"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50 min-h-[60px]"
                             />
                         </div>
                         <div className="col-span-1">
@@ -297,7 +297,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             <select
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold-500/50"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
                             >
                                 {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
@@ -315,7 +315,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             <select
                                 value={productId}
                                 onChange={(e) => setProductId(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold-500/50"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
                             >
                                 {PRODUCTS.map(p => (
                                     <option key={p.id} value={p.id}>{p.name} (€{p.price})</option>
@@ -327,7 +327,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             <select
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value as OrderStatus)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold-500/50"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
                             >
                                 <option value={OrderStatus.PENDING}>PENDING</option>
                                 <option value={OrderStatus.COMPLETED}>COMPLETED</option>
@@ -343,7 +343,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold-500/50"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
                             />
                         </div>
                         <div>
@@ -352,7 +352,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                                 type="time"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold-500/50"
+                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
                             />
                         </div>
                     </div>
@@ -701,7 +701,7 @@ const DownloadsManager: React.FC = () => {
                             {links.map((link) => (
                                 <tr key={link.id} className="hover:bg-white/[0.02]">
                                     <td className="px-6 py-3 text-white">{link.productName}</td>
-                                    <td className="px-6 py-3 font-mono text-xs text-gold-500">{link.key}</td>
+                                    <td className="px-6 py-3 font-mono text-xs text-accent-cyan">{link.key}</td>
                                     <td className="px-6 py-3 text-gray-400">{link.downloadCount} / {link.maxDownloads}</td>
                                     <td className="px-6 py-3 text-gray-500 text-xs">{new Date(link.expiresAt).toLocaleDateString()}</td>
                                     <td className="px-6 py-3">
@@ -721,7 +721,7 @@ const DownloadsManager: React.FC = () => {
                 <div className="bg-dark-800 rounded-xl border border-white/5 p-4 font-mono text-sm space-y-2 max-h-[400px] overflow-y-auto">
                     {logs.map((log) => (
                         <div key={log.id} className="flex gap-4 text-xs border-b border-white/5 pb-2 mb-2 last:border-0 hover:bg-white/5 p-1 rounded transition-colors">
-                            <span className="text-gold-500 w-32 shrink-0">{new Date(log.timestamp).toLocaleTimeString()}</span>
+                            <span className="text-accent-cyan w-32 shrink-0">{new Date(log.timestamp).toLocaleTimeString()}</span>
                             <span className="text-blue-400 w-32 shrink-0">{log.ip}</span>
                             <span className="text-gray-300 flex-1">{log.resource}</span>
                             <span className="text-gray-500 truncate w-48 hidden md:block">{log.deviceSig}</span>
