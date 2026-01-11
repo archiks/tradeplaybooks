@@ -523,8 +523,36 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                     <div className="space-y-4 pt-4 border-t border-white/5">
                         <h4 className="text-xs uppercase tracking-widest text-accent-cyan font-medium">Amounts & Currency</h4>
                         <div className="grid grid-cols-3 gap-4">
-                            <Input label="Subtotal (€)" type="number" value={invoice.subtotal} onChange={(v) => setInvoice({ ...invoice, subtotal: parseFloat(v) })} />
-                            <Input label="Tax (€)" type="number" value={invoice.tax} onChange={(v) => setInvoice({ ...invoice, tax: parseFloat(v) })} />
+                            <Input
+                                label="Subtotal (€)"
+                                type="number"
+                                value={invoice.subtotal}
+                                onChange={(v) => {
+                                    const val = parseFloat(v);
+                                    const subtotal = isNaN(val) ? 0 : val;
+                                    const tax = invoice.tax || 0;
+                                    setInvoice({
+                                        ...invoice,
+                                        subtotal: subtotal,
+                                        total: subtotal + tax
+                                    });
+                                }}
+                            />
+                            <Input
+                                label="Tax (€)"
+                                type="number"
+                                value={invoice.tax}
+                                onChange={(v) => {
+                                    const val = parseFloat(v);
+                                    const tax = isNaN(val) ? 0 : val;
+                                    const subtotal = invoice.subtotal || 0;
+                                    setInvoice({
+                                        ...invoice,
+                                        tax: tax,
+                                        total: subtotal + tax
+                                    });
+                                }}
+                            />
                             <Input label="Total (€)" type="number" value={invoice.total} disabled />
                         </div>
                     </div>
