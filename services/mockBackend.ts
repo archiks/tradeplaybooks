@@ -479,7 +479,7 @@ export const MockBackend = {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(66, 245, 227); // accent-cyan
-    let title = "CRYPTOGRAPHIC DELIVERY VERIFICATION (AUDIT TRAIL)";
+    let title = "CRYPTOGRAPHIC DELIVERY VERIFICATION";
     doc.text(title, 25, auditTitleY);
 
     // Box Content
