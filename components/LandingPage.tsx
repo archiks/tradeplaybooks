@@ -605,7 +605,6 @@ export const LandingPage: React.FC = () => {
                             <div className="bg-[#003087] p-5 flex justify-between items-center">
                                 <span className="text-white font-bold italic text-xl">PayPal</span>
                                 <div className="flex gap-2">
-                                    <div className="text-white/80 text-[10px] font-mono uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">Sandbox</div>
                                     <button onClick={closePayPal} className="text-white/80 hover:text-white"><X className="w-5 h-5" /></button>
                                 </div>
                             </div>
@@ -644,8 +643,8 @@ export const LandingPage: React.FC = () => {
                                 </div>
 
                                 <p className="text-center text-[9px] text-gray-400 mt-8 font-mono uppercase leading-relaxed">
-                                    Environment: Development / Sandbox<br />
-                                    No real funds will be processed.
+                                    Secure checkout powered by PayPal.<br />
+                                    Your payment information is encrypted.
                                 </p>
                             </div>
                         </motion.div>
@@ -678,8 +677,8 @@ export const LandingPage: React.FC = () => {
                                 For corporate orders and manual invoicing, please send your business credentials to our support desk.
                             </p>
 
-                            <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center justify-center gap-2 mb-8 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => { navigator.clipboard.writeText('support@tradsolution.com'); alert('Copied!') }}>
-                                <code className="text-xs font-mono text-gray-800">support@tradsolution.com</code>
+                            <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center justify-center gap-2 mb-8 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => { navigator.clipboard.writeText('invoices@perpetualplaybook.com'); alert('Copied!') }}>
+                                <code className="text-xs font-mono text-gray-800">invoices@perpetualplaybook.com</code>
                                 <Copy className="w-3 h-3 text-gray-400" />
                             </div>
 
