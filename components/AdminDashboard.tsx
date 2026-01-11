@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { LayoutDashboard, ShoppingCart, FileText, Download, Settings, Search, Plus, Eye, DownloadCloud, RefreshCw, Key, Shield, Link as LinkIcon, Edit3, CreditCard, Pencil, X, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, FileText, Download, Settings, Search, Plus, Eye, DownloadCloud, RefreshCw, Key, Shield, Link as LinkIcon, Edit3, CreditCard, Pencil, X, Save, CheckCircle2, AlertCircle, Zap } from 'lucide-react';
 import { MockBackend } from '../services/mockBackend';
 import { Order, Invoice, AccessLog, AdminStats, OrderStatus, DownloadLink, PayPalSettings, InvoiceAuditTrail } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -735,6 +735,7 @@ const DownloadsManager: React.FC = () => {
 
 const SettingsView: React.FC = () => {
     const [ppSettings, setPPSettings] = useState<PayPalSettings | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         MockBackend.getPayPalSettings().then(setPPSettings);
@@ -743,6 +744,18 @@ const SettingsView: React.FC = () => {
     const updatePP = (key: keyof PayPalSettings, val: any) => {
         if (!ppSettings) return;
         setPPSettings({ ...ppSettings, [key]: val });
+    };
+
+    const handleSaveAll = async () => {
+        setIsSaving(true);
+        // Simulate persistence
+        if (ppSettings) {
+            await MockBackend.updatePayPalSettings(ppSettings);
+        }
+        setTimeout(() => {
+            setIsSaving(false);
+            alert("System settings updated successfully. Technical parameters have been synced.");
+        }, 800);
     };
 
     if (!ppSettings) return <div>Loading...</div>;
@@ -756,22 +769,27 @@ const SettingsView: React.FC = () => {
                     <Settings className="w-4 h-4 text-accent-cyan" /> Company Information
                 </h3>
                 <div className="grid grid-cols-2 gap-6">
-                    <SettingsInput label="Company Name" defaultValue="Perpetual Futures Playbook™" />
-                    <SettingsInput label="VAT Number" defaultValue="44103115853" />
-                    <SettingsInput label="Address" defaultValue="Institutional Execution Framework" className="col-span-2" />
-                    <SettingsInput label="Invoice Prefix" defaultValue="PF-" />
+                    <SettingsInput label="Company Name" value="Perpetual Futures Playbook™" />
+                    <SettingsInput label="VAT Number" value="44103115853" />
+                    <SettingsInput label="Address" value="Institutional Execution Framework" className="col-span-2" />
+                    <SettingsInput label="Invoice Prefix" value="PF-" />
                 </div>
             </section>
 
             <section className="bg-dark-800 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <CreditCard className="w-24 h-24 text-white" />
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                    <Shield className="w-24 h-24 text-white" />
                 </div>
-                <h3 className="text-lg font-medium text-white border-b border-white/10 pb-4 mb-6 flex items-center gap-2">
-                    PayPal Integration
+                <h3 className="text-lg font-bold text-white border-b border-white/10 pb-4 mb-6 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-accent-cyan" /> PayPal Global Infrastructure
                 </h3>
 
                 <div className="space-y-4">
+                    <div className="bg-accent-cyan/5 border border-accent-cyan/20 p-4 rounded-xl mb-4">
+                        <p className="text-xs text-accent-cyan/80 leading-relaxed">
+                            <Zap className="w-3 h-3 inline mr-1 mb-0.5" /> <strong>Configuration Required:</strong> To accept live payments, enter your PayPal REST API credentials. These can be obtained from the <a href="https://developer.paypal.com/dashboard/" target="_blank" className="underline hover:text-white">PayPal Developer Portal</a>.
+                        </p>
+                    </div>
                     <div className="flex items-center justify-between bg-black/20 p-4 rounded-xl border border-white/5">
                         <div>
                             <p className="text-white font-medium">Enable PayPal Checkout</p>
@@ -799,14 +817,14 @@ const SettingsView: React.FC = () => {
                             </div>
                         </div>
                         <SettingsInput
-                            label="Client ID"
-                            defaultValue={ppSettings.clientId}
+                            label="Paypal Client ID"
+                            value={ppSettings.clientId}
                             onChange={(e) => updatePP('clientId', e.target.value)}
                         />
                         <SettingsInput
-                            label="Client Secret"
+                            label="Paypal Client Secret"
                             type="password"
-                            defaultValue={ppSettings.clientSecret}
+                            value={ppSettings.clientSecret}
                             onChange={(e) => updatePP('clientSecret', e.target.value)}
                         />
                     </div>
@@ -814,20 +832,24 @@ const SettingsView: React.FC = () => {
             </section>
 
             <div className="pt-4 flex justify-end">
-                <button className="px-8 py-3 bg-accent-cyan text-black font-bold rounded-xl hover:bg-accent-cyan/80 transition-all shadow-lg shadow-accent-cyan/10">
-                    Save Changes
+                <button
+                    onClick={handleSaveAll}
+                    disabled={isSaving}
+                    className="px-8 py-3 bg-accent-cyan text-black font-bold rounded-xl hover:bg-accent-cyan/80 transition-all shadow-lg shadow-accent-cyan/10 disabled:opacity-50"
+                >
+                    {isSaving ? 'Syncing...' : 'Save System Changes'}
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 
-const SettingsInput: React.FC<{ label: string, defaultValue?: string, className?: string, type?: string, onChange?: (e: any) => void }> = ({ label, defaultValue, className, type = "text", onChange }) => (
+const SettingsInput: React.FC<{ label: string, value?: string, className?: string, type?: string, onChange?: (e: any) => void }> = ({ label, value, className, type = "text", onChange }) => (
     <div className={className}>
-        <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">{label}</label>
+        <label className="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-wider">{label}</label>
         <input
             type={type}
-            defaultValue={defaultValue}
+            value={value}
             onChange={onChange}
             className="w-full bg-dark-700 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 transition-all text-sm"
         />

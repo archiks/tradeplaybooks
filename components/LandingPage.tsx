@@ -14,6 +14,11 @@ export const LandingPage: React.FC = () => {
     const [buyingProduct, setBuyingProduct] = useState<Product | null>(null);
     const [showPayPal, setShowPayPal] = useState(false);
     const [showSupportPopup, setShowSupportPopup] = useState(false);
+    const [payPalSettings, setPayPalSettings] = useState<any>(null);
+
+    useEffect(() => {
+        MockBackend.getPayPalSettings().then(setPayPalSettings);
+    }, []);
 
     const handleBuy = (product: Product) => {
         setBuyingProduct(product);
@@ -27,8 +32,10 @@ export const LandingPage: React.FC = () => {
 
     const completePurchase = async () => {
         if (!buyingProduct) return;
-        await MockBackend.createOrder(buyingProduct.id, 'Guest User', 'guest@example.com', 'PAYPAL');
-        alert(`Payment Successful! Order for ${buyingProduct.name} confirmed. Please check your email.`);
+        // Simulate order creation
+        const guestEmail = 'guest@example.com';
+        await MockBackend.createOrder(buyingProduct.id, 'Institutional Trader', guestEmail, 'PAYPAL');
+        alert(`ACCESS GRANTED: Your order for ${buyingProduct.name} has been processed successfully. Your digital assets and license keys have been sent to ${guestEmail}.`);
         closePayPal();
     };
 
@@ -643,8 +650,17 @@ export const LandingPage: React.FC = () => {
                                 </div>
 
                                 <p className="text-center text-[9px] text-gray-400 mt-8 font-mono uppercase leading-relaxed">
-                                    Secure checkout powered by PayPal.<br />
-                                    Your payment information is encrypted.
+                                    {payPalSettings?.mode === 'LIVE' ? (
+                                        <>
+                                            Environment: Production / Secure<br />
+                                            Authorized Transaction Processing
+                                        </>
+                                    ) : (
+                                        <>
+                                            Environment: Development / Sandbox<br />
+                                            Secure simulated transaction
+                                        </>
+                                    )}
                                 </p>
                             </div>
                         </motion.div>
