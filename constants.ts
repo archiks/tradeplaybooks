@@ -4,7 +4,7 @@ import { Product } from './types';
 export const PRODUCTS: Product[] = [
   {
     id: 'prod_pf_playbook',
-    name: 'Perpetual Futures Playbook',
+    name: 'Trade Playbooks',
     price: 250,
     level: 1,
     tagline: 'Master crypto perps and traditional futures with systematic precision.',

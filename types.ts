@@ -30,7 +30,7 @@ export interface Order {
   tax: number;
   createdAt: string; // ISO date
   notes?: string;
-  paymentMethod?: 'PAYPAL' | 'STRIPE' | 'MANUAL';
+  paymentMethod?: 'PAYPAL' | 'STRIPE' | 'MANUAL' | 'INVOICE';
   transactionId?: string;
   billingAddress?: string;
   billingCountry?: string;

@@ -12,12 +12,12 @@ export const AdminDashboard: React.FC = () => {
     const [currentView, setCurrentView] = useState<View>('DASHBOARD');
 
     return (
-        <div className="flex h-screen bg-dark-900 text-white overflow-hidden font-sans selection:bg-accent-cyan selection:text-black">
+        <div className="flex h-screen bg-white text-slate-900 overflow-hidden font-sans selection:bg-brand-teal selection:text-white">
             {/* Sidebar */}
-            <aside className="w-64 border-r border-white/10 bg-dark-800 flex flex-col">
-                <div className="p-6 border-b border-white/10">
-                    <h1 className="font-bold text-lg text-white leading-tight">Perpetual Futures Playbook<span className="text-accent-cyan">™</span></h1>
-                    <span className="text-[10px] text-gray-500 uppercase tracking-widest mt-1 block">Institutional Admin</span>
+            <aside className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col">
+                <div className="p-6 border-b border-slate-200">
+                    <h1 className="font-bold text-lg text-brand-navy leading-tight">Trade Playbooks<span className="text-brand-teal">™</span></h1>
+                    <span className="text-[10px] text-slate-500 uppercase tracking-widest mt-1 block">Institutional Admin</span>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-1">
@@ -28,19 +28,19 @@ export const AdminDashboard: React.FC = () => {
                     <SidebarItem icon={Settings} label="Settings" active={currentView === 'SETTINGS'} onClick={() => setCurrentView('SETTINGS')} />
                 </nav>
 
-                <div className="p-4 border-t border-white/10">
+                <div className="p-4 border-t border-slate-200">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-accent-cyan text-black flex items-center justify-center font-bold text-xs shadow-[0_0_10px_rgba(66,245,227,0.3)]">PF</div>
+                        <div className="w-8 h-8 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-brand-navy/20">TP</div>
                         <div>
-                            <p className="text-sm font-medium">Administrator</p>
-                            <p className="text-xs text-gray-500">admin@perpetualplaybook.com</p>
+                            <p className="text-sm font-medium text-brand-navy">Administrator</p>
+                            <p className="text-xs text-slate-500">admin@tradeplaybooks.com</p>
                         </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto bg-dark-900 relative">
+            <main className="flex-1 overflow-y-auto bg-white relative">
                 <div className="p-8 max-w-7xl mx-auto min-h-full">
                     {currentView === 'DASHBOARD' && <DashboardOverview />}
                     {currentView === 'ORDERS' && <OrdersManager />}
@@ -56,10 +56,10 @@ export const AdminDashboard: React.FC = () => {
 const SidebarItem: React.FC<{ icon: any, label: string, active: boolean, onClick: () => void }> = ({ icon: Icon, label, active, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${active ? 'bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/20 shadow-[0_0_15px_-5px_rgba(66,245,227,0.3)]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${active ? 'bg-white text-brand-navy border border-slate-200 shadow-sm font-bold' : 'text-slate-500 hover:bg-white hover:text-brand-navy hover:shadow-sm'}`}
     >
-        <Icon className="w-4 h-4" />
-        <span className="text-sm font-medium">{label}</span>
+        <Icon className={`w-4 h-4 ${active ? 'text-brand-teal' : ''}`} />
+        <span className="text-sm">{label}</span>
     </button>
 );
 
@@ -72,7 +72,7 @@ const DashboardOverview: React.FC = () => {
         MockBackend.getStats().then(setStats);
     }, []);
 
-    if (!stats) return <div className="text-gray-500">Loading stats...</div>;
+    if (!stats) return <div className="text-slate-500">Loading stats...</div>;
 
     const chartData = [
         { name: 'Mon', val: 400 }, { name: 'Tue', val: 300 }, { name: 'Wed', val: 600 },
@@ -82,8 +82,8 @@ const DashboardOverview: React.FC = () => {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <header>
-                <h2 className="text-3xl font-serif text-white mb-2">Dashboard</h2>
-                <p className="text-gray-500">Welcome back. Here's what's happening today.</p>
+                <h2 className="text-3xl font-bold text-brand-navy mb-2">Dashboard</h2>
+                <p className="text-slate-500">Welcome back. Here's what's happening today.</p>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -94,10 +94,10 @@ const DashboardOverview: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-dark-800 border border-white/5 rounded-2xl p-6 shadow-xl">
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-medium text-white">Revenue Overview</h3>
-                        <select className="bg-black/20 border border-white/10 rounded-lg text-xs text-gray-400 px-2 py-1">
+                        <h3 className="text-lg font-bold text-brand-navy">Revenue Overview</h3>
+                        <select className="bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 px-2 py-1 outline-none focus:border-brand-teal">
                             <option>Last 7 Days</option>
                             <option>This Month</option>
                         </select>
@@ -105,16 +105,16 @@ const DashboardOverview: React.FC = () => {
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={chartData}>
-                                <XAxis dataKey="name" stroke="#333" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#333" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${value}`} />
+                                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `€${value}`} />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: '#05060B', borderColor: '#333', borderRadius: '8px', color: '#fff' }}
-                                    itemStyle={{ color: '#42F5E3' }}
-                                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                                    contentStyle={{ backgroundColor: '#fff', borderColor: '#e2e8f0', borderRadius: '8px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                    itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+                                    cursor={{ fill: '#f1f5f9' }}
                                 />
                                 <Bar dataKey="val" radius={[4, 4, 0, 0]}>
                                     {chartData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={index === 6 ? '#42F5E3' : '#1A1A1A'} />
+                                        <Cell key={`cell-${index}`} fill={index === 6 ? '#14b8a6' : '#0f172a'} />
                                     ))}
                                 </Bar>
                             </BarChart>
@@ -127,11 +127,11 @@ const DashboardOverview: React.FC = () => {
 };
 
 const StatCard: React.FC<{ label: string, value: string, trend: string }> = ({ label, value, trend }) => (
-    <div className="bg-dark-800 p-6 rounded-2xl border border-white/5 hover:border-accent-cyan/20 transition-all shadow-lg hover:shadow-accent-cyan/5">
-        <p className="text-gray-500 text-[10px] uppercase tracking-widest mb-2 font-bold">{label}</p>
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-brand-teal/50 transition-all shadow-sm hover:shadow-md">
+        <p className="text-slate-500 text-[10px] uppercase tracking-widest mb-2 font-bold">{label}</p>
         <div className="flex justify-between items-end">
-            <h3 className="text-2xl font-bold text-white tracking-tight">{value}</h3>
-            <span className="text-accent-cyan text-[10px] bg-accent-cyan/10 px-2 py-1 rounded-full border border-accent-cyan/20">{trend}</span>
+            <h3 className="text-2xl font-bold text-brand-navy tracking-tight">{value}</h3>
+            <span className="text-emerald-600 text-[10px] bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 font-bold">{trend}</span>
         </div>
     </div>
 );
@@ -157,47 +157,47 @@ const OrdersManager: React.FC = () => {
     return (
         <div className="space-y-6 animate-in fade-in">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-serif text-white">Orders</h2>
+                <h2 className="text-2xl font-bold text-brand-navy">Orders</h2>
                 <div className="flex gap-2">
-                    <button onClick={refresh} className="p-2 bg-white/5 rounded-lg hover:bg-white/10 border border-white/5"><RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /></button>
+                    <button onClick={refresh} className="p-2 bg-slate-100 rounded-lg hover:bg-slate-200 border border-slate-200 text-slate-600"><RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /></button>
                     <button
                         onClick={() => setIsCreatingOrder(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-accent-cyan text-black rounded-lg text-sm font-bold hover:bg-accent-cyan/80 transition-all shadow-lg shadow-accent-cyan/10"
+                        className="flex items-center gap-2 px-4 py-2 bg-brand-teal text-white rounded-lg text-sm font-bold hover:bg-brand-teal/90 transition-all shadow-lg shadow-brand-teal/20"
                     >
                         <Plus className="w-4 h-4" /> Manual Order
                     </button>
                 </div>
             </div>
 
-            <div className="bg-dark-800 rounded-2xl border border-white/5 overflow-hidden shadow-xl">
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                 <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-gray-500 uppercase bg-black/20 border-b border-white/5">
+                    <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th className="px-6 py-4">ID</th>
-                            <th className="px-6 py-4">Customer</th>
-                            <th className="px-6 py-4">Product</th>
-                            <th className="px-6 py-4">Amount</th>
-                            <th className="px-6 py-4">Status</th>
-                            <th className="px-6 py-4 text-right">Actions</th>
+                            <th className="px-6 py-4 font-bold">ID</th>
+                            <th className="px-6 py-4 font-bold">Customer</th>
+                            <th className="px-6 py-4 font-bold">Product</th>
+                            <th className="px-6 py-4 font-bold">Amount</th>
+                            <th className="px-6 py-4 font-bold">Status</th>
+                            <th className="px-6 py-4 text-right font-bold">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-slate-100">
                         {orders.map((order) => (
-                            <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
-                                <td className="px-6 py-4 font-mono text-gray-500 text-xs">{order.id}</td>
+                            <tr key={order.id} className="hover:bg-slate-50 transition-colors group">
+                                <td className="px-6 py-4 font-mono text-slate-400 text-xs">{order.id}</td>
                                 <td className="px-6 py-4">
-                                    <div className="text-white font-medium">{order.customerName}</div>
-                                    <div className="text-xs text-gray-500">{order.customerEmail}</div>
+                                    <div className="text-slate-900 font-bold">{order.customerName}</div>
+                                    <div className="text-xs text-slate-500">{order.customerEmail}</div>
                                 </td>
-                                <td className="px-6 py-4 text-gray-300">{order.productName}</td>
-                                <td className="px-6 py-4 text-white">€{order.amount}</td>
+                                <td className="px-6 py-4 text-slate-600">{order.productName}</td>
+                                <td className="px-6 py-4 text-slate-900 font-medium">€{order.amount}</td>
                                 <td className="px-6 py-4">
                                     <StatusBadge status={order.status} />
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <button
                                         onClick={() => setEditingOrder(order)}
-                                        className="p-2 hover:bg-accent-cyan hover:text-black rounded-lg text-gray-400 transition-colors"
+                                        className="p-2 hover:bg-slate-200 hover:text-brand-navy rounded-lg text-slate-400 transition-colors"
                                         title="Edit Invoice"
                                     >
                                         <Pencil className="w-4 h-4" />
@@ -269,11 +269,11 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-[#1c1c1e] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh]">
-                <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5">
-                    <h3 className="text-lg font-serif text-white">New Manual Order</h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh]">
+                <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <h3 className="text-lg font-bold text-brand-navy">New Manual Order</h3>
+                    <button onClick={onClose} className="text-slate-400 hover:text-brand-navy transition-colors"><X className="w-5 h-5" /></button>
                 </div>
 
                 <div className="p-6 space-y-4 overflow-y-auto custom-scrollbar">
@@ -285,19 +285,19 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             <Input label="Customer Email" value={email} onChange={setEmail} type="email" required />
                         </div>
                         <div className="col-span-2">
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Address</label>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Address</label>
                             <textarea
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50 min-h-[60px]"
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors min-h-[60px]"
                             />
                         </div>
                         <div className="col-span-1">
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Country</label>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Country</label>
                             <select
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                             >
                                 {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
@@ -307,15 +307,15 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                         </div>
                     </div>
 
-                    <div className="h-px bg-white/5 my-4"></div>
+                    <div className="h-px bg-slate-100 my-4"></div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Product</label>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Product</label>
                             <select
                                 value={productId}
                                 onChange={(e) => setProductId(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                             >
                                 {PRODUCTS.map(p => (
                                     <option key={p.id} value={p.id}>{p.name} (€{p.price})</option>
@@ -323,11 +323,11 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             </select>
                         </div>
                         <div>
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Status</label>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Status</label>
                             <select
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value as OrderStatus)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                             >
                                 <option value={OrderStatus.PENDING}>PENDING</option>
                                 <option value={OrderStatus.COMPLETED}>COMPLETED</option>
@@ -338,32 +338,32 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Order Date</label>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Order Date</label>
                             <input
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                             />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Access Time</label>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Access Time</label>
                             <input
                                 type="time"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-white/10 bg-[#1c1c1e] flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 rounded-lg hover:bg-white/5 text-gray-300 text-sm transition-colors">Cancel</button>
+                <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 text-slate-500 text-sm transition-all shadow-sm">Cancel</button>
                     <button
                         onClick={handleCreate}
                         disabled={loading}
-                        className="px-6 py-2 bg-accent-cyan hover:bg-accent-cyan/80 text-black font-bold rounded-lg text-sm transition-all shadow-lg shadow-accent-cyan/10 disabled:opacity-50"
+                        className="px-6 py-2 bg-brand-navy hover:bg-brand-navy/90 text-white font-bold rounded-lg text-sm transition-all shadow-lg shadow-brand-navy/10 disabled:opacity-50"
                     >
                         {loading ? 'Creating...' : 'Create Order'}
                     </button>
@@ -459,22 +459,21 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
     if (loading || !invoice) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-[#1c1c1e] border border-white/10 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                     <div>
-                        <h3 className="text-lg font-bold text-white tracking-tight">Edit Invoice</h3>
-                        <div className="h-0.5 w-12 bg-accent-cyan mt-1 shadow-[0_0_10px_rgba(66,245,227,0.5)]"></div>
+                        <h3 className="text-lg font-bold text-brand-navy tracking-tight">Edit Invoice</h3>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${invoice.status === 'ISSUED' || invoice.status === 'PAID' ? 'bg-green-500/10 border-green-500/20 text-green-500' :
-                            invoice.status === 'VOIDED' ? 'bg-red-500/10 border-red-500/20 text-red-500' :
-                                'bg-gray-500/10 border-gray-500/20 text-gray-500'
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${invoice.status === 'ISSUED' || invoice.status === 'PAID' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                            invoice.status === 'VOIDED' ? 'bg-red-50 text-red-600 border-red-200' :
+                                'bg-slate-100 text-slate-500 border-slate-200'
                             }`}>
                             {invoice.status}
                         </span>
-                        <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+                        <button onClick={onClose} className="text-slate-400 hover:text-brand-navy transition-colors"><X className="w-5 h-5" /></button>
                     </div>
                 </div>
 
@@ -483,24 +482,24 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
 
                     {/* Section: Billing */}
                     <div className="space-y-4">
-                        <h4 className="text-xs uppercase tracking-widest text-accent-cyan font-medium">Billing Details</h4>
+                        <h4 className="text-xs uppercase tracking-widest text-brand-teal font-bold">Billing Details</h4>
                         <div className="grid grid-cols-2 gap-4">
                             <Input label="Bill-To Name" value={invoice.billTo.name} onChange={(v) => setInvoice({ ...invoice, billTo: { ...invoice.billTo, name: v } })} required />
                             <Input label="Bill-To Email" type="email" value={invoice.billTo.email} onChange={(v) => setInvoice({ ...invoice, billTo: { ...invoice.billTo, email: v } })} required />
                             <div className="col-span-2">
-                                <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Address</label>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Address</label>
                                 <textarea
                                     value={invoice.billTo.address || ''}
                                     onChange={(e) => setInvoice({ ...invoice, billTo: { ...invoice.billTo, address: e.target.value } })}
-                                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50 min-h-[80px]"
+                                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors min-h-[80px]"
                                 />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-medium text-gray-500 mb-1 uppercase tracking-wider">Country</label>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Country</label>
                                 <select
                                     value={invoice.billTo.country || ''}
                                     onChange={(e) => setInvoice({ ...invoice, billTo: { ...invoice.billTo, country: e.target.value } })}
-                                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50"
+                                    className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                                 >
                                     <option value="">Select Country...</option>
                                     {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -510,8 +509,8 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                     </div>
 
                     {/* Section: Meta */}
-                    <div className="space-y-4 pt-4 border-t border-white/5">
-                        <h4 className="text-xs uppercase tracking-widest text-accent-cyan font-medium">Invoice Meta</h4>
+                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                        <h4 className="text-xs uppercase tracking-widest text-brand-teal font-bold">Invoice Meta</h4>
                         <div className="grid grid-cols-3 gap-4">
                             <Input label="Invoice #" value={invoice.invoiceNumber} onChange={(v) => setInvoice({ ...invoice, invoiceNumber: v })} required />
                             <Input label="Order #" value={order.id} disabled />
@@ -520,8 +519,8 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                     </div>
 
                     {/* Section: Amounts */}
-                    <div className="space-y-4 pt-4 border-t border-white/5">
-                        <h4 className="text-xs uppercase tracking-widest text-accent-cyan font-medium">Amounts & Currency</h4>
+                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                        <h4 className="text-xs uppercase tracking-widest text-brand-teal font-bold">Amounts & Currency</h4>
                         <div className="grid grid-cols-3 gap-4">
                             <Input
                                 label="Subtotal (€)"
@@ -558,48 +557,48 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                     </div>
 
                     {/* Section: Audit Preview */}
-                    <div className="pt-4 border-t border-white/5">
-                        <div className="bg-white/[0.03] rounded-lg border border-white/10 p-4">
-                            <h5 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">
+                    <div className="pt-4 border-t border-slate-100">
+                        <div className="bg-slate-50 rounded-lg border border-slate-200 p-4">
+                            <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center justify-between">
                                 <span>Digital Delivery Confirmation (Audit Trail)</span>
-                                {auditData?.isSandbox && <span className="text-[9px] bg-yellow-500/20 text-yellow-500 px-1 rounded">SANDBOX</span>}
+                                {auditData?.isSandbox && <span className="text-[9px] bg-yellow-100 text-yellow-700 px-1 rounded border border-yellow-200">SANDBOX</span>}
                             </h5>
                             <div className="grid grid-cols-2 gap-y-2 text-xs font-mono">
-                                <div className="text-gray-500">Delivery Status:</div>
-                                <div className={auditData?.deliveryStatus === 'DOWNLOADED' ? 'text-green-400' : 'text-gray-400'}>{auditData?.deliveryStatus || 'PENDING'}</div>
+                                <div className="text-slate-500">Delivery Status:</div>
+                                <div className={auditData?.deliveryStatus === 'DOWNLOADED' ? 'text-emerald-600 font-bold' : 'text-slate-400'}>{auditData?.deliveryStatus || 'PENDING'}</div>
 
-                                <div className="text-gray-500">Link ID:</div>
-                                <div className="text-gray-300">{auditData?.linkId || '—'}</div>
+                                <div className="text-slate-500">Link ID:</div>
+                                <div className="text-slate-700">{auditData?.linkId || '—'}</div>
 
-                                <div className="text-gray-500">Access IP:</div>
-                                <div className="text-gray-300">{auditData?.accessIp || '—'}</div>
+                                <div className="text-slate-500">Access IP:</div>
+                                <div className="text-slate-700">{auditData?.accessIp || '—'}</div>
 
-                                <div className="text-gray-500">Timestamp (UTC):</div>
-                                <div className="text-gray-300">{auditData?.accessTime ? new Date(auditData.accessTime).toLocaleString() : '—'}</div>
+                                <div className="text-slate-500">Timestamp (UTC):</div>
+                                <div className="text-slate-700">{auditData?.accessTime ? new Date(auditData.accessTime).toLocaleString() : '—'}</div>
                             </div>
                         </div>
-                        <p className="text-[10px] text-gray-600 mt-2 text-center">This data will be embedded permanently in the generated PDF.</p>
+                        <p className="text-[10px] text-slate-400 mt-2 text-center">This data will be embedded permanently in the generated PDF.</p>
                     </div>
 
                     {error && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-2 text-red-400 text-sm">
+                        <div className="p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg flex items-center gap-2 text-sm">
                             <AlertCircle className="w-4 h-4" /> {error}
                         </div>
                     )}
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-white/10 bg-[#1c1c1e] flex justify-between items-center">
+                <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
                     <button
                         onClick={handleDownloadPdf}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-gray-300 text-sm transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-sm transition-colors font-medium shadow-sm"
                     >
                         <Download className="w-4 h-4" /> Download PDF
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="flex items-center gap-2 px-6 py-2 bg-accent-cyan hover:bg-accent-cyan/80 text-black font-bold rounded-lg text-sm transition-all shadow-lg shadow-accent-cyan/10 disabled:opacity-50"
+                        className="flex items-center gap-2 px-6 py-2 bg-brand-navy hover:bg-brand-navy/90 text-white font-bold rounded-lg text-sm transition-all shadow-lg shadow-brand-navy/10 disabled:opacity-50"
                     >
                         {isSaving ? 'Saving...' : 'Save Changes'}
                         {!isSaving && <Save className="w-4 h-4" />}
@@ -613,15 +612,15 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
 // Helper Input for Modal
 const Input: React.FC<{ label: string, value: any, onChange?: (v: string) => void, type?: string, required?: boolean, disabled?: boolean }> = ({ label, value, onChange, type = "text", required, disabled }) => (
     <div>
-        <label className="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">
-            {label} {required && <span className="text-accent-cyan">*</span>}
+        <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">
+            {label} {required && <span className="text-brand-teal">*</span>}
         </label>
         <input
             type={type}
             value={value}
             onChange={(e) => onChange && onChange(e.target.value)}
             disabled={disabled}
-            className={`w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-accent-cyan/50 transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors ${disabled ? 'opacity-50 cursor-not-allowed bg-slate-50' : ''}`}
         />
     </div>
 );
@@ -666,27 +665,27 @@ const InvoicesManager: React.FC = () => {
 
     return (
         <div className="space-y-6 animate-in fade-in">
-            <h2 className="text-2xl font-serif text-white">Invoices</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Invoices</h2>
             <div className="grid gap-4">
                 {invoices.map((inv) => (
-                    <div key={inv.id} className="bg-dark-800 p-6 rounded-xl border border-white/5 flex justify-between items-center hover:border-accent-cyan/30 transition-all shadow-lg hover:shadow-accent-cyan/5 group">
+                    <div key={inv.id} className="bg-white p-6 rounded-xl border border-slate-200 flex justify-between items-center hover:border-brand-teal/50 transition-all shadow-sm hover:shadow-md group">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-white/5 rounded-lg text-gray-400 group-hover:text-accent-cyan transition-colors">
+                            <div className="p-3 bg-slate-50 rounded-lg text-slate-400 group-hover:text-brand-teal transition-colors">
                                 <FileText className="w-6 h-6" />
                             </div>
                             <div>
-                                <h4 className="text-white font-medium">{inv.invoiceNumber}</h4>
-                                <p className="text-sm text-gray-500">Issued: {new Date(inv.issueDate).toLocaleDateString()}</p>
+                                <h4 className="text-brand-navy font-bold">{inv.invoiceNumber}</h4>
+                                <p className="text-sm text-slate-500">Issued: {new Date(inv.issueDate).toLocaleDateString()}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-8">
                             <div className="text-right">
-                                <p className="text-white font-bold">€{inv.total.toFixed(2)}</p>
-                                <p className="text-xs text-gray-500">{inv.billTo.name}</p>
+                                <p className="text-brand-navy font-bold">€{inv.total.toFixed(2)}</p>
+                                <p className="text-xs text-slate-500">{inv.billTo.name}</p>
                             </div>
                             <button
                                 onClick={() => handleDownload(inv)}
-                                className="p-2 bg-white/5 hover:bg-accent-cyan hover:text-black rounded-lg text-gray-400 transition-colors shadow-sm" title="Download PDF"
+                                className="p-2 bg-slate-50 hover:bg-brand-teal hover:text-white rounded-lg text-slate-400 transition-colors shadow-sm" title="Download PDF"
                             >
                                 <DownloadCloud className="w-5 h-5" />
                             </button>
@@ -711,29 +710,29 @@ const DownloadsManager: React.FC = () => {
         <div className="space-y-8 animate-in fade-in">
             <section>
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-serif text-white">Active Download Links</h2>
-                    <button className="text-xs bg-white/5 hover:bg-white/10 text-white px-3 py-1 rounded-md border border-white/5">Export CSV</button>
+                    <h2 className="text-2xl font-bold text-brand-navy">Active Download Links</h2>
+                    <button className="text-xs bg-white hover:bg-slate-50 text-slate-600 px-3 py-1 rounded-md border border-slate-200 shadow-sm transition-colors">Export CSV</button>
                 </div>
-                <div className="bg-dark-800 rounded-xl border border-white/5 overflow-hidden">
+                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
                     <table className="w-full text-sm text-left">
-                        <thead className="text-xs text-gray-500 uppercase bg-black/20 border-b border-white/5">
+                        <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th className="px-6 py-3">Product</th>
-                                <th className="px-6 py-3">Key</th>
-                                <th className="px-6 py-3">Downloads</th>
-                                <th className="px-6 py-3">Expires</th>
-                                <th className="px-6 py-3">Status</th>
+                                <th className="px-6 py-3 font-bold">Product</th>
+                                <th className="px-6 py-3 font-bold">Key</th>
+                                <th className="px-6 py-3 font-bold">Downloads</th>
+                                <th className="px-6 py-3 font-bold">Expires</th>
+                                <th className="px-6 py-3 font-bold">Status</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-slate-100">
                             {links.map((link) => (
-                                <tr key={link.id} className="hover:bg-white/[0.02]">
-                                    <td className="px-6 py-3 text-white">{link.productName}</td>
-                                    <td className="px-6 py-3 font-mono text-xs text-accent-cyan">{link.key}</td>
-                                    <td className="px-6 py-3 text-gray-400">{link.downloadCount} / {link.maxDownloads}</td>
-                                    <td className="px-6 py-3 text-gray-500 text-xs">{new Date(link.expiresAt).toLocaleDateString()}</td>
+                                <tr key={link.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-6 py-3 text-slate-900 font-medium">{link.productName}</td>
+                                    <td className="px-6 py-3 font-mono text-xs text-brand-teal bg-brand-teal/5 px-2 py-1 rounded w-fit">{link.key}</td>
+                                    <td className="px-6 py-3 text-slate-500">{link.downloadCount} / {link.maxDownloads}</td>
+                                    <td className="px-6 py-3 text-slate-400 text-xs">{new Date(link.expiresAt).toLocaleDateString()}</td>
                                     <td className="px-6 py-3">
-                                        <span className={`px-2 py-0.5 rounded text-[10px] ${link.isActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${link.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
                                             {link.isActive ? 'ACTIVE' : 'REVOKED'}
                                         </span>
                                     </td>
@@ -745,14 +744,14 @@ const DownloadsManager: React.FC = () => {
             </section>
 
             <section>
-                <h2 className="text-xl font-serif text-white mb-4">Recent Access Logs</h2>
-                <div className="bg-dark-800 rounded-xl border border-white/5 p-4 font-mono text-sm space-y-2 max-h-[400px] overflow-y-auto">
+                <h2 className="text-xl font-bold text-brand-navy mb-4">Recent Access Logs</h2>
+                <div className="bg-white rounded-xl border border-slate-200 p-4 font-mono text-sm space-y-2 max-h-[400px] overflow-y-auto shadow-sm">
                     {logs.map((log) => (
-                        <div key={log.id} className="flex gap-4 text-xs border-b border-white/5 pb-2 mb-2 last:border-0 hover:bg-white/5 p-1 rounded transition-colors">
-                            <span className="text-accent-cyan w-32 shrink-0">{new Date(log.timestamp).toLocaleTimeString()}</span>
-                            <span className="text-blue-400 w-32 shrink-0">{log.ip}</span>
-                            <span className="text-gray-300 flex-1">{log.resource}</span>
-                            <span className="text-gray-500 truncate w-48 hidden md:block">{log.deviceSig}</span>
+                        <div key={log.id} className="flex gap-4 text-xs border-b border-slate-100 pb-2 mb-2 last:border-0 hover:bg-slate-50 p-2 rounded transition-colors items-center">
+                            <span className="text-brand-teal font-bold w-32 shrink-0">{new Date(log.timestamp).toLocaleTimeString()}</span>
+                            <span className="text-brand-navy w-32 shrink-0 bg-slate-100 px-2 py-0.5 rounded text-center">{log.ip}</span>
+                            <span className="text-slate-600 flex-1">{log.resource}</span>
+                            <span className="text-slate-400 truncate w-48 hidden md:block" title={log.deviceSig}>{log.deviceSig}</span>
                         </div>
                     ))}
                 </div>
@@ -786,59 +785,59 @@ const SettingsView: React.FC = () => {
         }, 800);
     };
 
-    if (!ppSettings) return <div>Loading...</div>;
+    if (!ppSettings) return <div className="text-slate-500">Loading...</div>;
 
     return (
         <div className="space-y-8 animate-in fade-in max-w-3xl">
-            <h2 className="text-2xl font-serif text-white">System Settings</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">System Settings</h2>
 
-            <section className="bg-dark-800 p-6 rounded-2xl border border-white/5">
-                <h3 className="text-lg font-bold text-white border-b border-white/10 pb-4 mb-6 flex items-center gap-2">
-                    <Settings className="w-4 h-4 text-accent-cyan" /> Company Information
+            <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 className="text-lg font-bold text-brand-navy border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-brand-teal" /> Company Information
                 </h3>
                 <div className="grid grid-cols-2 gap-6">
-                    <SettingsInput label="Company Name" value="Perpetual Futures Playbook™" />
-                    <SettingsInput label="VAT Number" value="44103115853" />
-                    <SettingsInput label="Address" value="Institutional Execution Framework" className="col-span-2" />
-                    <SettingsInput label="Invoice Prefix" value="PF-" />
+                    <SettingsInput label="Company Name" value="Trade Playbooks™" />
+                    <SettingsInput label="VAT Number" value="IE 1234567T" />
+                    <SettingsInput label="Address" value="Comprehensive Market Systems" className="col-span-2" />
+                    <SettingsInput label="Invoice Prefix" value="TP-" />
                 </div>
             </section>
 
-            <section className="bg-dark-800 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
+            <section className="bg-white p-6 rounded-2xl border border-slate-200 relative overflow-hidden shadow-sm">
                 <div className="absolute top-0 right-0 p-4 opacity-5">
-                    <Shield className="w-24 h-24 text-white" />
+                    <Shield className="w-24 h-24 text-brand-navy" />
                 </div>
-                <h3 className="text-lg font-bold text-white border-b border-white/10 pb-4 mb-6 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-accent-cyan" /> PayPal Global Infrastructure
+                <h3 className="text-lg font-bold text-brand-navy border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-brand-teal" /> PayPal Global Infrastructure
                 </h3>
 
                 <div className="space-y-4">
-                    <div className="bg-accent-cyan/5 border border-accent-cyan/20 p-4 rounded-xl mb-4">
-                        <p className="text-xs text-accent-cyan/80 leading-relaxed">
-                            <Zap className="w-3 h-3 inline mr-1 mb-0.5" /> <strong>Configuration Required:</strong> To accept live payments, enter your PayPal REST API credentials. These can be obtained from the <a href="https://developer.paypal.com/dashboard/" target="_blank" className="underline hover:text-white">PayPal Developer Portal</a>.
+                    <div className="bg-brand-teal/5 border border-brand-teal/20 p-4 rounded-xl mb-4">
+                        <p className="text-xs text-brand-teal/80 leading-relaxed">
+                            <Zap className="w-3 h-3 inline mr-1 mb-0.5" /> <strong>Configuration Required:</strong> To accept live payments, enter your PayPal REST API credentials. These can be obtained from the <a href="https://developer.paypal.com/dashboard/" target="_blank" className="underline hover:text-brand-navy">PayPal Developer Portal</a>.
                         </p>
                     </div>
-                    <div className="flex items-center justify-between bg-black/20 p-4 rounded-xl border border-white/5">
+                    <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <div>
-                            <p className="text-white font-medium">Enable PayPal Checkout</p>
-                            <p className="text-xs text-gray-500">Allow customers to pay via PayPal REST API</p>
+                            <p className="text-brand-navy font-bold">Enable PayPal Checkout</p>
+                            <p className="text-xs text-slate-500">Allow customers to pay via PayPal REST API</p>
                         </div>
                         <Toggle checked={ppSettings.enabled} onChange={(v) => updatePP('enabled', v)} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-6">
                         <div className="col-span-2">
-                            <label className="block text-xs font-medium text-gray-500 mb-2">Environment Mode</label>
-                            <div className="flex bg-dark-700 rounded-lg p-1 w-fit border border-white/10">
+                            <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Environment Mode</label>
+                            <div className="flex bg-slate-100 rounded-lg p-1 w-fit border border-slate-200">
                                 <button
                                     onClick={() => updatePP('mode', 'SANDBOX')}
-                                    className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${ppSettings.mode === 'SANDBOX' ? 'bg-accent-cyan text-black shadow-md' : 'text-gray-400 hover:text-white'}`}
+                                    className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${ppSettings.mode === 'SANDBOX' ? 'bg-white text-brand-teal shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     Sandbox
                                 </button>
                                 <button
                                     onClick={() => updatePP('mode', 'LIVE')}
-                                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${ppSettings.mode === 'LIVE' ? 'bg-red-500 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+                                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${ppSettings.mode === 'LIVE' ? 'bg-red-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
                                     Live
                                 </button>
@@ -863,7 +862,7 @@ const SettingsView: React.FC = () => {
                 <button
                     onClick={handleSaveAll}
                     disabled={isSaving}
-                    className="px-8 py-3 bg-accent-cyan text-black font-bold rounded-xl hover:bg-accent-cyan/80 transition-all shadow-lg shadow-accent-cyan/10 disabled:opacity-50"
+                    className="px-8 py-3 bg-brand-navy text-white font-bold rounded-xl hover:bg-brand-navy/90 transition-all shadow-lg shadow-brand-navy/10 disabled:opacity-50"
                 >
                     {isSaving ? 'Syncing...' : 'Save System Changes'}
                 </button>
@@ -874,12 +873,12 @@ const SettingsView: React.FC = () => {
 
 const SettingsInput: React.FC<{ label: string, value?: string, className?: string, type?: string, onChange?: (e: any) => void }> = ({ label, value, className, type = "text", onChange }) => (
     <div className={className}>
-        <label className="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-wider">{label}</label>
+        <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wider">{label}</label>
         <input
             type={type}
             value={value}
             onChange={onChange}
-            className="w-full bg-dark-700 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 transition-all text-sm"
+            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-all text-sm"
         />
     </div>
 );
@@ -887,7 +886,7 @@ const SettingsInput: React.FC<{ label: string, value?: string, className?: strin
 const Toggle: React.FC<{ checked: boolean, onChange: (val: boolean) => void }> = ({ checked, onChange }) => (
     <button
         onClick={() => onChange(!checked)}
-        className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${checked ? 'bg-accent-cyan' : 'bg-gray-700'}`}
+        className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${checked ? 'bg-brand-teal' : 'bg-slate-300'}`}
     >
         <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform duration-300 shadow-sm ${checked ? 'left-7' : 'left-1'}`} />
     </button>

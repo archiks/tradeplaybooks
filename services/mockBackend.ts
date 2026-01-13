@@ -154,7 +154,7 @@ export const MockBackend = {
     productId: string,
     name: string,
     email: string,
-    paymentMethod: 'PAYPAL' | 'MANUAL' = 'MANUAL',
+    paymentMethod: 'PAYPAL' | 'MANUAL' | 'INVOICE' = 'MANUAL',
     status: OrderStatus = OrderStatus.PENDING,
     address?: string,
     country?: string,
@@ -328,35 +328,35 @@ export const MockBackend = {
 
     // 2. Setup PDF
     const doc = new jsPDF();
-    const goldColor: [number, number, number] = [224, 194, 112];
-    const darkColor: [number, number, number] = [20, 20, 20];
-    const greyColor: [number, number, number] = [100, 100, 100];
+    const brandNavy: [number, number, number] = [15, 23, 42];
+    const brandTeal: [number, number, number] = [20, 184, 166];
+    const slateGray: [number, number, number] = [100, 116, 139];
 
     // 3. Header
     // Brand
     doc.setFont('times', 'bold');
     doc.setFontSize(22);
-    doc.setTextColor(66, 245, 227); // accent-cyan
-    doc.text("Perpetual Futures Playbook™", 20, 20);
+    doc.setTextColor(...brandNavy);
+    doc.text("Trade Playbooks™", 20, 20);
 
     // Address (Left)
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
-    doc.setTextColor(150, 150, 150);
-    doc.text("Institutional Execution Framework", 20, 28);
-    doc.text("Digital Systems Division", 20, 33);
-    doc.text("VAT: 44103115853", 20, 38);
-    doc.text("web: perpetualplaybook.com", 20, 43);
+    doc.setTextColor(...slateGray);
+    doc.text("Comprehensive Market Systems", 20, 28);
+    doc.text("Stocks & Crypto Division", 20, 33);
+    doc.text("VAT: IE 1234567T", 20, 38);
+    doc.text("web: tradeplaybooks.com", 20, 43);
 
     // Invoice Meta (Right)
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(24);
-    doc.setTextColor(...darkColor);
+    doc.setTextColor(...brandNavy);
     doc.text("INVOICE", 190, 20, { align: 'right' });
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...darkColor);
+    doc.setTextColor(15, 23, 42);
 
     const metaX = 190;
     let metaY = 30;
@@ -364,21 +364,23 @@ export const MockBackend = {
 
     doc.text(`Invoice #: ${invoice.invoiceNumber}`, metaX, metaY, { align: 'right' });
     metaY += lineHeight;
-    doc.text(`Date: ${invoice.issueDate.split('T')[0]}`, metaX, metaY, { align: 'right' });
+    doc.text(`Date: ${new Date(invoice.issueDate).toLocaleDateString()}`, metaX, metaY, { align: 'right' });
     metaY += lineHeight;
     doc.text(`Status: ${invoice.status}`, metaX, metaY, { align: 'right' });
 
     // Divider
-    doc.setDrawColor(230, 230, 230);
+    doc.setDrawColor(226, 232, 240); // slate-200
     doc.line(20, 50, 190, 50);
 
     // 4. Bill To
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
+    doc.setTextColor(...brandTeal);
     doc.text("Bill To:", 20, 65);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
+    doc.setTextColor(15, 23, 42); // slate-900
     doc.text(invoice.billTo.name, 20, 72);
     doc.text(invoice.billTo.email, 20, 77);
 
@@ -395,26 +397,26 @@ export const MockBackend = {
 
     // Determine Product Name (find order to get product name)
     const order = orders.find(o => o.id === invoice.orderId);
-    const description = order ? order.productName : "Premium Trading Manual";
+    const description = order ? order.productName : "Trade Playbooks System";
 
     autoTable(doc, {
       startY: tableStartY,
       head: [['Item Description', 'Type', 'Qty', 'Price']],
       body: [
-        [description, 'Institutional Grade License', '1', `€${invoice.subtotal.toFixed(2)}`]
+        [description, 'Digital License', '1', `€${invoice.subtotal.toFixed(2)}`]
       ],
       theme: 'grid',
       styles: {
         font: 'helvetica',
         fontSize: 9,
         cellPadding: 6,
-        textColor: [40, 40, 40],
-        lineColor: [240, 240, 240],
+        textColor: [51, 65, 85], // slate-700
+        lineColor: [226, 232, 240], // slate-200
         lineWidth: 0.1
       },
       headStyles: {
-        fillColor: [5, 6, 11], // dark-950
-        textColor: [66, 245, 227], // accent-cyan
+        fillColor: [15, 23, 42], // brand-navy
+        textColor: [255, 255, 255],
         fontStyle: 'bold',
         fontSize: 10
       },
@@ -430,30 +432,30 @@ export const MockBackend = {
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 100, 100);
+    doc.setTextColor(...slateGray);
     doc.text(`Subtotal:`, 140, finalY, { align: 'right' });
-    doc.setTextColor(40, 40, 40);
+    doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.subtotal.toFixed(2)}`, 190, finalY, { align: 'right' });
 
     finalY += 7;
-    doc.setTextColor(100, 100, 100);
+    doc.setTextColor(...slateGray);
     doc.text(`VAT (20%):`, 140, finalY, { align: 'right' });
-    doc.setTextColor(40, 40, 40);
+    doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.tax.toFixed(2)}`, 190, finalY, { align: 'right' });
 
     finalY += 10;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.setTextColor(5, 6, 11);
+    doc.setTextColor(15, 23, 42);
     doc.text(`Total Amount:`, 140, finalY, { align: 'right' });
-    doc.setTextColor(66, 245, 227);
+    doc.setTextColor(...brandTeal);
     doc.text(`€${invoice.total.toFixed(2)}`, 190, finalY, { align: 'right' });
 
     finalY += 12;
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text("Confirmed via Digital Perpetual Framework. Non-tangible goods.", 105, finalY, { align: 'center' });
+    doc.setTextColor(...slateGray);
+    doc.text("Systematic Trading Education. Non-tangible digital goods.", 105, finalY, { align: 'center' });
 
     // 7. Audit Trail Box
     finalY += 15;
@@ -470,16 +472,16 @@ export const MockBackend = {
     const boxHeight = 10 + contentStartOffset + (standardLinesCount * contentLineHeight) + (sigLines.length * contentLineHeight) + 5;
 
     // Box Background
-    doc.setFillColor(248, 248, 248); // Very light grey
-    doc.setDrawColor(230, 230, 230);
+    doc.setFillColor(248, 250, 252); // slate-50
+    doc.setDrawColor(226, 232, 240); // slate-200
     doc.roundedRect(20, finalY, 170, boxHeight, 3, 3, 'FD');
 
     // Box Title
     const auditTitleY = finalY + 10;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.setTextColor(66, 245, 227); // accent-cyan
-    let title = "CRYPTOGRAPHIC DELIVERY VERIFICATION";
+    doc.setTextColor(...brandNavy);
+    let title = "DIGITAL DELIVERY AUDIT TRAIL";
     doc.text(title, 25, auditTitleY);
 
     // Box Content
@@ -512,34 +514,34 @@ export const MockBackend = {
 
     // Print first 5 items
     for (let i = 0; i < 5; i++) {
-      doc.setTextColor(150, 150, 150);
+      doc.setTextColor(148, 163, 184); // slate-400
       doc.text(labels[i], 25, contentY);
 
       if (i === 0 && audit.deliveryStatus === 'DOWNLOADED') {
-        doc.setTextColor(34, 197, 94);
+        doc.setTextColor(20, 184, 166); // brand-teal (success)
       } else {
-        doc.setTextColor(40, 40, 40);
+        doc.setTextColor(51, 65, 85); // slate-700
       }
       doc.text(values[i], 60, contentY);
       contentY += 4;
     }
 
     // Print Device Signature (Wrapped)
-    doc.setTextColor(150, 150, 150);
+    doc.setTextColor(148, 163, 184); // slate-400
     doc.text(labels[5], 25, contentY);
-    doc.setTextColor(40, 40, 40);
+    doc.setTextColor(51, 65, 85); // slate-700
     doc.text(sigLines, 60, contentY);
 
     // 8. Footer
     const pageHeight = doc.internal.pageSize.height;
-    doc.setDrawColor(240, 240, 240);
+    doc.setDrawColor(241, 245, 249); // slate-100
     doc.line(20, pageHeight - 20, 190, pageHeight - 20);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(180, 180, 180);
+    doc.setTextColor(148, 163, 184); // slate-400
     doc.text("Digital product access is limited to the purchaser only. Licensing is non-transferable.", 105, pageHeight - 15, { align: 'center' });
-    doc.text("© 2024 Perpetual Futures Playbook™ — perpetualplaybook.com", 105, pageHeight - 10, { align: 'center' });
+    doc.text("© 2026 Trade Playbooks™ — tradeplaybooks.com", 105, pageHeight - 10, { align: 'center' });
 
     return doc.output('blob');
   },
@@ -608,46 +610,51 @@ export const MockBackend = {
   generateEbookPDFBlob: async (productId: string): Promise<Blob> => {
     const product = PRODUCTS.find(p => p.id === productId) || PRODUCTS[0];
     const doc = new jsPDF();
+    const brandNavy: [number, number, number] = [15, 23, 42];
+    const brandTeal: [number, number, number] = [20, 184, 166];
 
     // --- COVER PAGE ---
-    // Background (Simulated Dark)
-    doc.setFillColor(5, 6, 11); // dark-950
+    // Background (Clean White)
+    doc.setFillColor(255, 255, 255);
     doc.rect(0, 0, 210, 297, 'F');
 
-    // Accent Glow (Simulated)
-    doc.setDrawColor(66, 245, 227); // accent-cyan
-    doc.setLineWidth(0.5);
-    doc.line(20, 40, 50, 40);
+    // Accent Decoration
+    doc.setDrawColor(...brandTeal);
+    doc.setLineWidth(3);
+    doc.line(20, 40, 60, 40);
 
     // Title
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(...brandNavy);
     doc.setFont('times', 'bold');
-    doc.setFontSize(48);
-    doc.text("PERPETUAL", 20, 80);
-    doc.text("FUTURES", 20, 100);
-    doc.text("PLAYBOOK", 20, 120);
+    doc.setFontSize(54);
+    doc.text("TRADE", 20, 80);
+    doc.text("PLAYBOOKS", 20, 100);
 
-    doc.setTextColor(66, 245, 227); // accent-cyan
+    doc.setTextColor(...brandTeal); // brand-teal
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text("AN INSTITUTIONAL EXECUTION FRAMEWORK", 20, 135);
+    doc.text("STOCKS & CRYPTO EDITION", 20, 120);
 
     // Subtitle
-    doc.setTextColor(150, 150, 150);
+    doc.setTextColor(100, 116, 139); // slate-500
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(12);
-    const taglineLines = doc.splitTextToSize(product.tagline, 140);
-    doc.text(taglineLines, 20, 150);
+    doc.setFontSize(14);
+    const taglineLines = doc.splitTextToSize("A Unified Execution Framework for Equity & Digital Asset Markets", 160);
+    doc.text(taglineLines, 20, 140);
 
     // Logo/Branding at bottom
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(...brandNavy);
     doc.setFontSize(10);
-    doc.text("© 2024 SYSTEMATIC DIGITAL ASSETS", 20, 270);
-    doc.text("FOR PROFESSIONAL SPECULATORS ONLY", 20, 275);
+    doc.setFont('helvetica', 'bold');
+    doc.text("© 2026 TRADE PLAYBOOKS™", 20, 270);
+
+    doc.setTextColor(148, 163, 184); // slate-400
+    doc.setFont('helvetica', 'normal');
+    doc.text("RESTRICTED DISTRIBUTION", 20, 275);
 
     // Decorative Line
-    doc.setDrawColor(66, 245, 227);
-    doc.setLineWidth(2);
+    doc.setDrawColor(...brandNavy);
+    doc.setLineWidth(1);
     doc.line(20, 282, 190, 282);
 
     // --- PAGE 2: TABLE OF CONTENTS ---
@@ -655,23 +662,23 @@ export const MockBackend = {
     doc.setFillColor(255, 255, 255); // White interior
     doc.rect(0, 0, 210, 297, 'F');
 
-    doc.setTextColor(5, 6, 11);
+    doc.setTextColor(...brandNavy);
     doc.setFont('times', 'bold');
     doc.setFontSize(28);
-    doc.text("Curriculum Overview", 20, 40);
+    doc.text("Table of Contents", 20, 40);
 
-    doc.setDrawColor(66, 245, 227);
+    doc.setDrawColor(...brandTeal);
     doc.setLineWidth(1);
     doc.line(20, 45, 60, 45);
 
     let curY = 65;
     product.chapters?.forEach((chapter, idx) => {
-      doc.setTextColor(5, 6, 11);
+      doc.setTextColor(...brandNavy);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.text(`${String(idx + 1).padStart(2, '0')}. ${chapter.title.toUpperCase()}`, 20, curY);
 
-      doc.setTextColor(100, 100, 100);
+      doc.setTextColor(100, 116, 139); // slate-500
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       curY += 6;
@@ -693,10 +700,10 @@ export const MockBackend = {
     for (let i = 2; i <= pageCount; i++) {
       doc.setPage(i);
       doc.setFontSize(8);
-      doc.setTextColor(200, 200, 200);
-      doc.text(`Perpetual Futures Playbook™ | Restricted License | Page ${i}`, 105, 287, { align: 'center' });
+      doc.setTextColor(203, 213, 225); // slate-300
+      doc.text(`Trade Playbooks™ | Stocks & Crypto Edition | Page ${i}`, 105, 287, { align: 'center' });
     }
 
     return doc.output('blob');
-  }
+  },
 };

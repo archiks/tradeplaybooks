@@ -1,713 +1,531 @@
-
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Check, Lock, Star, Zap, BarChart2, BookOpen, Layers, ShieldCheck, ChevronDown, ChevronRight, X, CreditCard, FileText, Mail, Copy, AlertTriangle, Percent, Shield, TrendingUp, Sliders, RefreshCw, Workflow } from 'lucide-react';
-import { PRODUCTS, TESTIMONIALS, PAIN_POINTS } from '../constants';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    ArrowRight, Check, BookOpen, BarChart2, Shield,
+    TrendingUp, Activity, Layers, Star, Download,
+    ChevronDown, ChevronUp, Clock, Book, X, CreditCard, FileText, Loader2, Globe
+} from 'lucide-react';
+import { PRODUCTS, COUNTRIES } from '../constants';
 import { MockBackend } from '../services/mockBackend';
-import { Product } from '../types';
+import { Product, OrderStatus } from '../types';
 
 export const LandingPage: React.FC = () => {
-    const { scrollY } = useScroll();
-    const y1 = useTransform(scrollY, [0, 500], [0, 100]);
-    const y2 = useTransform(scrollY, [0, 500], [0, -50]);
+    const [isBuying, setIsBuying] = useState(false);
+    const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
-    const [buyingProduct, setBuyingProduct] = useState<Product | null>(null);
-    const [showPayPal, setShowPayPal] = useState(false);
-    const [showSupportPopup, setShowSupportPopup] = useState(false);
-    const [payPalSettings, setPayPalSettings] = useState<any>(null);
+    // Use the first product (Institutional Playbook - now Trade Playbooks)
+    const product = PRODUCTS[0];
 
-    useEffect(() => {
-        MockBackend.getPayPalSettings().then(setPayPalSettings);
-    }, []);
-
-    const handleBuy = (product: Product) => {
-        setBuyingProduct(product);
-        setShowPayPal(true);
-    };
-
-    const closePayPal = () => {
-        setShowPayPal(false);
-        setBuyingProduct(null);
-    }
-
-    const completePurchase = async () => {
-        if (!buyingProduct) return;
-        // Simulate order creation
-        const guestEmail = 'guest@example.com';
-        await MockBackend.createOrder(buyingProduct.id, 'Institutional Trader', guestEmail, 'PAYPAL');
-        alert(`ACCESS GRANTED: Your order for ${buyingProduct.name} has been processed successfully. Your digital assets and license keys have been sent to ${guestEmail}.`);
-        closePayPal();
+    const handleBuy = async () => {
+        setShowPurchaseModal(true);
     };
 
     return (
-        <div className="bg-dark-950 text-white overflow-hidden selection:bg-accent-cyan selection:text-black">
+        <div className="bg-black text-white font-sans relative min-h-screen selection:bg-brand-teal selection:text-black">
+            {/* 1. HERO SECTION */}
+            <section className="relative pt-32 pb-20 overflow-hidden bg-black">
+                {/* Ambient Background */}
+                <div className="absolute top-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-purple/20 via-black to-black pointer-events-none" />
 
-            {/* Hero Section */}
-            <section className="relative min-h-[90vh] flex items-center px-6 pt-24 pb-12">
-                {/* Background Ambient Glows */}
-                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-accent-cyan/10 rounded-full blur-[120px]" />
-                    <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-accent-amber/5 rounded-full blur-[120px]" />
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 mix-blend-overlay"></div>
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]"></div>
-                </div>
+                <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                    {/* Left Content */}
+                    <div className="space-y-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10 backdrop-blur-sm"
+                        >
+                            <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse shadow-[0_0_10px_rgba(20,241,149,0.5)]" />
+                            <span className="text-xs font-bold tracking-wide uppercase text-slate-300">New: Stocks & Crypto Edition</span>
+                        </motion.div>
 
-                <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
-                    {/* Left Column: Content */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="space-y-8"
-                    >
-                        <div>
-                            <span className="inline-flex items-center gap-2 py-1.5 px-3 rounded-full bg-accent-cyan/10 border border-accent-cyan/20 text-accent-cyan text-xs font-semibold tracking-widest uppercase mb-6 shadow-[0_0_20px_rgba(66,245,227,0.1)]">
-                                <Zap className="w-3 h-3 fill-current" /> Mastery in Leverage
-                            </span>
-                            <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tight text-white mb-6">
-                                Master Perpetual Futures with <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-cyan to-white">Institutional Precision.</span>
-                            </h1>
-                            <p className="text-xl text-gray-400 leading-relaxed max-w-xl">
-                                Turn chaotic leverage into a structured execution playbook. Master funding rates, liquidate avoidance, and scalable systematized setups.
-                            </p>
-                        </div>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="text-5xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]"
+                        >
+                            One Playbook for <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Stocks & Crypto</span>.
+                        </motion.h1>
 
-                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-xl text-slate-400 max-w-lg leading-relaxed"
+                        >
+                            Stop switching strategies. Build a unified, rules-based trading system that works across both traditional equity markets and digital assets.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="flex flex-col sm:flex-row gap-4"
+                        >
                             <button
-                                onClick={() => handleBuy(PRODUCTS[0])}
-                                className="group bg-accent-cyan text-black px-8 py-4 rounded-full font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(66,245,227,0.3)] hover:shadow-[0_0_30px_rgba(66,245,227,0.5)]"
+                                onClick={handleBuy}
+                                disabled={isBuying}
+                                className="px-8 py-4 bg-gradient-to-r from-[#9945FF] to-[#14F195] text-black font-bold rounded-xl hover:opacity-90 transition-all shadow-[0_0_20px_rgba(153,69,255,0.3)] flex items-center justify-center gap-2"
                             >
-                                Get the Perpetual Futures Playbook – €250
-                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                {isBuying ? 'Processing...' : 'Get the Trade Playbook – €250'} <ArrowRight className="w-5 h-5" />
                             </button>
-                            <button
-                                onClick={() => document.getElementById('inside')?.scrollIntoView({ behavior: 'smooth' })}
-                                className="px-8 py-4 rounded-full font-semibold text-sm text-white border border-white/10 hover:border-accent-cyan/50 transition-all glass hover:bg-white/5 flex items-center justify-center gap-2"
+                            <button className="px-8 py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 backdrop-blur-sm">
+                                See What's Inside
+                            </button>
+                        </motion.div>
+
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-sm text-slate-500 font-medium"
+                        >
+                            <span className="text-brand-teal">✓</span> Instant digital access • <span className="text-brand-teal">✓</span> Lifetime updates
+                        </motion.p>
+                    </div>
+
+                    {/* Right Content - Dual Illustration */}
+                    <div className="relative z-10 hidden lg:block">
+                        <div className="relative w-full aspect-square max-w-lg mx-auto">
+                            {/* Background Blurs */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-purple/20 rounded-full blur-[100px]" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-teal/10 rounded-full blur-[100px]" />
+
+                            {/* Stocks Card (Top Left) */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20, y: 20 }}
+                                animate={{ opacity: 1, x: 0, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="absolute top-10 left-0 w-[320px] bg-[#0F0F12] rounded-2xl shadow-2xl border border-white/10 p-6 z-20 backdrop-blur-xl"
                             >
-                                View What’s Inside
-                            </button>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-white/5 text-white flex items-center justify-center font-bold text-xs border border-white/10">SPY</div>
+                                        <div>
+                                            <div className="text-sm font-bold text-white">S&P 500 ETF</div>
+                                            <div className="text-xs text-slate-500">Equity Index</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-sm font-bold text-brand-teal">+1.24%</div>
+                                        <div className="text-xs text-slate-500">Session</div>
+                                    </div>
+                                </div>
+                                {/* Fake Chart Line */}
+                                <div className="h-16 w-full flex items-end gap-1">
+                                    {[40, 45, 30, 50, 65, 55, 70, 85].map((h, i) => (
+                                        <div key={i} style={{ height: `${h}%` }} className="flex-1 bg-white/10 rounded-sm" />
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            {/* Crypto Card (Bottom Right) */}
+                            <motion.div
+                                initial={{ opacity: 0, x: 20, y: -20 }}
+                                animate={{ opacity: 1, x: 0, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="absolute bottom-20 right-0 w-[320px] bg-[#0F0F12] rounded-2xl shadow-2xl border border-white/10 p-6 z-10 backdrop-blur-xl"
+                            >
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-brand-purple/20 text-brand-purple flex items-center justify-center font-bold text-xs border border-brand-purple/20">SOL</div>
+                                        <div>
+                                            <div className="text-sm font-bold text-white">Solana</div>
+                                            <div className="text-xs text-slate-500">Crypto Asset</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-sm font-bold text-brand-teal">+5.82%</div>
+                                        <div className="text-xs text-slate-500">24h</div>
+                                    </div>
+                                </div>
+                                {/* Fake Chart Line */}
+                                <div className="h-16 w-full flex items-end gap-1">
+                                    {[20, 35, 45, 40, 60, 75, 65, 90].map((h, i) => (
+                                        <div key={i} style={{ height: `${h}%` }} className="flex-1 bg-brand-teal/20 rounded-sm" />
+                                    ))}
+                                </div>
+                            </motion.div>
                         </div>
-
-                        <div className="flex items-center gap-6 pt-4 grayscale opacity-50">
-                            <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Compatible with</span>
-                            <div className="flex gap-4">
-                                <span className="text-xs font-mono">BINANCE</span>
-                                <span className="text-xs font-mono">BYBIT</span>
-                                <span className="text-xs font-mono">OKX</span>
-                                <span className="text-xs font-mono">DERIBIT</span>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Right Column: Futures Control Panel Mockup */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 1 }}
-                        className="relative"
-                    >
-                        <div className="relative z-10 glass border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/5 via-transparent to-accent-amber/5"></div>
-
-                            {/* Mock Status Bar */}
-                            <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></div>
-                                    <span className="text-[10px] font-mono text-accent-cyan uppercase tracking-tighter">Live Connection: OKX-PERP</span>
-                                </div>
-                                <div className="flex gap-2">
-                                    <div className="w-8 h-1.5 rounded-full bg-white/10"></div>
-                                    <div className="w-8 h-1.5 rounded-full bg-white/10"></div>
-                                </div>
-                            </div>
-
-                            {/* Mock Metrics Grid */}
-                            <div className="grid grid-cols-2 gap-4 mb-6">
-                                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
-                                    <p className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Mark Price</p>
-                                    <p className="text-2xl font-mono text-white tracking-tighter">$42,842<span className="text-accent-cyan italic ml-1">.50</span></p>
-                                </div>
-                                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
-                                    <p className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Funding Rate</p>
-                                    <p className="text-2xl font-mono text-accent-amber tracking-tighter">+0.0100%</p>
-                                </div>
-                                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
-                                    <p className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Open Interest</p>
-                                    <p className="text-xl font-mono text-white tracking-tighter">2.4B <span className="text-[10px] text-gray-600">USD</span></p>
-                                </div>
-                                <div className="bg-black/40 p-4 rounded-2xl border border-white/5">
-                                    <p className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">R:R Projection</p>
-                                    <p className="text-xl font-mono text-accent-cyan tracking-tighter">1:4.2</p>
-                                </div>
-                            </div>
-
-                            {/* Mock Chart Area */}
-                            <div className="h-40 bg-black/40 rounded-2xl border border-white/5 relative overflow-hidden flex items-end p-2 gap-1 px-4">
-                                {Array.from({ length: 20 }).map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={`flex-1 rounded-t-sm transition-all duration-1000 ${i > 15 ? 'bg-accent-amber animate-pulse' : 'bg-accent-cyan/40'}`}
-                                        style={{ height: `${20 + Math.random() * 60}%` }}
-                                    />
-                                ))}
-                                <div className="absolute inset-x-0 bottom-12 border-t border-accent-cyan/20 border-dashed"></div>
-                                <div className="absolute top-4 left-4 flex gap-2">
-                                    <div className="h-2 w-12 bg-accent-cyan/20 rounded-full"></div>
-                                    <div className="h-2 w-8 bg-accent-amber/20 rounded-full"></div>
-                                </div>
-                            </div>
-
-                            {/* Glowing Accent Borders */}
-                            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-accent-cyan/10 blur-[100px] pointer-events-none group-hover:opacity-100 opacity-50 transition-opacity"></div>
-                        </div>
-
-                        {/* Decorative Elements */}
-                        <div className="absolute -bottom-6 -right-6 w-32 h-32 border border-white/5 rounded-3xl -z-10 rotate-12"></div>
-                        <div className="absolute -top-6 -left-6 w-24 h-24 border border-accent-cyan/10 rounded-full -z-10 animate-pulse"></div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* Trust Strip */}
-            <section className="border-y border-white/10 bg-black/50 backdrop-blur-md relative z-20">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-center md:justify-between items-center gap-8">
-                    <div className="flex items-center gap-3 text-gray-400">
-                        <ShieldCheck className="w-5 h-5 text-accent-cyan" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Built for Perpetual Futures & Swaps</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-gray-400">
-                        <BarChart2 className="w-5 h-5 text-accent-amber" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Risk-First Execution Framework</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-gray-400">
-                        <Layers className="w-5 h-5 text-accent-cyan" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Includes Funding & Liquidation Playbook</span>
                     </div>
                 </div>
             </section>
 
-            {/* Section 3: Why Futures Traders Fail */}
-            <section className="py-32 px-6 relative border-t border-white/5 bg-dark-950 overflow-hidden">
-                <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-red-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <div className="inline-flex items-center gap-2 text-red-500 font-bold tracking-widest uppercase text-[10px] mb-4">
-                            <AlertTriangle className="w-3 h-3" /> The Liquidation Reality
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
-                            Why <span className="text-red-500">95% of Futures Traders</span> Get Wiped Out.
-                        </h2>
-                        <ul className="space-y-5">
-                            {PAIN_POINTS.map((point, idx) => (
-                                <li key={idx} className="flex items-start gap-4 text-gray-400 group">
-                                    <div className="w-5 h-5 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 mt-1">
-                                        <X className="w-3 h-3 text-red-500" />
-                                    </div>
-                                    <span className="text-lg font-light group-hover:text-gray-200 transition-colors uppercase tracking-tight">{point}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        className="relative"
-                    >
-                        <div className="relative z-10 bg-black/60 rounded-3xl border border-white/10 p-2 overflow-hidden shadow-2xl">
-                            {/* Simulated Liquidity Heatmap */}
-                            <div className="aspect-square relative bg-[#05060B] rounded-2xl overflow-hidden p-1 grid grid-cols-10 grid-rows-10 gap-0.5 opacity-40">
-                                {Array.from({ length: 100 }).map((_, i) => {
-                                    const isHeat = Math.random() > 0.85;
-                                    return (
-                                        <div
-                                            key={i}
-                                            className={`rounded-[1px] transition-all duration-1000 ${isHeat ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-gray-800/20'}`}
-                                        />
-                                    );
-                                })}
-                                <div className="absolute inset-x-0 top-1/3 border-t border-red-500/30 border-dashed"></div>
-                                <div className="absolute inset-x-0 bottom-1/4 border-t border-accent-cyan/30 border-dashed"></div>
-                            </div>
-
-                            <div className="absolute inset-0 flex items-center justify-center p-8">
-                                <div className="glass border border-white/10 p-6 rounded-2xl w-full max-w-sm backdrop-blur-xl shadow-2xl relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-red-500/5 pulse"></div>
-                                    <div className="flex items-center gap-3 mb-4 text-red-500">
-                                        <Zap className="w-6 h-6 fill-current" />
-                                        <span className="font-mono text-xs uppercase font-bold tracking-tighter">Liquidation Risk Detected</span>
-                                    </div>
-                                    <p className="text-gray-300 text-sm leading-relaxed mb-6">
-                                        "The Perpetual Futures market is a zero-sum game of liquidity extraction. Without a mechanical playbook, YOU are the liquidity."
-                                    </p>
-                                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: "0%" }}
-                                            whileInView={{ width: "88%" }}
-                                            transition={{ duration: 2 }}
-                                            className="h-full bg-red-500"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
+            {/* 2. SNAPSHOT BAR */}
+            <section className="bg-white/5 border-y border-white/10 py-8 backdrop-blur-sm">
+                <div className="max-w-6xl mx-auto px-6 flex flex-wrap justify-center md:justify-between gap-8 text-slate-400">
+                    <div className="flex items-center gap-3">
+                        <Layers className="w-5 h-5 text-brand-purple" />
+                        <span className="font-medium text-sm text-slate-300">Unified Market Framework</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Shield className="w-5 h-5 text-brand-teal" />
+                        <span className="font-medium text-sm text-slate-300">Risk-First Execution</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <BookOpen className="w-5 h-5 text-brand-purple" />
+                        <span className="font-medium text-sm text-slate-300">Digital Playbooks (PDF)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Activity className="w-5 h-5 text-brand-teal" />
+                        <span className="font-medium text-sm text-slate-300">Volatility & Trend Systems</span>
+                    </div>
                 </div>
             </section>
 
-            {/* Section 4: What This Playbook Gives You */}
-            <section className="py-32 px-6 bg-dark-950 relative border-t border-white/5">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-20">
-                        <span className="text-accent-cyan font-bold tracking-widest uppercase text-[10px] mb-4 block">The Solution</span>
-                        <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">Systematize Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-cyan to-white">Perpetual Edge.</span></h2>
+            {/* 3. PROBLEM SECTION */}
+            <section className="py-24 bg-black relative">
+                <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-brand-purple/10 rounded-full blur-[120px] pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-start relative z-10">
+                    <div>
+                        <h2 className="text-3xl font-bold text-white mb-6">The Problem with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Trading Separately</span></h2>
+                        <p className="text-lg text-slate-400 leading-relaxed mb-6">
+                            Most traders treat stocks and crypto as completely different worlds. They use one set of rules for slow-moving equities and throw them out the window for high-speed crypto markets.
+                        </p>
+                        <p className="text-lg text-slate-400 leading-relaxed">
+                            This leads to fragmented thinking, inconsistent risk management, and the inability to capitalize on opportunities when one market cools off and the other heats up. You need a <strong>unified system</strong>.
+                        </p>
+                    </div>
+                    <div className="space-y-4">
+                        {[
+                            { title: 'Random setups from social media', desc: 'Chasing hype instead of structure.' },
+                            { title: 'No clear risk model', desc: 'Blowing up accounts when switching volatility profiles.' },
+                            { title: 'Overtrading', desc: 'Getting chopped up in range-bound crypto markets.' },
+                            { title: 'Missing Playbooks', desc: 'No repeatable process for entries and exits.' }
+                        ].map((item, i) => (
+                            <div key={i} className="flex gap-4 p-4 rounded-xl border border-white/5 shadow-sm bg-white/5 hover:border-brand-teal/30 transition-colors">
+                                <div className="w-1 bg-gradient-to-b from-brand-purple to-brand-teal rounded-full" />
+                                <div>
+                                    <h4 className="font-bold text-white">{item.title}</h4>
+                                    <p className="text-sm text-slate-400">{item.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* 4. BENEFITS GRID */}
+            <section className="py-24 bg-black relative overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-purple/5 via-black to-black pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <h2 className="text-3xl font-bold text-white mb-4">What <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Trade Playbooks™</span> Gives You</h2>
+                        <p className="text-slate-400">A complete professional infrastructure for your trading business.</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[
-                            {
-                                title: "Funding Rate Mastery",
-                                desc: "Learn to stop paying funding burn and start collecting it or exploiting the local bias they create.",
-                                icon: Percent
-                            },
-                            {
-                                title: "Liquidity Buffer Rules",
-                                desc: "Exact mechanical rules for margin isolation and stop placement based on price-action liquidity pockets.",
-                                icon: Shield
-                            },
-                            {
-                                title: "Scaling & Pyramiding",
-                                desc: "A systematic approach to adding to winners while lowering the overall risk of the position.",
-                                icon: TrendingUp
-                            },
-                            {
-                                title: "Leverage Guardrails",
-                                desc: "No more 'guessing' leverage. Use our 1:x formula based on volatility (ATR) and notional caps.",
-                                icon: Sliders
-                            },
-                            {
-                                title: "The Reset Protocol",
-                                desc: "Mechanical steps to take after a drawdown strike or a winning streak to preserve discipline.",
-                                icon: RefreshCw
-                            },
-                            {
-                                title: "Basis Arbitrage Theory",
-                                desc: "Introductory logic for market-neutral yield using the spot/perp spread for low-risk hedging.",
-                                icon: Workflow
-                            }
-                        ].map((benefit, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                                className="glass border border-white/5 hover:border-accent-cyan/30 p-8 rounded-3xl transition-all group relative overflow-hidden"
-                            >
-                                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                    <benefit.icon className="w-24 h-24" />
+                            { icon: Layers, title: "Unified Framework", desc: "One core logic applied to both legacy and digital markets." },
+                            { icon: TrendingUp, title: "Trend & Range Layouts", desc: "Specific playbooks for different market conditions." },
+                            { icon: Shield, title: "Risk Engine", desc: "Position sizing models tailored for different volatility tiers." },
+                            { icon: Check, title: "Execution Checklists", desc: "Step-by-step rules to validate every trade before entry." },
+                            { icon: Book, title: "Review Templates", desc: "Structured journaling to track performance and psychology." },
+                            { icon: BarChart2, title: "Portfolio Logic", desc: "How to structure a watchlist and manage exposure." }
+                        ].map((Card, i) => (
+                            <div key={i} className="bg-white/5 p-8 rounded-2xl shadow-sm border border-white/10 hover:border-brand-purple/50 hover:shadow-[0_0_20px_rgba(153,69,255,0.1)] transition-all duration-300 backdrop-blur-sm group">
+                                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:bg-brand-purple/20 transition-colors">
+                                    <Card.icon className="w-6 h-6 text-brand-purple group-hover:text-white transition-colors" />
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-accent-cyan/10 border border-accent-cyan/20 flex items-center justify-center text-accent-cyan mb-6 group-hover:scale-110 transition-transform">
-                                    <benefit.icon className="w-6 h-6" />
-                                </div>
-                                <h3 className="text-xl font-bold text-white mb-4">{benefit.title}</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">{benefit.desc}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Section 5: Perpetual System Overview (Timeline) */}
-            <section className="py-32 px-6 bg-dark-950 border-y border-white/5 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-px bg-accent-cyan border-dashed opacity-20"></div>
-                </div>
-
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="text-center mb-20">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">The Perps Playbook Workflow</h2>
-                        <p className="text-gray-400 max-w-2xl mx-auto">From market analysis to post-trade review — here is your mechanical daily cycle.</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-4 gap-8 relative">
-                        {/* Horizontal progress line */}
-                        <div className="hidden md:block absolute top-[2.25rem] left-[10%] right-[10%] h-px bg-white/10"></div>
-
-                        {[
-                            { step: "01", title: "Funding/Basis Scan", desc: "Identify high-funding regimes and basis divergences." },
-                            { step: "02", title: "Liquidity Mapping", desc: "Define HTF support/resistance and internal liquidity pools." },
-                            { step: "03", title: "Execution Trigger", desc: "Execute only when price enters the 'Execution Window' with valid triggers." },
-                            { step: "04", title: "Margin Management", desc: "Active monitoring involving stop trailing and partial scaling." }
-                        ].map((it, i) => (
-                            <motion.div
-                                key={i}
-                                className="flex flex-col items-center text-center group relative"
-                            >
-                                <div className="w-12 h-12 rounded-full bg-dark-950 border border-white/10 group-hover:border-accent-cyan transition-all flex items-center justify-center mb-6 relative z-10 shadow-lg">
-                                    <span className="font-mono text-sm group-hover:text-accent-cyan transition-colors">{it.step}</span>
-                                </div>
-                                <h3 className="text-lg font-bold text-white mb-2">{it.title}</h3>
-                                <p className="text-sm text-gray-500 max-w-[200px] leading-relaxed group-hover:text-gray-300 transition-colors">{it.desc}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Section 6: What's Inside the eBook */}
-            <section id="inside" className="py-32 px-6 bg-dark-950">
-                <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-16">
-                        <span className="text-accent-amber font-bold tracking-widest uppercase text-[10px] mb-4 block">The Curriculum</span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Inside the Perpetual Playbook</h2>
-                    </div>
-
-                    <div className="space-y-4">
-                        {PRODUCTS[0].chapters?.map((chapter, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.05 }}
-                                className="group border border-white/5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] transition-all overflow-hidden"
-                            >
-                                <details className="group">
-                                    <summary className="p-6 md:p-8 cursor-pointer flex justify-between items-center list-none outline-none">
-                                        <div className="flex gap-6 items-center">
-                                            <span className="font-mono text-2xl text-white/10 group-hover:text-accent-cyan/50 transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                                            <h3 className="text-xl font-bold text-white group-hover:text-accent-cyan transition-colors tracking-tight">{chapter.title}</h3>
-                                        </div>
-                                        <div className="p-2 rounded-full border border-white/10 group-hover:border-accent-cyan/30 text-gray-500 group-hover:text-accent-cyan transition-all transform group-open:rotate-180">
-                                            <ChevronDown className="w-5 h-5" />
-                                        </div>
-                                    </summary>
-                                    <div className="px-8 pb-8 pl-[4.5rem] text-gray-400 text-sm border-t border-white/5 pt-6 animate-in slide-in-from-top-2">
-                                        <ul className="grid md:grid-cols-2 gap-x-12 gap-y-3">
-                                            {chapter.points.map((pt, pIdx) => (
-                                                <li key={pIdx} className="flex items-start gap-3">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-accent-cyan/30 mt-1.5"></div>
-                                                    <span className="leading-relaxed">{pt}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </details>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    <div className="mt-12 flex items-center justify-center gap-8 py-8 border-t border-white/5 text-gray-500 text-xs font-mono uppercase tracking-widest">
-                        <div className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-cyan" /> 180+ Pages</div>
-                        <div className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-cyan" /> High-Res Charts</div>
-                        <div className="flex items-center gap-2"><Check className="w-4 h-4 text-accent-cyan" /> PDF Checklist</div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Section 7: Visual Trading Strip (Proof of Execution) */}
-            <section className="py-24 bg-dark-950 border-y border-white/5 relative overflow-hidden">
-                <div className="absolute inset-0 bg-accent-cyan/5 [mask-image:linear-gradient(to_right,transparent,black,transparent)]"></div>
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide no-scrollbar">
-                        {[
-                            { pair: "BTC-PERP", entry: "42,210.5", exit: "43,840.0", pnl: "+154.2%", type: "LONG" },
-                            { pair: "ETH-PERP", entry: "2,240.2", exit: "2,180.5", pnl: "+24.5%", type: "SHORT" },
-                            { pair: "SOL-PERP", entry: "94.20", exit: "108.40", pnl: "+110.8%", type: "LONG" },
-                            { pair: "TIA-PERP", entry: "16.40", exit: "18.20", pnl: "+65.4%", type: "LONG" },
-                            { pair: "ARB-PERP", entry: "2.10", exit: "1.85", pnl: "+45.2%", type: "SHORT" }
-                        ].map((trade, i) => (
-                            <div key={i} className="min-w-[280px] glass border border-white/10 rounded-2xl p-5 hover:border-accent-cyan/30 transition-all group">
-                                <div className="flex justify-between items-center mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-1.5 h-1.5 rounded-full ${trade.type === 'LONG' ? 'bg-accent-cyan' : 'bg-red-500'}`}></div>
-                                        <span className="font-mono text-sm font-bold text-white">{trade.pair}</span>
-                                    </div>
-                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${trade.type === 'LONG' ? 'bg-accent-cyan/10 text-accent-cyan' : 'bg-red-500/10 text-red-500'}`}>
-                                        {trade.type}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-end">
-                                    <div>
-                                        <p className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Execution PnL</p>
-                                        <p className={`text-2xl font-mono font-bold ${trade.pnl.startsWith('+') ? 'text-accent-cyan' : 'text-red-500'}`}>{trade.pnl}</p>
-                                    </div>
-                                    <div className="text-right text-[10px] text-gray-400 font-mono">
-                                        <p>IN: {trade.entry}</p>
-                                        <p>OUT: {trade.exit}</p>
-                                    </div>
-                                </div>
-                                <div className="h-12 mt-4 flex items-end gap-0.5">
-                                    {Array.from({ length: 15 }).map((_, j) => (
-                                        <div
-                                            key={j}
-                                            className={`flex-1 ${trade.type === 'LONG' ? 'bg-accent-cyan/20' : 'bg-red-500/20'} rounded-t-sm`}
-                                            style={{ height: `${20 + Math.random() * 80}%` }}
-                                        ></div>
-                                    ))}
-                                </div>
+                                <h3 className="text-xl font-bold text-white mb-3">{Card.title}</h3>
+                                <p className="text-slate-400 leading-relaxed">{Card.desc}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Section 8: Testimonials */}
-            <section className="py-32 px-6 bg-dark-950">
-                <div className="max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-white tracking-tight">Voices of the Playbook</h2>
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {TESTIMONIALS.map((t, i) => (
-                            <motion.div
-                                key={i}
-                                whileHover={{ y: -5 }}
-                                className="glass p-8 rounded-3xl border border-white/5 relative group"
-                            >
-                                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                                    <Star className="w-12 h-12 fill-current text-accent-cyan" />
-                                </div>
-                                <p className="text-gray-300 italic mb-8 leading-relaxed">"{t.text}"</p>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent-cyan to-accent-amber p-px">
-                                        <div className="w-full h-full rounded-full bg-dark-950 flex items-center justify-center text-white font-bold text-xs uppercase">
-                                            {t.initials}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p className="text-white text-sm font-bold tracking-tight">{t.name}</p>
-                                        <p className="text-[10px] text-accent-cyan uppercase tracking-widest font-mono">{t.role}</p>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Section 9: Pricing + Guarantee */}
-            <section id="pricing" className="py-32 px-6 bg-dark-950 relative overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent-cyan/10 rounded-full blur-[120px] pointer-events-none"></div>
-                <div className="max-w-4xl mx-auto text-center relative z-10">
-                    <div className="glass border border-accent-cyan/20 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 py-2 px-6 bg-accent-cyan text-black text-[10px] font-bold uppercase tracking-widest rounded-bl-2xl">
-                            Most Popular Choice
-                        </div>
-
-                        <span className="text-accent-cyan font-mono text-xs uppercase tracking-[0.3em] mb-4 block">Lifetime Access</span>
-                        <h2 className="text-5xl font-bold text-white mb-2 tracking-tighter">Perpetual Futures Playbook™</h2>
-                        <p className="text-gray-400 mb-8 font-light">The complete system for mastering leverage & funding.</p>
-
-                        <div className="flex items-center justify-center gap-4 mb-8">
-                            <span className="text-6xl font-bold text-white tracking-tighter">€250</span>
-                            <div className="text-left leading-tight">
-                                <p className="text-xs text-gray-500 line-through">WAS €450</p>
-                                <p className="text-xs text-accent-amber font-bold">Limited Time Offer</p>
-                            </div>
-                        </div>
-
-                        <div className="grid sm:grid-cols-2 gap-4 text-left max-w-lg mx-auto mb-10">
-                            {PRODUCTS[0].features.map((f, i) => (
-                                <div key={i} className="flex items-center gap-3 text-sm text-gray-300">
-                                    <div className="w-5 h-5 rounded-full bg-accent-cyan/10 flex items-center justify-center shrink-0">
-                                        <Check className="w-3 h-3 text-accent-cyan" />
-                                    </div>
-                                    {f}
-                                </div>
-                            ))}
-                        </div>
-
-                        <button
-                            onClick={() => handleBuy(PRODUCTS[0])}
-                            className="w-full bg-white text-black py-5 rounded-2xl font-bold text-lg hover:bg-accent-cyan transition-all shadow-[0_10px_30px_rgba(0,0,0,0.3)] flex items-center justify-center gap-3"
-                        >
-                            Get Instant Access Now
-                            <ArrowRight className="w-5 h-5" />
-                        </button>
-
-                        <div className="mt-8 flex items-center justify-center gap-4 text-[10px] text-gray-500 uppercase font-mono tracking-widest">
-                            <Lock className="w-3 h-3" /> Secure SSL Checkout
-                            <div className="w-px h-3 bg-white/10"></div>
-                            <CreditCard className="w-3 h-3" /> Instant PDF Delivery
-                        </div>
-                    </div>
-
-                    {/* Confidence Guarantee */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="mt-12 bg-accent-amber/5 border border-accent-amber/20 p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8 text-left"
-                    >
-                        <div className="w-16 h-16 rounded-2xl bg-accent-amber/10 border border-accent-amber/20 flex items-center justify-center text-accent-amber shrink-0">
-                            <ShieldCheck className="w-8 h-8" />
-                        </div>
-                        <div>
-                            <h4 className="text-lg font-bold text-white mb-1">7-Day Confidence Guarantee</h4>
-                            <p className="text-sm text-gray-400 leading-relaxed">
-                                The futures market rewards confidence. If this playbook doesn’t give you 100% confidence in your system, request a full refund within 7 days.
-                            </p>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
-
-            {/* Section 10: FAQ */}
-            <section className="py-32 px-6 bg-dark-950 border-t border-white/5">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-white tracking-tight">Common Inquiries</h2>
+            {/* 5. STOCKS VS CRYPTO SPLIT */}
+            <section className="py-24 bg-black">
+                <div className="max-w-7xl mx-auto px-6">
                     <div className="grid md:grid-cols-2 gap-8">
+                        {/* Stocks Panel */}
+                        <div className="p-10 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-purple/30 transition-colors">
+                            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                                <span className="w-2 h-8 bg-brand-purple rounded-full" />
+                                Stocks Playbooks
+                            </h3>
+                            <ul className="space-y-4">
+                                {['Swing Setups (2-5 Days)', 'Earnings Gap Plays', 'Momentum Breakouts', 'Position Trading'].map((item, i) => (
+                                    <li key={i} className="flex items-center gap-3 text-slate-300">
+                                        <div className="w-5 h-5 rounded-full bg-brand-purple/20 flex items-center justify-center text-xs font-bold text-brand-purple">✓</div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Crypto Panel */}
+                        <div className="p-10 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-teal/30 transition-colors">
+                            <h3 className="text-2xl font-bold text-brand-teal mb-6 flex items-center gap-3">
+                                <span className="w-2 h-8 bg-brand-teal rounded-full" />
+                                Crypto Playbooks
+                            </h3>
+                            <ul className="space-y-4">
+                                {['Volatility Expansions', 'BTC/ETH Core Strategies', 'Altcoin Rotation Logic', 'Risk Caps & Drawdown Limits'].map((item, i) => (
+                                    <li key={i} className="flex items-center gap-3 text-slate-300">
+                                        <div className="w-5 h-5 rounded-full bg-brand-teal/20 flex items-center justify-center text-xs font-bold text-brand-teal">✓</div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 6. MODULE VIEW (TIMELINE) */}
+            <section className="py-24 bg-[#0F0F12] text-white relative overflow-hidden border-y border-white/5">
+                {/* Background Accents */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-teal/5 rounded-full blur-[100px] pointer-events-none" />
+
+                <div className="max-w-5xl mx-auto px-6 relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-bold mb-4">What's <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Inside the Book</span></h2>
+                        <p className="text-slate-400">A structured curriculum from foundations to mastery.</p>
+                    </div>
+
+                    <div className="space-y-8">
                         {[
-                            { q: "Is this for crypto or traditional futures?", a: "Both. While perpetual swaps are crypto-specific, the core logic of basis, liquidity, and margin applies to both ES/NQ and BTC/ETH markets." },
-                            { q: "Will I need to pay for external indicators?", a: "No. Our system is built on raw price action and exchange data (funding/OI), necessitating only a standard TradingView account." },
-                            { q: "How fast will I receive the playbook?", a: "Instantly. Upon successful payment, you will be redirected to a unique, 30rd-day rolling download link." },
-                            { q: "Does the playbook cover liquidation math?", a: "Extensively. We provide the manual calculations for isolated and cross margin to help you build your own risk sheets." },
-                            { q: "Is there a support community included?", a: "The playbook is a standalone manual, but our support team is available via email for any content-related questions." },
-                            { q: "Can I get a VAT invoice for my business?", a: "Yes. You can request a manual VAT-compliant invoice during the checkout process." }
-                        ].map((faq, i) => (
-                            <div key={i} className="p-6 rounded-2xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
-                                <h4 className="text-white font-bold mb-3 flex items-center gap-3">
-                                    <span className="text-accent-cyan">?</span> {faq.q}
-                                </h4>
-                                <p className="text-sm text-gray-500 leading-relaxed">{faq.a}</p>
+                            { num: "01", title: "Building a Unified Market Framework", points: "Understanding market phases, liquidity, and timeframes." },
+                            { num: "02", title: "Risk, Position Sizing & Drawdown", points: "The mathematical edge. How to not blow up." },
+                            { num: "03", title: "Stocks Playbooks: Execution", points: "Detailed setups for SP500 names and small caps." },
+                            { num: "04", title: "Crypto Playbooks: Volatility", points: "Navigating 24/7 markets and extreme variance." },
+                            { num: "05", title: "Workflow & Routine", points: "Daily checklists, weekend reviews, and preparation." },
+                            { num: "06", title: "Review, Iteration & Scaling", points: "How to journal and improve month over month." }
+                        ].map((module, i) => (
+                            <div key={i} className="flex gap-6 group hover:bg-white/5 p-6 rounded-2xl transition-colors border border-transparent hover:border-brand-purple/20">
+                                <div className="text-3xl font-bold text-brand-purple opacity-50 font-serif">{module.num}</div>
+                                <div>
+                                    <h4 className="text-xl font-bold mb-2 group-hover:text-brand-purple transition-colors">{module.title}</h4>
+                                    <p className="text-slate-400">{module.points}</p>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="py-12 px-6 border-t border-white/5 text-center bg-dark-950">
-                <p className="text-gray-600 text-[10px] uppercase font-bold tracking-[0.2em]">© 2024 Perpetual Futures Playbook™</p>
-                <div className="flex justify-center gap-8 mt-6">
-                    <a href="#" className="text-xs text-gray-400 hover:text-accent-cyan transition-colors">Privacy</a>
-                    <a href="#" className="text-xs text-gray-400 hover:text-accent-cyan transition-colors">Terms</a>
-                    <a href="#" className="text-xs text-gray-400 hover:text-accent-cyan transition-colors">Support</a>
+            {/* 7. PREVIEW STRIP */}
+            <section className="py-24 bg-black overflow-hidden relative">
+                <div className="max-w-7xl mx-auto px-6 text-center mb-12">
+                    <h2 className="text-3xl font-bold text-white"><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Visual Strategies.</span> No Fluff.</h2>
                 </div>
-            </footer>
 
-            {/* PayPal Checkout Modal */}
-            <AnimatePresence>
-                {showPayPal && buyingProduct && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={closePayPal}
-                            className="absolute inset-0 bg-dark-950/90 backdrop-blur-md"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl overflow-hidden"
-                        >
-                            {/* Fake PayPal Header */}
-                            <div className="bg-[#003087] p-5 flex justify-between items-center">
-                                <span className="text-white font-bold italic text-xl">PayPal</span>
-                                <div className="flex gap-2">
-                                    <button onClick={closePayPal} className="text-white/80 hover:text-white"><X className="w-5 h-5" /></button>
-                                </div>
+                {/* Helper for infinite scroll logic would go here, static for now */}
+                <div className="flex justify-center gap-8 overflow-hidden px-6">
+                    {[1, 2, 3].map((item) => (
+                        <div key={item} className="w-[300px] h-[400px] bg-white/5 shadow-xl rounded-sm border border-white/10 p-6 flex flex-col items-center justify-center text-center transform hover:-translate-y-2 transition-transform duration-500 backdrop-blur-sm">
+                            <div className="w-16 h-1 bg-white/10 mb-8" />
+                            <div className="w-full h-32 bg-white/5 rounded-lg mb-6 flex items-center justify-center border border-white/5">
+                                <Activity className="text-slate-600 w-12 h-12" />
+                            </div>
+                            <h5 className="font-bold text-brand-purple uppercase tracking-widest text-xs mb-2">Playbook {item}</h5>
+                            <div className="w-24 h-1 bg-brand-teal" />
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* 8. PRICING */}
+            <section className="py-24 bg-black relative">
+                <div className="max-w-3xl mx-auto px-6">
+                    <div className="bg-[#0F0F12] rounded-3xl shadow-2xl border border-white/10 overflow-hidden relative">
+                        <div className="absolute top-0 w-full h-2 bg-gradient-to-r from-brand-purple to-brand-teal" />
+                        <div className="p-12 text-center">
+                            <h2 className="text-3xl font-bold text-white mb-2"><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Trade Playbooks™</span></h2>
+                            <p className="text-slate-400 mb-8">Stocks & Crypto Edition</p>
+
+                            <div className="flex items-baseline justify-center gap-1 mb-8">
+                                <span className="text-5xl font-bold text-white">€250</span>
+                                <span className="text-slate-500">/ one-time</span>
                             </div>
 
-                            <div className="p-10">
-                                <div className="flex justify-between items-start mb-8 border-b border-gray-100 pb-8">
-                                    <div>
-                                        <h3 className="font-bold text-gray-900 text-sm uppercase tracking-widest mb-1">Perpetual Futures Playbook™</h3>
-                                        <p className="text-xs text-gray-400">Digital Item Delivery</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="block text-3xl font-bold text-gray-900 tracking-tighter">€{buyingProduct.price.toFixed(2)}</span>
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase">EUR</span>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <button onClick={completePurchase} className="w-full bg-[#FFC439] hover:brightness-105 text-black font-bold py-4 rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2">
-                                        Pay with <span className="font-bold italic text-[#003087]">PayPal</span>
-                                    </button>
-                                    <div className="relative text-center my-6">
-                                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
-                                        <span className="relative bg-white px-3 text-[10px] text-gray-400 uppercase tracking-widest">Secure Card Payment</span>
-                                    </div>
-                                    <button onClick={completePurchase} className="w-full bg-black text-white font-bold py-4 rounded-2xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
-                                        <CreditCard className="w-4 h-4" /> Debit or Credit Card
-                                    </button>
-
-                                    {/* Request Invoice Button */}
-                                    <button
-                                        onClick={() => setShowSupportPopup(true)}
-                                        className="w-full bg-white text-gray-400 font-bold py-4 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all flex items-center justify-center gap-2 mt-4 text-xs"
-                                    >
-                                        <FileText className="w-4 h-4" /> Request VAT-Compliant Invoice
-                                    </button>
-                                </div>
-
-                                <p className="text-center text-[9px] text-gray-400 mt-8 font-mono uppercase leading-relaxed">
-                                    {payPalSettings?.mode === 'LIVE' ? (
-                                        <>
-                                            Environment: Production / Secure<br />
-                                            Authorized Transaction Processing
-                                        </>
-                                    ) : (
-                                        <>
-                                            Environment: Development / Sandbox<br />
-                                            Secure simulated transaction
-                                        </>
-                                    )}
-                                </p>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* Support Popup Modal */}
-            <AnimatePresence>
-                {showSupportPopup && (
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center px-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setShowSupportPopup(false)}
-                            className="absolute inset-0 bg-dark-950/80 backdrop-blur-md"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden p-8 text-center"
-                        >
-                            <div className="w-16 h-16 bg-accent-cyan/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-accent-cyan">
-                                <Mail className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Request Business Invoice</h3>
-                            <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-                                For corporate orders and manual invoicing, please send your business credentials to our support desk.
-                            </p>
-
-                            <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center justify-center gap-2 mb-8 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => { navigator.clipboard.writeText('invoices@perpetualplaybook.com'); alert('Copied!') }}>
-                                <code className="text-xs font-mono text-gray-800">invoices@perpetualplaybook.com</code>
-                                <Copy className="w-3 h-3 text-gray-400" />
-                            </div>
+                            <ul className="text-left max-w-sm mx-auto space-y-4 mb-10">
+                                <li className="flex items-center gap-3 text-slate-300 font-medium">
+                                    <Check className="w-5 h-5 text-brand-teal" /> Full Digital eBook (PDF)
+                                </li>
+                                <li className="flex items-center gap-3 text-slate-300 font-medium">
+                                    <Check className="w-5 h-5 text-brand-teal" /> All Playbooks & Checklists
+                                </li>
+                                <li className="flex items-center gap-3 text-slate-300 font-medium">
+                                    <Check className="w-5 h-5 text-brand-teal" /> Lifetime Updates
+                                </li>
+                                <li className="flex items-center gap-3 text-slate-300 font-medium">
+                                    <Check className="w-5 h-5 text-brand-purple" /> <strong>Bonus:</strong> Execution Checklist
+                                </li>
+                            </ul>
 
                             <button
-                                onClick={() => setShowSupportPopup(false)}
-                                className="w-full bg-black text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition-all shadow-lg"
+                                onClick={handleBuy}
+                                disabled={isBuying}
+                                className="w-full py-4 bg-gradient-to-r from-[#9945FF] to-[#14F195] text-black font-bold rounded-xl text-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(153,69,255,0.3)]"
                             >
-                                Dismiss
+                                {isBuying ? 'Processing...' : 'Get Instant Access'}
                             </button>
-                        </motion.div>
+
+                            <p className="mt-4 text-xs text-slate-500">100% Secure Payment • 7-Day Money Back Guarantee</p>
+                        </div>
                     </div>
+                </div>
+            </section>
+
+            {/* 9. FAQ */}
+            <section className="py-24 bg-black">
+                <div className="max-w-3xl mx-auto px-6">
+                    <h2 className="text-3xl font-bold text-white mb-12 text-center">Frequently <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Asked Questions</span></h2>
+                    <div className="space-y-4">
+                        {[
+                            { q: "Is this for beginners?", a: "It assumes you know basic chart mechanics (candles, support/resistance). We focus on strategy and systems." },
+                            { q: "Do I need to trade both stocks and crypto?", a: "No. The system works for either, but we show you how they can complement each other." },
+                            { q: "Is this a course or video series?", a: "This is a comprehensive text-based Playbook (PDF format). No fluff videos to watch." },
+                            { q: "How are updates delivered?", a: "You will receive an email whenever we release a new version of the Playbook." }
+                        ].map((item, i) => (
+                            <details key={i} className="group bg-white/5 rounded-xl border border-white/10 open:border-brand-purple/50 transition-colors">
+                                <summary className="flex items-center justify-between p-6 cursor-pointer font-bold text-white hover:text-brand-purple transition-colors">
+                                    {item.q}
+                                    <ChevronDown className="w-5 h-5 text-slate-500 group-open:rotate-180 transition-transform" />
+                                </summary>
+                                <div className="px-6 pb-6 text-slate-400 leading-relaxed">
+                                    {item.a}
+                                </div>
+                            </details>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* FOOTER */}
+            <footer className="bg-black border-t border-white/10 py-12">
+                <div className="max-w-7xl mx-auto px-6 text-center">
+                    <p className="font-serif font-bold text-xl text-white mb-4">Trade Playbooks™</p>
+                    <p className="text-slate-500 text-sm">© {new Date().getFullYear()} Trade Playbooks. All rights reserved.</p>
+                </div>
+            </footer>
+            {/* PURCHASE MODAL */}
+            <AnimatePresence>
+                {showPurchaseModal && (
+                    <PurchaseModal onClose={() => setShowPurchaseModal(false)} product={product} />
                 )}
             </AnimatePresence>
         </div>
+    );
+};
+
+const PurchaseModal: React.FC<{ onClose: () => void, product: Product }> = ({ onClose, product }) => {
+    const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO'>('PAYMENT');
+    const [loading, setLoading] = useState(false);
+
+    const handlePayPal = async () => {
+        setLoading(true);
+        try {
+            // Simulate PayPal flow
+            await new Promise(r => setTimeout(r, 1500));
+            // Create pending order with guest details (simulating data coming from PayPal)
+            await MockBackend.createOrder(
+                product.id,
+                'Guest User',
+                'guest@example.com',
+                'PAYPAL',
+                OrderStatus.COMPLETED,
+                'US',
+                'US'
+            );
+            alert("PayPal Payment Successful! Please check your email for the download link.");
+            onClose();
+        } catch (e) {
+            alert("Payment failed");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleInvoice = async () => {
+        setStep('INVOICE_INFO');
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        >
+            <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-[#0F0F12] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/10"
+            >
+                <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                    <div>
+                        <h3 className="text-xl font-bold text-white">Secure Checkout</h3>
+                        <p className="text-xs text-brand-teal flex items-center gap-1"><Shield className="w-3 h-3" /> Encrypted & Safe</p>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 font-bold">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="p-6">
+                    {/* Product Summary */}
+                    <div className="flex gap-4 p-4 bg-white/5 rounded-xl mb-6 border border-white/10">
+                        <div className="w-16 h-20 bg-black/50 border border-white/10 rounded-lg flex items-center justify-center shadow-sm">
+                            <Book className="w-8 h-8 text-brand-purple" />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-white text-sm">{product.name}</h4>
+                            <p className="text-xs text-slate-400 mb-2">Institutional Edition (PDF)</p>
+                            <span className="font-bold text-brand-teal">€{product.price}</span>
+                        </div>
+                    </div>
+
+                    {step === 'PAYMENT' ? (
+                        <div className="space-y-3">
+                            <button
+                                onClick={handlePayPal}
+                                disabled={loading}
+                                className="w-full py-4 bg-[#0070BA] text-white font-bold rounded-xl hover:bg-[#005ea6] transition-all shadow-lg flex items-center justify-center gap-2 relative overflow-hidden group"
+                            >
+                                {loading && <Loader2 className="w-5 h-5 animate-spin absolute left-4" />}
+                                <CreditCard className="w-5 h-5" /> Pay with PayPal
+                            </button>
+
+                            <button
+                                onClick={handleInvoice}
+                                disabled={loading}
+                                className="w-full py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                            >
+                                <FileText className="w-5 h-5" /> Pay via Invoice (B2B)
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="text-center py-4">
+                            <div className="w-16 h-16 bg-brand-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <FileText className="w-8 h-8 text-brand-teal" />
+                            </div>
+                            <h4 className="text-xl font-bold text-white mb-2">Request an Invoice</h4>
+                            <p className="text-sm text-slate-400 mb-6 px-4">
+                                For corporate orders and B2B invoicing, please contact our support team directly. We will process your order manually.
+                            </p>
+                            <div className="p-4 bg-white/5 rounded-xl border border-white/10 mb-6">
+                                <span className="block text-xs text-slate-400 uppercase font-bold mb-1">Contact Email</span>
+                                <span className="font-mono text-brand-teal font-bold select-all">info@tradeplaybooks.com</span>
+                            </div>
+                            <button
+                                onClick={onClose}
+                                className="w-full py-4 bg-brand-purple text-white font-bold rounded-xl hover:bg-brand-purple/90 transition-all shadow-lg"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </motion.div>
+        </motion.div>
     );
 };
