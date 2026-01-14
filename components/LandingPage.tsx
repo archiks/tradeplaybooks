@@ -12,11 +12,10 @@ import { Product, OrderStatus } from '../types';
 export const LandingPage: React.FC = () => {
     const [isBuying, setIsBuying] = useState(false);
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-    // Use the first product (Institutional Playbook - now Trade Playbooks)
-    const product = PRODUCTS[0];
-
-    const handleBuy = async () => {
+    const handleBuy = async (p: Product) => {
+        setSelectedProduct(p);
         setShowPurchaseModal(true);
     };
 
@@ -65,7 +64,7 @@ export const LandingPage: React.FC = () => {
                             className="flex flex-col sm:flex-row gap-4"
                         >
                             <button
-                                onClick={handleBuy}
+                                onClick={() => handleBuy(PRODUCTS[0])}
                                 disabled={isBuying}
                                 className="px-8 py-4 bg-gradient-to-r from-[#9945FF] to-[#14F195] text-black font-bold rounded-xl hover:opacity-90 transition-all shadow-[0_0_20px_rgba(153,69,255,0.3)] flex items-center justify-center gap-2"
                             >
@@ -333,43 +332,48 @@ export const LandingPage: React.FC = () => {
 
             {/* 8. PRICING */}
             <section className="py-24 bg-black relative">
-                <div className="max-w-3xl mx-auto px-6">
-                    <div className="bg-[#0F0F12] rounded-3xl shadow-2xl border border-white/10 overflow-hidden relative">
-                        <div className="absolute top-0 w-full h-2 bg-gradient-to-r from-brand-purple to-brand-teal" />
-                        <div className="p-12 text-center">
-                            <h2 className="text-3xl font-bold text-white mb-2"><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Trade Playbooks™</span></h2>
-                            <p className="text-slate-400 mb-8">Stocks & Crypto Edition</p>
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-bold text-white mb-4">Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9945FF] to-[#14F195]">Path to Mastery</span></h2>
+                        <p className="text-slate-400">Select the level of support that fits your needs.</p>
+                    </div>
 
-                            <div className="flex items-baseline justify-center gap-1 mb-8">
-                                <span className="text-5xl font-bold text-white">€250</span>
-                                <span className="text-slate-500">/ one-time</span>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {PRODUCTS.map((p, idx) => (
+                            <div key={p.id} className={`bg-[#0F0F12] rounded-2xl shadow-xl border overflow-hidden relative flex flex-col ${idx === 3 ? 'border-brand-teal shadow-[0_0_20px_rgba(20,241,149,0.1)]' : 'border-white/10'}`}>
+                                {idx === 3 && (
+                                    <div className="absolute top-0 w-full h-1 bg-brand-teal" />
+                                )}
+                                <div className="p-8 flex-1 flex flex-col">
+                                    <h3 className="text-xl font-bold text-white mb-2">{p.name}</h3>
+                                    <p className="text-xs text-slate-400 mb-6 h-10">{p.tagline}</p>
+
+                                    <div className="flex items-baseline gap-1 mb-8">
+                                        <span className="text-3xl font-bold text-white">€{p.price}</span>
+                                        <span className="text-xs text-slate-500">/ one-time</span>
+                                    </div>
+
+                                    <ul className="space-y-4 mb-8 flex-1">
+                                        {p.features.map((feat, i) => (
+                                            <li key={i} className="flex items-start gap-3 text-slate-300 text-sm">
+                                                <Check className={`w-4 h-4 mt-1 shrink-0 ${idx === 3 ? 'text-brand-teal' : 'text-brand-purple'}`} />
+                                                <span className="leading-tight">{feat}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <button
+                                        onClick={() => handleBuy(p)}
+                                        className={`w-full py-3 font-bold rounded-xl text-sm transition-all shadow-lg ${idx === 3
+                                            ? 'bg-brand-teal text-black hover:opacity-90 shadow-[0_0_15px_rgba(20,241,149,0.3)]'
+                                            : 'bg-white/10 text-white hover:bg-white/20 border border-white/5'
+                                            }`}
+                                    >
+                                        {idx === 3 ? 'Get Instant Access' : 'Book Now'}
+                                    </button>
+                                </div>
                             </div>
-
-                            <ul className="text-left max-w-sm mx-auto space-y-4 mb-10">
-                                <li className="flex items-center gap-3 text-slate-300 font-medium">
-                                    <Check className="w-5 h-5 text-brand-teal" /> Full Digital eBook (PDF)
-                                </li>
-                                <li className="flex items-center gap-3 text-slate-300 font-medium">
-                                    <Check className="w-5 h-5 text-brand-teal" /> All Playbooks & Checklists
-                                </li>
-                                <li className="flex items-center gap-3 text-slate-300 font-medium">
-                                    <Check className="w-5 h-5 text-brand-teal" /> Lifetime Updates
-                                </li>
-                                <li className="flex items-center gap-3 text-slate-300 font-medium">
-                                    <Check className="w-5 h-5 text-brand-purple" /> <strong>Bonus:</strong> Execution Checklist
-                                </li>
-                            </ul>
-
-                            <button
-                                onClick={handleBuy}
-                                disabled={isBuying}
-                                className="w-full py-4 bg-gradient-to-r from-[#9945FF] to-[#14F195] text-black font-bold rounded-xl text-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(153,69,255,0.3)]"
-                            >
-                                {isBuying ? 'Processing...' : 'Get Instant Access'}
-                            </button>
-
-                            <p className="mt-4 text-xs text-slate-500">100% Secure Payment • 7-Day Money Back Guarantee</p>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -408,8 +412,8 @@ export const LandingPage: React.FC = () => {
             </footer>
             {/* PURCHASE MODAL */}
             <AnimatePresence>
-                {showPurchaseModal && (
-                    <PurchaseModal onClose={() => setShowPurchaseModal(false)} product={product} />
+                {showPurchaseModal && selectedProduct && (
+                    <PurchaseModal onClose={() => setShowPurchaseModal(false)} product={selectedProduct} />
                 )}
             </AnimatePresence>
         </div>
@@ -479,7 +483,7 @@ const PurchaseModal: React.FC<{ onClose: () => void, product: Product }> = ({ on
                         </div>
                         <div>
                             <h4 className="font-bold text-white text-sm">{product.name}</h4>
-                            <p className="text-xs text-slate-400 mb-2">Institutional Edition (PDF)</p>
+                            <p className="text-xs text-slate-400 mb-2">{product.tagline}</p>
                             <span className="font-bold text-brand-teal">€{product.price}</span>
                         </div>
                     </div>

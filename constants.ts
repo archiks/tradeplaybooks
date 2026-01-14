@@ -43,6 +43,49 @@ export const PRODUCTS: Product[] = [
         points: ['Pyramiding into winners safely', 'Profit taking ladders', 'Equity curve draw-down caps']
       }
     ]
+  },
+  {
+    id: 'prod_coaching_video',
+    name: '1:1 Coaching Video Call',
+    price: 1000,
+    level: 3,
+    tagline: 'Direct mentorship to refine your edge.',
+    description: 'One hour of deep-dive analysis into your trading system, psychology, and risk management.',
+    features: [
+      '60-Minute Video Session',
+      'Portfolio & Risk Review',
+      'Custom Strategy Tweaks',
+      'Recording of the Session'
+    ]
+  },
+  {
+    id: 'prod_coaching_voice',
+    name: '1:1 Voice Call (15m)',
+    price: 500,
+    level: 2,
+    tagline: 'Quick-fire tactical adjustments.',
+    description: 'A focused 15-minute call to unblock specific trading issues or getting a second opinion on a setup.',
+    features: [
+      '15-Minute Voice Call',
+      'Rapid Fire Q&A',
+      'Specific Trade Feedback',
+      'No Fluff'
+    ]
+  },
+  {
+    id: 'prod_pf_playbook_bonus',
+    name: 'Trade Playbook + BONUS',
+    price: 300,
+    level: 1,
+    tagline: 'The complete system plus exclusive extras.',
+    description: 'Everything in the standard Playbook plus exclusive webinars and advanced risk templates.',
+    features: [
+      'All Trade Playbooks (PDF)',
+      'Bonus: Advanced Risk Calculator',
+      'Bonus: Exclusive Webinar Access',
+      'Priority Email Support',
+      'Lifetime Updates'
+    ]
   }
 ];
 
