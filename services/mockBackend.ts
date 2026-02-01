@@ -132,9 +132,9 @@ const DEFAULT_LOGS: AccessLog[] = [
 
 const DEFAULT_SETTINGS: PayPalSettings = {
   enabled: true,
-  mode: 'SANDBOX',
-  clientId: 'sb-client-id-mock',
-  clientSecret: 'sb-secret-key-mock'
+  mode: 'LIVE',
+  clientId: 'Ad72enTRhPYbFneo4seAs852HeZPDoQzq3Udytfzv9cUms6rLy7kXdXkJDxRrFZ0J9mVKw1EJU14vtnd',
+  clientSecret: 'ED4VOqbnqFp5O6KDotBUkF9ZqDupUNc8XwXJ2vJLemvQkIUbOZPnWHvbXPQHJGBsHtHcYnrrTpcPKsqb'
 };
 
 // --- INITIALIZE STATE FROM STORAGE OR DEFAULTS ---
@@ -142,7 +142,7 @@ let orders: Order[] = load('ts_orders', DEFAULT_ORDERS);
 let invoices: Invoice[] = load('ts_invoices', DEFAULT_INVOICES);
 let downloadLinks: DownloadLink[] = load('ts_links', DEFAULT_LINKS);
 let logs: AccessLog[] = load('ts_logs', DEFAULT_LOGS);
-let payPalSettings: PayPalSettings = load('ts_settings', DEFAULT_SETTINGS);
+let payPalSettings: PayPalSettings = load('ts_settings_v2', DEFAULT_SETTINGS);
 
 
 export const MockBackend = {
