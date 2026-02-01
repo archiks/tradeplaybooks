@@ -142,7 +142,7 @@ let orders: Order[] = load('ts_orders', DEFAULT_ORDERS);
 let invoices: Invoice[] = load('ts_invoices', DEFAULT_INVOICES);
 let downloadLinks: DownloadLink[] = load('ts_links', DEFAULT_LINKS);
 let logs: AccessLog[] = load('ts_logs', DEFAULT_LOGS);
-let payPalSettings: PayPalSettings = load('ts_settings_v2', DEFAULT_SETTINGS);
+let payPalSettings: PayPalSettings = load('ts_settings_v3', DEFAULT_SETTINGS);
 
 
 export const MockBackend = {

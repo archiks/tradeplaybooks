@@ -510,24 +510,32 @@ const PurchaseModal: React.FC<{ onClose: () => void, product: Product }> = ({ on
                                     }}>
                                         <PayPalButtons
                                             style={{ layout: "vertical", shape: "rect", label: "pay" }}
-                                            createOrder={(data, actions) => {
-                                                return actions.order.create({
-                                                    intent: "CAPTURE",
-                                                    purchase_units: [
-                                                        {
-                                                            description: product.name,
-                                                            amount: {
-                                                                value: product.price.toString(),
-                                                                currency_code: "EUR"
+                                            createOrder={async (data, actions) => {
+                                                try {
+                                                    return await actions.order.create({
+                                                        intent: "CAPTURE",
+                                                        purchase_units: [
+                                                            {
+                                                                description: product.name,
+                                                                amount: {
+                                                                    value: product.price.toString(),
+                                                                    currency_code: "EUR"
+                                                                }
                                                             }
-                                                        }
-                                                    ]
-                                                });
+                                                        ]
+                                                    });
+                                                } catch (err: any) {
+                                                    console.error("Create Order Error:", err);
+                                                    alert("Could not initiate PayPal payment: " + (err.message || JSON.stringify(err)));
+                                                    throw err;
+                                                }
                                             }}
                                             onApprove={handlePayPalApprove}
-                                            onError={(err) => {
+                                            onError={(err: any) => {
                                                 console.error("PayPal Error:", err);
-                                                alert("There was an error processing your payment with PayPal.");
+                                                // Show the actual error message or object
+                                                const msg = err?.message || err?.toString() || "Unknown error";
+                                                alert("PayPal Error: " + msg + "\n\nPlease try again or contact support.");
                                             }}
                                         />
                                     </PayPalScriptProvider>
