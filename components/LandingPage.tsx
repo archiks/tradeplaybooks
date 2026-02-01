@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ArrowRight, Check, BookOpen, BarChart2, Shield,
@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { PRODUCTS, COUNTRIES } from '../constants';
 import { MockBackend } from '../services/mockBackend';
-import { Product, OrderStatus } from '../types';
+import { Product, OrderStatus, PayPalSettings } from '../types';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export const LandingPage: React.FC = () => {
     const [isBuying, setIsBuying] = useState(false);
@@ -424,25 +425,33 @@ const PurchaseModal: React.FC<{ onClose: () => void, product: Product }> = ({ on
     const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO'>('PAYMENT');
     const [loading, setLoading] = useState(false);
 
-    const handlePayPal = async () => {
+    const [ppSettings, setPPSettings] = useState<PayPalSettings | null>(null);
+
+    useEffect(() => {
+        MockBackend.getPayPalSettings().then(setPPSettings);
+    }, []);
+
+    const handlePayPalApprove = async (data: any, actions: any) => {
         setLoading(true);
         try {
-            // Simulate PayPal flow
-            await new Promise(r => setTimeout(r, 1500));
-            // Create pending order with guest details (simulating data coming from PayPal)
+            // Capture the funds from the transaction
+            const details = await actions.order.capture();
+
+            // Create pending order in our system
             await MockBackend.createOrder(
                 product.id,
-                'Guest User',
-                'guest@example.com',
+                details.payer.name.given_name + ' ' + details.payer.name.surname,
+                details.payer.email_address,
                 'PAYPAL',
                 OrderStatus.COMPLETED,
-                'US',
-                'US'
+                details.purchase_units[0].shipping?.address?.address_line_1,
+                details.purchase_units[0].shipping?.address?.country_code
             );
             alert("PayPal Payment Successful! Please check your email for the download link.");
             onClose();
         } catch (e) {
-            alert("Payment failed");
+            console.error(e);
+            alert("Payment failed or was cancelled.");
         } finally {
             setLoading(false);
         }
@@ -490,14 +499,44 @@ const PurchaseModal: React.FC<{ onClose: () => void, product: Product }> = ({ on
 
                     {step === 'PAYMENT' ? (
                         <div className="space-y-3">
-                            <button
-                                onClick={handlePayPal}
-                                disabled={loading}
-                                className="w-full py-4 bg-[#0070BA] text-white font-bold rounded-xl hover:bg-[#005ea6] transition-all shadow-lg flex items-center justify-center gap-2 relative overflow-hidden group"
-                            >
-                                {loading && <Loader2 className="w-5 h-5 animate-spin absolute left-4" />}
-                                <CreditCard className="w-5 h-5" /> Pay with PayPal
-                            </button>
+
+                            {/* Real PayPal Button */}
+                            {ppSettings && ppSettings.enabled ? (
+                                <div className="w-full z-0 relative">
+                                    <PayPalScriptProvider options={{
+                                        clientId: ppSettings.clientId,
+                                        currency: "EUR",
+                                        intent: "capture"
+                                    }}>
+                                        <PayPalButtons
+                                            style={{ layout: "vertical", shape: "rect", label: "pay" }}
+                                            createOrder={(data, actions) => {
+                                                return actions.order.create({
+                                                    intent: "CAPTURE",
+                                                    purchase_units: [
+                                                        {
+                                                            description: product.name,
+                                                            amount: {
+                                                                value: product.price.toString(),
+                                                                currency_code: "EUR"
+                                                            }
+                                                        }
+                                                    ]
+                                                });
+                                            }}
+                                            onApprove={handlePayPalApprove}
+                                            onError={(err) => {
+                                                console.error("PayPal Error:", err);
+                                                alert("There was an error processing your payment with PayPal.");
+                                            }}
+                                        />
+                                    </PayPalScriptProvider>
+                                </div>
+                            ) : (
+                                <div className="text-center text-red-400 text-sm bg-red-400/10 p-3 rounded-lg border border-red-400/20">
+                                    PayPal is currently unavailable.
+                                </div>
+                            )}
 
                             <button
                                 onClick={handleInvoice}
