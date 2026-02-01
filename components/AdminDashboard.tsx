@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { LayoutDashboard, ShoppingCart, FileText, Download, Settings, Search, Plus, Eye, DownloadCloud, RefreshCw, Key, Shield, Link as LinkIcon, Edit3, CreditCard, Pencil, X, Save, CheckCircle2, AlertCircle, Zap } from 'lucide-react';
 import { MockBackend } from '../services/mockBackend';
-import { Order, Invoice, AccessLog, AdminStats, OrderStatus, DownloadLink, PayPalSettings, InvoiceAuditTrail } from '../types';
+import { Order, Invoice, AccessLog, AdminStats, OrderStatus, DownloadLink, PayPalSettings, InvoiceAuditTrail, CompanySettings } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { COUNTRIES, PRODUCTS } from '../constants';
 
@@ -762,10 +762,12 @@ const DownloadsManager: React.FC = () => {
 
 const SettingsView: React.FC = () => {
     const [ppSettings, setPPSettings] = useState<PayPalSettings | null>(null);
+    const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         MockBackend.getPayPalSettings().then(setPPSettings);
+        MockBackend.getCompanySettings().then(setCompanySettings);
     }, []);
 
     const updatePP = (key: keyof PayPalSettings, val: any) => {
@@ -773,11 +775,19 @@ const SettingsView: React.FC = () => {
         setPPSettings({ ...ppSettings, [key]: val });
     };
 
+    const updateCompany = (key: keyof CompanySettings, val: any) => {
+        if (!companySettings) return;
+        setCompanySettings({ ...companySettings, [key]: val });
+    };
+
     const handleSaveAll = async () => {
         setIsSaving(true);
         // Simulate persistence
-        if (ppSettings) {
-            await MockBackend.updatePayPalSettings(ppSettings);
+        if (ppSettings && companySettings) {
+            await Promise.all([
+                MockBackend.updatePayPalSettings(ppSettings),
+                MockBackend.updateCompanySettings(companySettings)
+            ]);
         }
         setTimeout(() => {
             setIsSaving(false);
@@ -785,7 +795,7 @@ const SettingsView: React.FC = () => {
         }, 800);
     };
 
-    if (!ppSettings) return <div className="text-slate-500">Loading...</div>;
+    if (!ppSettings || !companySettings) return <div className="text-slate-500">Loading...</div>;
 
     return (
         <div className="space-y-8 animate-in fade-in max-w-3xl">
@@ -796,10 +806,32 @@ const SettingsView: React.FC = () => {
                     <Settings className="w-4 h-4 text-brand-teal" /> Company Information
                 </h3>
                 <div className="grid grid-cols-2 gap-6">
-                    <SettingsInput label="Company Name" value="Trade Playbooks™" />
-                    <SettingsInput label="VAT Number" value="IE 1234567T" />
-                    <SettingsInput label="Address" value="Comprehensive Market Systems" className="col-span-2" />
-                    <SettingsInput label="Invoice Prefix" value="TP-" />
+                    <SettingsInput
+                        label="Company Name"
+                        value={companySettings.name}
+                        onChange={(e) => updateCompany('name', e.target.value)}
+                    />
+                    <SettingsInput
+                        label="VAT Number"
+                        value={companySettings.vatNumber}
+                        onChange={(e) => updateCompany('vatNumber', e.target.value)}
+                    />
+                    <SettingsInput
+                        label="Address"
+                        value={companySettings.address}
+                        className="col-span-2"
+                        onChange={(e) => updateCompany('address', e.target.value)}
+                    />
+                    <SettingsInput
+                        label="Invoice Prefix"
+                        value={companySettings.invoicePrefix}
+                        onChange={(e) => updateCompany('invoicePrefix', e.target.value)}
+                    />
+                    <SettingsInput
+                        label="Website"
+                        value={companySettings.website}
+                        onChange={(e) => updateCompany('website', e.target.value)}
+                    />
                 </div>
             </section>
 

@@ -1,5 +1,5 @@
 
-import { Order, Invoice, AccessLog, OrderStatus, AdminStats, DownloadLink, PayPalSettings, InvoiceAuditTrail } from '../types';
+import { Order, Invoice, AccessLog, OrderStatus, AdminStats, DownloadLink, PayPalSettings, InvoiceAuditTrail, CompanySettings } from '../types';
 import { PRODUCTS } from '../constants';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -44,6 +44,7 @@ const save = () => {
     localStorage.setItem('ts_links', JSON.stringify(downloadLinks));
     localStorage.setItem('ts_logs', JSON.stringify(logs));
     localStorage.setItem('ts_settings', JSON.stringify(payPalSettings));
+    localStorage.setItem('ts_company_settings', JSON.stringify(companySettings));
   } catch (e) {
     console.error("Failed to save state", e);
   }
@@ -137,12 +138,22 @@ const DEFAULT_SETTINGS: PayPalSettings = {
   clientSecret: 'ED4VOqbnqFp5O6KDotBUkF9ZqDupUNc8XwXJ2vJLemvQkIUbOZPnWHvbXPQHJGBsHtHcYnrrTpcPKsqb'
 };
 
+const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
+  name: 'Trade Playbooks™',
+  vatNumber: 'IE 1234567T',
+  address: 'Comprehensive Market Systems\nStocks & Crypto Division',
+  invoicePrefix: 'TP',
+  website: 'tradeplaybooks.com',
+  footerText: 'Systematic Trading Education. Non-tangible digital goods.'
+};
+
 // --- INITIALIZE STATE FROM STORAGE OR DEFAULTS ---
 let orders: Order[] = load('ts_orders', DEFAULT_ORDERS);
 let invoices: Invoice[] = load('ts_invoices', DEFAULT_INVOICES);
 let downloadLinks: DownloadLink[] = load('ts_links', DEFAULT_LINKS);
 let logs: AccessLog[] = load('ts_logs', DEFAULT_LOGS);
 let payPalSettings: PayPalSettings = load('ts_settings_v3', DEFAULT_SETTINGS);
+let companySettings: CompanySettings = load('ts_company_settings', DEFAULT_COMPANY_SETTINGS);
 
 
 export const MockBackend = {
@@ -337,16 +348,19 @@ export const MockBackend = {
     doc.setFont('times', 'bold');
     doc.setFontSize(22);
     doc.setTextColor(...brandNavy);
-    doc.text("Trade Playbooks™", 20, 20);
+    doc.text(companySettings.name, 20, 20);
 
     // Address (Left)
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...slateGray);
-    doc.text("Comprehensive Market Systems", 20, 28);
-    doc.text("Stocks & Crypto Division", 20, 33);
-    doc.text("VAT: IE 1234567T", 20, 38);
-    doc.text("web: tradeplaybooks.com", 20, 43);
+
+    const companyAddressLines = doc.splitTextToSize(companySettings.address, 80);
+    doc.text(companyAddressLines, 20, 28);
+
+    let currentY = 28 + (companyAddressLines.length * 4);
+    doc.text(`VAT: ${companySettings.vatNumber}`, 20, currentY);
+    doc.text(`web: ${companySettings.website}`, 20, currentY + 5);
 
     // Invoice Meta (Right)
     doc.setFont('helvetica', 'bold');
@@ -541,7 +555,7 @@ export const MockBackend = {
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184); // slate-400
     doc.text("Digital product access is limited to the purchaser only. Licensing is non-transferable.", 105, pageHeight - 15, { align: 'center' });
-    doc.text("© 2026 Trade Playbooks™ — tradeplaybooks.com", 105, pageHeight - 10, { align: 'center' });
+    doc.text(`© ${new Date().getFullYear()} ${companySettings.name} — ${companySettings.website}`, 105, pageHeight - 10, { align: 'center' });
 
     return doc.output('blob');
   },
@@ -553,7 +567,7 @@ export const MockBackend = {
     const newInvoice: Invoice = {
       id: `inv_${Math.random().toString(36).substr(2, 9)}`,
       orderId,
-      invoiceNumber: `TS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      invoiceNumber: `${companySettings.invoicePrefix}-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       issueDate: new Date().toISOString(),
       subtotal: order.amount,
       tax: order.tax,
@@ -604,6 +618,16 @@ export const MockBackend = {
     payPalSettings = settings;
     save(); // Persist
     return new Promise(resolve => setTimeout(() => resolve(payPalSettings), 400));
+  },
+
+  getCompanySettings: async (): Promise<CompanySettings> => {
+    return new Promise(resolve => setTimeout(() => resolve({ ...companySettings }), 200));
+  },
+
+  updateCompanySettings: async (settings: CompanySettings): Promise<CompanySettings> => {
+    companySettings = settings;
+    save();
+    return new Promise(resolve => setTimeout(() => resolve(companySettings), 400));
   },
 
   // NEW: Generate Premium eBook PDF

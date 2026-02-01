@@ -101,3 +101,12 @@ export interface PayPalSettings {
   clientId: string;
   clientSecret: string;
 }
+
+export interface CompanySettings {
+  name: string;
+  vatNumber: string;
+  address: string;
+  invoicePrefix: string;
+  website: string;
+  footerText: string;
+}
