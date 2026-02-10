@@ -3,87 +3,52 @@ import { Product } from './types';
 
 export const PRODUCTS: Product[] = [
   {
-    id: 'prod_pf_playbook',
-    name: 'Trade Playbooks',
+    id: 'prod_starter',
+    name: 'Starter Shopify Store',
     price: 250,
     level: 1,
-    tagline: 'Master crypto perps and traditional futures with systematic precision.',
-    description: 'Transform chaotic leverage into a structured framework. Focus on risk, funding rates, and execution.',
+    tagline: 'Perfect for first-time merchants.',
+    description: 'A complete, ready-to-sell Shopify store with essential apps and branding.',
     features: [
-      'Perpetual Playbook Framework',
-      'Funding & Basis Strategy Module',
-      'Liquidity Buffer Calculator',
-      'Execution Checklist for Entries / TP / SL',
-      'Scaling & Pyramiding Plans',
-      'Futures Risk + Drawdown Guardrails'
-    ],
-    chapters: [
-      {
-        title: 'Core Futures Foundations',
-        points: ['Futures vs. Spot vs. Margin', 'Leverage mechanics & margin types', 'Notional value vs. Collateral']
-      },
-      {
-        title: 'Perpetual Swap Mechanics',
-        points: ['The role of the funding rate', 'Price discovery in perps', 'Mark price vs. Index price']
-      },
-      {
-        title: 'Funding Rate & Basis Strategies',
-        points: ['Exploiting funding rate arbitrage', 'Basis trading for market-neutral yield', 'Funding-aware entries']
-      },
-      {
-        title: 'Risk, Margin & Liquidation Guardrails',
-        points: ['Calculating liquidation price manually', 'The 3-layer stop system', 'Dynamic position sizing']
-      },
-      {
-        title: 'Execution Playbooks & Checklists',
-        points: ['The Trend-Following Perp सेटअप', 'Mean Reversion in high-funding regimes', 'Breakout validation rules']
-      },
-      {
-        title: 'Scaling, Compounding & Risk Caps',
-        points: ['Pyramiding into winners safely', 'Profit taking ladders', 'Equity curve draw-down caps']
-      }
+      'Premium Theme Installation',
+      'Mobile Responsive Design',
+      'Payment Gateway Setup',
+      '10 Winning Products Loaded',
+      'Basic SEO Optimization',
+      'Standard Support'
     ]
   },
   {
-    id: 'prod_coaching_video',
-    name: '1:1 Coaching Video Call',
-    price: 1000,
-    level: 3,
-    tagline: 'Direct mentorship to refine your edge.',
-    description: 'One hour of deep-dive analysis into your trading system, psychology, and risk management.',
-    features: [
-      '60-Minute Video Session',
-      'Portfolio & Risk Review',
-      'Custom Strategy Tweaks',
-      'Recording of the Session'
-    ]
-  },
-  {
-    id: 'prod_coaching_voice',
-    name: '1:1 Voice Call (15m)',
+    id: 'prod_growth',
+    name: 'Growth Shopify Store',
     price: 500,
     level: 2,
-    tagline: 'Quick-fire tactical adjustments.',
-    description: 'A focused 15-minute call to unblock specific trading issues or getting a second opinion on a setup.',
+    tagline: 'Designed for scaling and ads.',
+    description: 'Everything in Starter plus advanced apps, email marketing setup, and higher conversion optimization.',
     features: [
-      '15-Minute Voice Call',
-      'Rapid Fire Q&A',
-      'Specific Trade Feedback',
-      'No Fluff'
+      'Everything in Starter',
+      'Advanced App Integration',
+      'Email Marketing Setup',
+      'Social Media Integration',
+      '20 Winning Products Loaded',
+      'Speed Optimization',
+      'Priority Support'
     ]
   },
   {
-    id: 'prod_pf_playbook_bonus',
-    name: 'Trade Playbook + BONUS',
-    price: 300,
-    level: 1,
-    tagline: 'The complete system plus exclusive extras.',
-    description: 'Everything in the standard Playbook plus exclusive webinars and advanced risk templates.',
+    id: 'prod_premium',
+    name: 'Premium Shopify Store',
+    price: 1000,
+    level: 3,
+    tagline: 'The ultimate brand dominance package.',
+    description: 'A fully custom-branded store with custom coding, intense SEO, and 1-on-1 strategy.',
     features: [
-      'All Trade Playbooks (PDF)',
-      'Bonus: Advanced Risk Calculator',
-      'Bonus: Exclusive Webinar Access',
-      'Priority Email Support',
+      'Everything in Growth',
+      'Custom Branding & Logo',
+      'Advanced SEO & Copywriting',
+      '50 Winning Products Loaded',
+      '1-on-1 Strategy Call',
+      'Dedicated Success Manager',
       'Lifetime Updates'
     ]
   }
@@ -91,34 +56,34 @@ export const PRODUCTS: Product[] = [
 
 export const TESTIMONIALS = [
   {
-    initials: "AR",
-    name: "Alex R.",
-    role: "Prop Firm Trader",
-    text: "The funding rate module alone saved my account. Understanding basis changed my entire execution timing."
+    initials: "MJ",
+    name: "Michael J.",
+    role: "Dropshipper",
+    text: "I tried for months to build a store myself. Garsabers built me a professional store in 3 days and I made my first sale 24 hours later."
   },
   {
-    initials: "MK",
-    name: "Maria K.",
-    role: "Retail Crypto Trader",
-    text: "I used to get liquidated every volatility spike. Now I have a mechanical buffer I can trust."
+    initials: "Sarah K.",
+    name: "Sarah K.",
+    role: "Boutique Owner",
+    text: "The branding package was incredible. My store looks like a million dollar brand. Highly recommended."
   },
   {
-    initials: "SL",
-    name: "Sam L.",
-    role: "Institutional Scalper",
-    text: "Finally, a guide that treats perps like the professional instruments they are. Pure value."
+    initials: "DP",
+    name: "David P.",
+    role: "E-com Entrepreneur",
+    text: "The 'Growth' package paid for itself in the first week. The pre-loaded products were actually winners."
   }
 ];
 
 export const PAIN_POINTS = [
-  "Over-leveraging into volatility spikes",
-  "Ignoring funding rate burn on long-term holds",
-  "Chasing entries into liquidation zones",
-  "No mechanical system for scale-ins",
-  "Closing winners too early, holding losers",
-  "Analysis paralysis during fast price action",
-  "No data-backed risk guardrails",
-  "Getting chopped in mean-reversion regimes"
+  "Struggling to find winning products",
+  "Confused by Shopify theme customization",
+  "Wasting money on ineffective ads",
+  "Low conversion rates and high bounce rates",
+  "Technical headaches with payment gateways",
+  "Overwhelmed by fulfillment logistics",
+  "Lack of branding consistency",
+  "No clear strategy for scaling"
 ];
 
 export const COUNTRIES = [

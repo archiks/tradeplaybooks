@@ -39,12 +39,12 @@ const load = <T>(key: string, fallback: T): T => {
 
 const save = () => {
   try {
-    localStorage.setItem('ts_orders', JSON.stringify(orders));
-    localStorage.setItem('ts_invoices', JSON.stringify(invoices));
-    localStorage.setItem('ts_links', JSON.stringify(downloadLinks));
-    localStorage.setItem('ts_logs', JSON.stringify(logs));
-    localStorage.setItem('ts_settings', JSON.stringify(payPalSettings));
-    localStorage.setItem('ts_company_settings', JSON.stringify(companySettings));
+    localStorage.setItem('ts_orders_v4', JSON.stringify(orders));
+    localStorage.setItem('ts_invoices_v4', JSON.stringify(invoices));
+    localStorage.setItem('ts_links_v4', JSON.stringify(downloadLinks));
+    localStorage.setItem('ts_logs_v4', JSON.stringify(logs));
+    localStorage.setItem('ts_settings_v4', JSON.stringify(payPalSettings));
+    localStorage.setItem('ts_company_settings_v4', JSON.stringify(companySettings));
   } catch (e) {
     console.error("Failed to save state", e);
   }
@@ -148,12 +148,12 @@ const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
 };
 
 // --- INITIALIZE STATE FROM STORAGE OR DEFAULTS ---
-let orders: Order[] = load('ts_orders', DEFAULT_ORDERS);
-let invoices: Invoice[] = load('ts_invoices', DEFAULT_INVOICES);
-let downloadLinks: DownloadLink[] = load('ts_links', DEFAULT_LINKS);
-let logs: AccessLog[] = load('ts_logs', DEFAULT_LOGS);
-let payPalSettings: PayPalSettings = load('ts_settings_v3', DEFAULT_SETTINGS);
-let companySettings: CompanySettings = load('ts_company_settings_v2', DEFAULT_COMPANY_SETTINGS);
+let orders: Order[] = load('ts_orders_v4', DEFAULT_ORDERS);
+let invoices: Invoice[] = load('ts_invoices_v4', DEFAULT_INVOICES);
+let downloadLinks: DownloadLink[] = load('ts_links_v4', DEFAULT_LINKS);
+let logs: AccessLog[] = load('ts_logs_v4', DEFAULT_LOGS);
+let payPalSettings: PayPalSettings = load('ts_settings_v4', DEFAULT_SETTINGS);
+let companySettings: CompanySettings = load('ts_company_settings_v4', DEFAULT_COMPANY_SETTINGS);
 
 
 export const MockBackend = {
@@ -654,7 +654,7 @@ export const MockBackend = {
     return new Promise(resolve => setTimeout(() => resolve(companySettings), 400));
   },
 
-  // NEW: Generate Premium eBook PDF
+  // NEW: Generate Service Agreement PDF (Replaces Ebook)
   generateEbookPDFBlob: async (productId: string): Promise<Blob> => {
     const product = PRODUCTS.find(p => p.id === productId) || PRODUCTS[0];
     const doc = new jsPDF();
@@ -662,95 +662,31 @@ export const MockBackend = {
     const brandTeal: [number, number, number] = [20, 184, 166];
 
     // --- COVER PAGE ---
-    // Background (Clean White)
     doc.setFillColor(255, 255, 255);
     doc.rect(0, 0, 210, 297, 'F');
-
-    // Accent Decoration
-    doc.setDrawColor(...brandTeal);
-    doc.setLineWidth(3);
-    doc.line(20, 40, 60, 40);
 
     // Title
     doc.setTextColor(...brandNavy);
     doc.setFont('times', 'bold');
-    doc.setFontSize(54);
-    doc.text("TRADE", 20, 80);
-    doc.text("PLAYBOOKS", 20, 100);
+    doc.setFontSize(32);
+    doc.text("SERVICE AGREEMENT", 20, 80);
 
-    doc.setTextColor(...brandTeal); // brand-teal
+    doc.setTextColor(...brandTeal);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text("STOCKS & CRYPTO EDITION", 20, 120);
+    doc.text(product.name.toUpperCase(), 20, 100);
 
     // Subtitle
-    doc.setTextColor(100, 116, 139); // slate-500
+    doc.setTextColor(100, 116, 139);
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(14);
-    const taglineLines = doc.splitTextToSize("A Unified Execution Framework for Equity & Digital Asset Markets", 160);
-    doc.text(taglineLines, 20, 140);
+    doc.setFontSize(10);
+    doc.text("Thank you for your business. This document outlines the scope of work.", 20, 120);
 
-    // Logo/Branding at bottom
+    // Footer
     doc.setTextColor(...brandNavy);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text("© 2026 TRADE PLAYBOOKS™", 20, 270);
-
-    doc.setTextColor(148, 163, 184); // slate-400
-    doc.setFont('helvetica', 'normal');
-    doc.text("RESTRICTED DISTRIBUTION", 20, 275);
-
-    // Decorative Line
-    doc.setDrawColor(...brandNavy);
-    doc.setLineWidth(1);
-    doc.line(20, 282, 190, 282);
-
-    // --- PAGE 2: TABLE OF CONTENTS ---
-    doc.addPage();
-    doc.setFillColor(255, 255, 255); // White interior
-    doc.rect(0, 0, 210, 297, 'F');
-
-    doc.setTextColor(...brandNavy);
-    doc.setFont('times', 'bold');
-    doc.setFontSize(28);
-    doc.text("Table of Contents", 20, 40);
-
-    doc.setDrawColor(...brandTeal);
-    doc.setLineWidth(1);
-    doc.line(20, 45, 60, 45);
-
-    let curY = 65;
-    product.chapters?.forEach((chapter, idx) => {
-      doc.setTextColor(...brandNavy);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(`${String(idx + 1).padStart(2, '0')}. ${chapter.title.toUpperCase()}`, 20, curY);
-
-      doc.setTextColor(100, 116, 139); // slate-500
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      curY += 6;
-      chapter.points.forEach(point => {
-        doc.text(`• ${point}`, 25, curY);
-        curY += 5;
-      });
-      curY += 10;
-
-      // Check for page overflow
-      if (curY > 260 && idx < (product.chapters?.length || 0) - 1) {
-        doc.addPage();
-        curY = 40;
-      }
-    });
-
-    // --- FOOTER ON ALL PAGES ---
-    const pageCount = (doc as any).internal.getNumberOfPages();
-    for (let i = 2; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8);
-      doc.setTextColor(203, 213, 225); // slate-300
-      doc.text(`Garsabers | Done-For-You Shopify Stores | Page ${i}`, 105, 287, { align: 'center' });
-    }
+    doc.text("© 2026 GARSABERS", 20, 270);
 
     return doc.output('blob');
   },
