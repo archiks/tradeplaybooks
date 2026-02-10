@@ -386,6 +386,7 @@ export const MockBackend = {
     if (invoice.billTo.country) {
       doc.text(invoice.billTo.country, 20, yPos);
     }
+    const billToEndY = yPos; // Capture end of Left Column
 
     // RIGHT COLUMN: INVOICE DETAILS
     yPos = 60;
@@ -427,39 +428,49 @@ export const MockBackend = {
     }
     doc.text(invoice.status, 190, yPos, { align: 'right' });
 
-    // --- WEBSITE DELIVERED FIELD (NEW) ---
+    // Capture end of Right Column
+    const detailsEndY = yPos;
+
+    // --- WEBSITE DELIVERED FIELD (Sequential Layout) ---
+    // Start below the lowest column to avoid overlap
+    let contentEndY = Math.max(billToEndY, detailsEndY);
+
+    // Add extra spacing from content
+    contentEndY += 15;
+
     if (invoice.websiteUrl) {
-      yPos += 22; // More space for taller box
-      const boxWidth = 160; // Wider box
       const boxHeight = 24;
-      // Right align box
+      const boxWidth = 160;
       const boxX = 210 - 20 - boxWidth;
+
+      const boxStartY = contentEndY;
 
       doc.setFillColor(240, 253, 250); // teal-50
       doc.setDrawColor(204, 251, 241); // teal-100
-      doc.roundedRect(boxX, yPos - 16, boxWidth, boxHeight, 2, 2, 'FD');
+      doc.roundedRect(boxX, boxStartY, boxWidth, boxHeight, 2, 2, 'FD');
 
-      // Label (Top Left of box)
+      // Label
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7); // Smaller label
+      doc.setFontSize(7);
       doc.setTextColor(...brandTeal);
-      doc.text("DELIVERED STORE", boxX + 6, yPos - 7);
+      doc.text("DELIVERED STORE", boxX + 6, boxStartY + 9);
 
-      // URL (Bottom Left of box - or just below label)
+      // URL
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(15, 23, 42);
 
       const url = invoice.websiteUrl;
-      // Less aggressive truncation since we have more width/row
       const displayUrl = url.length > 55 ? url.substring(0, 52) + '...' : url;
 
-      doc.textWithLink(displayUrl, boxX + 6, yPos + 2, { url: url });
+      doc.textWithLink(displayUrl, boxX + 6, boxStartY + 19, { url: url });
+
+      contentEndY = boxStartY + boxHeight;
     }
 
-    // --- PAY TO / FROM (Left Column below Bill To) ---
-    let leftY = Math.max(90, yPos + 20);
-    if (!invoice.websiteUrl) leftY = 110;
+    // --- PAY TO / FROM (Sequential below everything) ---
+    // Start below Delivered Store (or header cols if no store)
+    let leftY = contentEndY + 15;
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
@@ -479,13 +490,13 @@ export const MockBackend = {
 
 
     // --- ITEMS TABLE ---
-    const tableStartY = Math.max(leftY + 10, 125); // Reduced top margin
+    // Ensure table starts below Pay To, with min margin
+    const tableStartY = Math.max(leftY + 10, 125);
 
     // Determine Product Name (find order to get product name)
     const order = orders.find(o => o.id === invoice.orderId);
     const description = order ? order.productName : "Shopify Store Development Service";
 
-    // Layout configuration
     // Layout configuration
     const descWidth = 80; // Reduced from 85 to give space to QTY
     const typeWidth = 40;
