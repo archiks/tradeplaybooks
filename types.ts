@@ -62,11 +62,10 @@ export interface InvoiceAuditTrail {
   deliveryStatus: 'DOWNLOADED' | 'PENDING';
   linkId: string;
   sentTimestamp: string;
-  accessIp: string;
-  accessTime: string;
-  deviceSig: string;
-  isSandbox: boolean;
-  timestamp?: string;
+  accessIp?: string;
+  accessTime?: string;
+  deviceSig?: string;
+  timestamp?: string; // Added timestamp
 }
 
 export interface DownloadLink {

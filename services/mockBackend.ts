@@ -183,7 +183,8 @@ export const MockBackend = {
       tax: product.price * 0.20, // 20% VAT simulation
       createdAt: orderDate,
       paymentMethod,
-      transactionId: paymentMethod === 'PAYPAL' ? `PAY-${Math.random().toString(36).substr(2, 6).toUpperCase()}` : undefined,
+      transactionId: paymentMethod === 'PAYPAL' ? `PAY-${Math.random().toString(36).substr(2, 6).toUpperCase()}` :
+        paymentMethod === 'STRIPE' ? `ch_${Math.random().toString(36).substr(2, 14)}` : undefined,
       billingAddress: address,
       billingCountry: country
     };
@@ -318,7 +319,6 @@ export const MockBackend = {
       accessIp: accessLog?.ip || '—',
       accessTime: accessLog?.timestamp || '—',
       deviceSig: accessLog?.deviceSig || '—',
-      isSandbox: payPalSettings.mode === 'SANDBOX'
     };
 
     return { ...invoice, auditTrail };
