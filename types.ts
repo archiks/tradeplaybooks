@@ -66,6 +66,7 @@ export interface InvoiceAuditTrail {
   accessTime: string;
   deviceSig: string;
   isSandbox: boolean;
+  timestamp?: string;
 }
 
 export interface DownloadLink {
