@@ -567,7 +567,6 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                         <div className="bg-slate-50 rounded-lg border border-slate-200 p-4">
                             <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
                                 <span>Digital Delivery Confirmation (Audit Trail)</span>
-                                {auditData?.isSandbox && <span className="text-[9px] bg-yellow-100 text-yellow-700 px-1 rounded border border-yellow-200">SANDBOX</span>}
                             </h5>
                             <div className="grid grid-cols-2 gap-y-2 text-xs font-mono">
                                 <div className="text-slate-500">Delivery Status:</div>
