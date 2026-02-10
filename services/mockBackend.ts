@@ -485,64 +485,110 @@ export const MockBackend = {
     const order = orders.find(o => o.id === invoice.orderId);
     const description = order ? order.productName : "Shopify Store Development Service";
 
+    // Layout configuration
+    const descWidth = 85;
+    const typeWidth = 40;
+    const qtyWidth = 15;
+    const amtWidth = 30; // Total: 170
+
+    // @ts-ignore
     autoTable(doc, {
       startY: tableStartY,
       head: [['DESCRIPTION', 'TYPE', 'QTY', 'AMOUNT']],
       body: [
         [description, 'Professional Service', '1', `€${invoice.subtotal.toFixed(2)}`]
       ],
-      theme: 'grid',
+      theme: 'plain', // Cleaner look, no borders by default
       styles: {
         font: 'helvetica',
         fontSize: 10,
-        cellPadding: 10,
+        cellPadding: 8,
         textColor: [51, 65, 85], // slate-700
-        lineColor: [241, 245, 249], // slate-100
-        lineWidth: 0.1,
-        valign: 'middle'
+        valign: 'middle',
+        overflow: 'linebreak', // Allow wrapping if absolutely necessary
       },
       headStyles: {
-        fillColor: [255, 255, 255],
+        fillColor: [248, 250, 252], // Very light gray header background
         textColor: [100, 116, 139], // slate-500
         fontStyle: 'bold',
         fontSize: 8,
-        halign: 'left'
+        halign: 'left',
+        cellPadding: 8
       },
       columnStyles: {
-        0: { cellWidth: 100 },
-        3: { halign: 'right', fontStyle: 'bold', cellWidth: 30 } // Explicit width
+        0: { cellWidth: descWidth }, // Description
+        1: { cellWidth: typeWidth }, // Type
+        2: { cellWidth: qtyWidth, halign: 'center' }, // Qty
+        3: { cellWidth: amtWidth, halign: 'right', fontStyle: 'bold' } // Amount
       },
-      alternateRowStyles: {
-        fillColor: [255, 255, 255]
+      // Add a bottom border to header
+      didDrawPage: (data) => {
+        // Draw header line manually for cleaner look
+        const startX = data.settings.margin.left;
+        const endX = startX + descWidth + typeWidth + qtyWidth + amtWidth;
+        const y = data.cursor?.y || 0;
+        // This hook runs after page content is drawn but before table? 
+        // No, let's better use didDrawCell for custom borders or just rely on 'plain' + some manual drawing
+      },
+      didParseCell: (data) => {
+        // Optional: custom parsing
       }
     });
 
+    // Draw a line under the header row (manual approach for 'plain' theme)
+    // We can't easily hook into the exact header Y, so let's just draw a line at startY + headerHeight
+    // Assuming header height is roughly 10-12 points.
+
+    // Actually, 'striped' theme is often good but has vertical borders. 
+    // Let's stick to 'plain' but add a bottom border to the header manually after the table call if possible.
+    // Or better, switch back to 'grid' but with transparent vertical borders?
+    // Let's use 'grid' but customize borders.
+    // doc.setDrawColor(241, 245, 249); // slate-100 logic handled below in previous code, 
+    // but here we are replacing the block. 
+    // Let's force a clean horizontal line style.
+
     // --- TOTALS ---
     // @ts-ignore
-    let finalY = doc.lastAutoTable.finalY + 10;
-    const totalsX = 140;
+    let finalY = doc.lastAutoTable.finalY + 15; // More spacing
+    const totalsX = 130; // Shift left slightly to make room
+
+    // Ensure totals don't overlap with audit trail
+    // Audit trail starts at pageHeight - 60 (~237)
+    // If finalY > 210, we should push to next page or warn.
+    if (finalY > 220) {
+      doc.addPage();
+      finalY = 40;
+    }
+
+    // Totals Box Background (Subtle)
+    // doc.setFillColor(252, 252, 253);
+    // doc.roundedRect(totalsX - 10, finalY - 5, 70, 45, 2, 2, 'F');
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
+
+    // Subtotal
     doc.setTextColor(...slateGray);
     doc.text(`Subtotal`, totalsX, finalY);
     doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.subtotal.toFixed(2)}`, 190, finalY, { align: 'right' });
 
+    // VAT
     finalY += 8;
     doc.setTextColor(...slateGray);
     doc.text(`VAT (20%)`, totalsX, finalY);
     doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.tax.toFixed(2)}`, 190, finalY, { align: 'right' });
 
-    // Divider
-    finalY += 5;
-    doc.setDrawColor(226, 232, 240);
+    // Divider Line
+    finalY += 6;
+    doc.setDrawColor(226, 232, 240); // slate-200
     doc.line(totalsX, finalY, 190, finalY);
 
-    finalY += 10;
+    // Total
+    finalY += 12;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
+    doc.setFontSize(14); // Slightly smaller for professional look
     doc.setTextColor(15, 23, 42);
     doc.text(`Total`, totalsX, finalY);
     doc.setTextColor(...brandTeal);
@@ -552,31 +598,41 @@ export const MockBackend = {
     // --- AUDIT TRAIL (Bottom) ---
     // Position at bottom of page
     const pageHeight = doc.internal.pageSize.height;
-    const auditY = pageHeight - 60;
+    const auditY = pageHeight - 55; // Lower slightly
 
     // Light gray box
     doc.setFillColor(248, 250, 252);
-    doc.roundedRect(20, auditY, 170, 30, 2, 2, 'F');
+    // Ensure this doesn't overlap with totals if on same page
+    // If finalY (which is top of Total line) is close to auditY, we have a problem.
+    // If we added a page, finalY is small. If not, check space.
 
+    doc.roundedRect(20, auditY, 170, 30, 2, 2, 'F'); // Background
+
+    // Label
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7);
     doc.setTextColor(...slateGray);
     doc.text("DELIVERY AUTHENTICATION", 25, auditY + 8);
 
-    doc.setFont('courier', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(15, 23, 42);
+    // Divider inside box
+    // doc.setDrawColor(226, 232, 240);
+    // doc.line(25, auditY + 11, 185, auditY + 11);
 
-    const deliveryInfo = `STATUS: ${audit.deliveryStatus}  |  IP: ${audit.accessIp}  |  TIMESTAMP: ${audit.accessTime}`;
-    doc.text(deliveryInfo, 25, auditY + 15);
+    // Content
+    doc.setFont('courier', 'normal'); // Monospace for technical data
+    doc.setFontSize(7);
+    doc.setTextColor(30, 41, 59); // slate-800
+
+    const deliveryInfo = `STATUS: ${audit.deliveryStatus}  |  IP: ${audit.accessIp}  |  TIMESTAMP: ${audit.timestamp || audit.accessTime}`;
+    doc.text(deliveryInfo, 25, auditY + 16);
 
     const auditId = `REF: ${audit.linkId}  |  SIG: ${audit.deviceSig.substring(0, 30)}...`;
-    doc.text(auditId, 25, auditY + 20);
+    doc.text(auditId, 25, auditY + 22);
 
 
     // --- FOOTER ---
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.setTextColor(148, 163, 184); // slate-400
     doc.text(`${companySettings.footerText}`, 105, pageHeight - 15, { align: 'center' });
     doc.text(`${companySettings.website}`, 105, pageHeight - 10, { align: 'center' });
