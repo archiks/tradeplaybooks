@@ -429,26 +429,32 @@ export const MockBackend = {
 
     // --- WEBSITE DELIVERED FIELD (NEW) ---
     if (invoice.websiteUrl) {
-      yPos += 15;
-      const boxWidth = 110; // Significantly wider box to fit long URLs
+      yPos += 22; // More space for taller box
+      const boxWidth = 160; // Wider box
+      const boxHeight = 24;
+      // Right align box
+      const boxX = 210 - 20 - boxWidth;
+
       doc.setFillColor(240, 253, 250); // teal-50
       doc.setDrawColor(204, 251, 241); // teal-100
-      doc.roundedRect(210 - 20 - boxWidth, yPos - 6, boxWidth, 14, 2, 2, 'FD'); // Align right
+      doc.roundedRect(boxX, yPos - 16, boxWidth, boxHeight, 2, 2, 'FD');
 
+      // Label (Top Left of box)
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
+      doc.setFontSize(7); // Smaller label
       doc.setTextColor(...brandTeal);
-      doc.text("DELIVERED STORE", 210 - 20 - boxWidth + 4, yPos);
+      doc.text("DELIVERED STORE", boxX + 6, yPos - 7);
 
+      // URL (Bottom Left of box - or just below label)
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(15, 23, 42);
 
       const url = invoice.websiteUrl;
-      // Truncate only if extremely long (>65 chars)
-      const displayUrl = url.length > 65 ? url.substring(0, 62) + '...' : url;
+      // Less aggressive truncation since we have more width/row
+      const displayUrl = url.length > 55 ? url.substring(0, 52) + '...' : url;
 
-      doc.textWithLink(displayUrl, 210 - 20 - 4, yPos + 4, { url: url, align: 'right' });
+      doc.textWithLink(displayUrl, boxX + 6, yPos + 2, { url: url });
     }
 
     // --- PAY TO / FROM (Left Column below Bill To) ---
