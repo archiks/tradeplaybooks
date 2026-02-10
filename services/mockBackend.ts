@@ -56,7 +56,7 @@ const DEFAULT_ORDERS: Order[] = [
     id: 'ord_123',
     status: OrderStatus.COMPLETED,
     productId: 'prod_4',
-    productName: 'Institutional Playbook',
+    productName: 'Premium Shopify Store',
     customerName: 'Marcus Aurelius',
     customerEmail: 'marcus@rome.com',
     amount: 1000,
@@ -73,7 +73,7 @@ const DEFAULT_ORDERS: Order[] = [
     id: 'ord_124',
     status: OrderStatus.PENDING,
     productId: 'prod_2',
-    productName: 'The Prop Challenge Manual',
+    productName: 'Starter Shopify Store',
     customerName: 'Lucius Verus',
     customerEmail: 'lucius@rome.com',
     amount: 250,
@@ -89,7 +89,7 @@ const DEFAULT_INVOICES: Invoice[] = [
   {
     id: 'inv_001',
     orderId: 'ord_123',
-    invoiceNumber: 'TS-2024-0001',
+    invoiceNumber: 'GS-2024-0001',
     issueDate: new Date().toISOString(),
     subtotal: 1000,
     tax: 200,
@@ -265,7 +265,7 @@ export const MockBackend = {
       const draft: Invoice = {
         id: `inv_draft_${Date.now()}`,
         orderId: order.id,
-        invoiceNumber: `TS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        invoiceNumber: `GS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
         issueDate: order.createdAt, // Match Order Date
         subtotal: order.amount,
         tax: order.tax,
@@ -436,24 +436,25 @@ export const MockBackend = {
     // --- WEBSITE DELIVERED FIELD (NEW) ---
     if (invoice.websiteUrl) {
       yPos += 15;
+      const boxWidth = 80; // Wider box
       doc.setFillColor(240, 253, 250); // teal-50
       doc.setDrawColor(204, 251, 241); // teal-100
-      doc.roundedRect(rightColX - 5, yPos - 6, 60, 14, 2, 2, 'FD');
+      doc.roundedRect(210 - 20 - boxWidth, yPos - 6, boxWidth, 14, 2, 2, 'FD'); // Align right
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8);
       doc.setTextColor(...brandTeal);
-      doc.text("DELIVERED STORE", rightColX, yPos);
+      doc.text("DELIVERED STORE", 210 - 20 - boxWidth + 4, yPos);
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(15, 23, 42);
 
-      // Truncate if too long (simple approach) or split
       const url = invoice.websiteUrl;
-      const displayUrl = url.length > 25 ? url.substring(0, 22) + '...' : url;
+      // Truncate based on width, but box is wider now (~45 chars)
+      const displayUrl = url.length > 40 ? url.substring(0, 37) + '...' : url;
 
-      doc.textWithLink(displayUrl, 190, yPos + 4, { url: url, align: 'right' });
+      doc.textWithLink(displayUrl, 210 - 20 - 4, yPos + 4, { url: url, align: 'right' });
     }
 
     // --- PAY TO / FROM (Left Column below Bill To) ---
@@ -509,7 +510,7 @@ export const MockBackend = {
       },
       columnStyles: {
         0: { cellWidth: 100 },
-        3: { halign: 'right', fontStyle: 'bold' }
+        3: { halign: 'right', fontStyle: 'bold', cellWidth: 30 } // Explicit width
       },
       alternateRowStyles: {
         fillColor: [255, 255, 255]
