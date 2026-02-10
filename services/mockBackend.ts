@@ -343,10 +343,14 @@ export const MockBackend = {
     doc.rect(0, 0, 210, 40, 'F');
 
     // --- LOGO / BRAND ---
+
+
+    // Header
+    doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.setTextColor(...brandNavy);
-    doc.text(companySettings.name, 20, 26);
+    doc.setTextColor(15, 23, 42); // slate-900
+    // Hardcoded as requested, regardless of company settings
+    doc.text("Garsabers", 20, 25);
 
     // Website tagline
     doc.setFont('helvetica', 'normal');
@@ -575,7 +579,8 @@ export const MockBackend = {
     doc.setFontSize(14); // Slightly smaller for professional look
     doc.setTextColor(15, 23, 42);
     doc.text(`Total`, totalsX, finalY);
-    doc.setTextColor(...brandTeal);
+    // consistently use same dark color for amount
+    doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.total.toFixed(2)}`, 190, finalY, { align: 'right' });
 
     // --- WEBSITE DELIVERED FIELD (Moved Below Totals) ---
