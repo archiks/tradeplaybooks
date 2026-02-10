@@ -42,6 +42,7 @@ export interface Invoice {
   invoiceNumber: string;
   issueDate: string; // UTC ISO
   subtotal: number;
+  discount?: number; // Added discount
   tax: number;
   total: number;
   currency: string;

@@ -396,9 +396,12 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
     // Totals Recalculation
     useEffect(() => {
         if (invoice) {
-            setInvoice(prev => prev ? ({ ...prev, total: prev.subtotal + prev.tax }) : null);
+            const sub = invoice.subtotal || 0;
+            const disc = invoice.discount || 0;
+            const tx = invoice.tax || 0;
+            setInvoice(prev => prev ? ({ ...prev, total: sub - disc + tx }) : null);
         }
-    }, [invoice?.subtotal, invoice?.tax]);
+    }, [invoice?.subtotal, invoice?.tax, invoice?.discount]);
 
     // Shortcuts
     useEffect(() => {
@@ -527,7 +530,7 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                     {/* Section: Amounts */}
                     <div className="space-y-4 pt-4 border-t border-slate-100">
                         <h4 className="text-xs uppercase tracking-widest text-brand-teal font-bold">Amounts & Currency</h4>
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-4 gap-4">
                             <Input
                                 label="Subtotal (€)"
                                 type="number"
@@ -535,11 +538,28 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                                 onChange={(v) => {
                                     const val = parseFloat(v);
                                     const subtotal = isNaN(val) ? 0 : val;
+                                    const discount = invoice.discount || 0;
                                     const tax = invoice.tax || 0;
                                     setInvoice({
                                         ...invoice,
                                         subtotal: subtotal,
-                                        total: subtotal + tax
+                                        total: subtotal - discount + tax
+                                    });
+                                }}
+                            />
+                            <Input
+                                label="Discount (€)"
+                                type="number"
+                                value={invoice.discount || 0}
+                                onChange={(v) => {
+                                    const val = parseFloat(v);
+                                    const discount = isNaN(val) ? 0 : val;
+                                    const subtotal = invoice.subtotal || 0;
+                                    const tax = invoice.tax || 0;
+                                    setInvoice({
+                                        ...invoice,
+                                        discount: discount,
+                                        total: subtotal - discount + tax
                                     });
                                 }}
                             />
@@ -551,10 +571,11 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                                     const val = parseFloat(v);
                                     const tax = isNaN(val) ? 0 : val;
                                     const subtotal = invoice.subtotal || 0;
+                                    const discount = invoice.discount || 0;
                                     setInvoice({
                                         ...invoice,
                                         tax: tax,
-                                        total: subtotal + tax
+                                        total: subtotal - discount + tax
                                     });
                                 }}
                             />

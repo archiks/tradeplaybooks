@@ -480,9 +480,10 @@ export const MockBackend = {
     const description = order ? order.productName : "Shopify Store Development Service";
 
     // Layout configuration
-    const descWidth = 85;
+    // Layout configuration
+    const descWidth = 80; // Reduced from 85 to give space to QTY
     const typeWidth = 40;
-    const qtyWidth = 15;
+    const qtyWidth = 20;  // Increased from 15 to fix stacking
     const amtWidth = 30; // Total: 170
 
     // @ts-ignore
@@ -496,7 +497,7 @@ export const MockBackend = {
       styles: {
         font: 'helvetica',
         fontSize: 10,
-        cellPadding: 6, // Compact padding
+        cellPadding: { top: 6, right: 2, bottom: 6, left: 2 }, // Reduced horizontal padding
         textColor: [51, 65, 85], // slate-700
         valign: 'middle',
         overflow: 'linebreak', // Allow wrapping if absolutely necessary
@@ -507,7 +508,7 @@ export const MockBackend = {
         fontStyle: 'bold',
         fontSize: 8,
         halign: 'left',
-        cellPadding: 6
+        cellPadding: { top: 6, right: 2, bottom: 6, left: 2 }
       },
       columnStyles: {
         0: { cellWidth: descWidth }, // Description
@@ -549,7 +550,7 @@ export const MockBackend = {
     // Ensure totals don't overlap with audit trail
     // Audit trail starts at pageHeight - 60 (~237)
     // If finalY > 210, we should push to next page or warn.
-    if (finalY > 235) {
+    if (finalY > 210) {
       doc.addPage();
       finalY = 40;
     }
@@ -566,6 +567,14 @@ export const MockBackend = {
     doc.text(`Subtotal`, totalsX, finalY);
     doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.subtotal.toFixed(2)}`, 190, finalY, { align: 'right' });
+
+    // Discount (New)
+    if (invoice.discount && invoice.discount > 0) {
+      finalY += 6;
+      doc.setTextColor(239, 68, 68); // Red for discount
+      doc.text(`Discount`, totalsX, finalY);
+      doc.text(`-€${invoice.discount.toFixed(2)}`, 190, finalY, { align: 'right' });
+    }
 
     // VAT
     finalY += 6; // Compact spacing
