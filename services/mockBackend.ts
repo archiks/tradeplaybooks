@@ -436,7 +436,7 @@ export const MockBackend = {
     // --- WEBSITE DELIVERED FIELD (NEW) ---
     if (invoice.websiteUrl) {
       yPos += 15;
-      const boxWidth = 80; // Wider box
+      const boxWidth = 110; // Significantly wider box to fit long URLs
       doc.setFillColor(240, 253, 250); // teal-50
       doc.setDrawColor(204, 251, 241); // teal-100
       doc.roundedRect(210 - 20 - boxWidth, yPos - 6, boxWidth, 14, 2, 2, 'FD'); // Align right
@@ -451,8 +451,8 @@ export const MockBackend = {
       doc.setTextColor(15, 23, 42);
 
       const url = invoice.websiteUrl;
-      // Truncate based on width, but box is wider now (~45 chars)
-      const displayUrl = url.length > 40 ? url.substring(0, 37) + '...' : url;
+      // Truncate only if extremely long (>65 chars)
+      const displayUrl = url.length > 65 ? url.substring(0, 62) + '...' : url;
 
       doc.textWithLink(displayUrl, 210 - 20 - 4, yPos + 4, { url: url, align: 'right' });
     }
