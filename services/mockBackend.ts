@@ -139,12 +139,12 @@ const DEFAULT_SETTINGS: PayPalSettings = {
 };
 
 const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
-  name: 'Trade Playbooks™',
+  name: 'Garsabers',
   vatNumber: 'IE 1234567T',
-  address: 'Comprehensive Market Systems\nStocks & Crypto Division',
-  invoicePrefix: 'TP',
-  website: 'tradeplaybooks.com',
-  footerText: 'Systematic Trading Education. Non-tangible digital goods.'
+  address: 'Garsabers Inc.\nEcommerce Division',
+  invoicePrefix: 'GS',
+  website: 'garsabers.com',
+  footerText: 'Done-For-You Shopify Stores. Professional Development Services.'
 };
 
 // --- INITIALIZE STATE FROM STORAGE OR DEFAULTS ---
@@ -153,7 +153,7 @@ let invoices: Invoice[] = load('ts_invoices', DEFAULT_INVOICES);
 let downloadLinks: DownloadLink[] = load('ts_links', DEFAULT_LINKS);
 let logs: AccessLog[] = load('ts_logs', DEFAULT_LOGS);
 let payPalSettings: PayPalSettings = load('ts_settings_v3', DEFAULT_SETTINGS);
-let companySettings: CompanySettings = load('ts_company_settings', DEFAULT_COMPANY_SETTINGS);
+let companySettings: CompanySettings = load('ts_company_settings_v2', DEFAULT_COMPANY_SETTINGS);
 
 
 export const MockBackend = {
@@ -341,221 +341,244 @@ export const MockBackend = {
     const doc = new jsPDF();
     const brandNavy: [number, number, number] = [15, 23, 42];
     const brandTeal: [number, number, number] = [20, 184, 166];
+    const brandLight: [number, number, number] = [241, 245, 249]; // slate-100
     const slateGray: [number, number, number] = [100, 116, 139];
 
-    // 3. Header
-    // Brand
-    doc.setFont('times', 'bold');
-    doc.setFontSize(22);
-    doc.setTextColor(...brandNavy);
-    doc.text(companySettings.name, 20, 20);
+    // --- HEADER BACKGROUND ---
+    doc.setFillColor(...brandLight);
+    doc.rect(0, 0, 210, 40, 'F');
 
-    // Address (Left)
+    // --- LOGO / BRAND ---
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(...brandNavy);
+    doc.text(companySettings.name, 20, 26);
+
+    // Website tagline
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...brandTeal);
+    doc.text("ECOMMERCE DEVELOPMENT", 20, 31);
+
+    // --- INVOICE LABEL ---
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(200, 200, 200); // Light gray watermark feel
+    doc.text("INVOICE", 190, 28, { align: 'right' });
+
+
+    // --- GRID LAYOUT FOR DETAILS ---
+    let yPos = 60;
+
+    // LEFT COLUMN: BILL TO
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...brandNavy);
+    doc.text("BILL TO", 20, yPos);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(15, 23, 42);
+    yPos += 6;
+    doc.text(invoice.billTo.name, 20, yPos);
+    yPos += 5;
+    doc.setTextColor(...slateGray);
+    doc.text(invoice.billTo.email, 20, yPos);
+    yPos += 5;
+
+    const addressLines = doc.splitTextToSize(invoice.billTo.address || '', 70);
+    doc.text(addressLines, 20, yPos);
+    yPos += (addressLines.length * 5);
+    if (invoice.billTo.country) {
+      doc.text(invoice.billTo.country, 20, yPos);
+    }
+
+    // RIGHT COLUMN: INVOICE DETAILS
+    yPos = 60;
+    const rightColX = 140;
+
+    // Invoice Number
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...brandNavy);
+    doc.text("INVOICE #", rightColX, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(15, 23, 42);
+    doc.text(invoice.invoiceNumber, 190, yPos, { align: 'right' });
+
+    yPos += 10;
+    // Issue Date
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...brandNavy);
+    doc.text("ISSUE DATE", rightColX, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(15, 23, 42);
+    doc.text(new Date(invoice.issueDate).toLocaleDateString(), 190, yPos, { align: 'right' });
+
+    yPos += 10;
+    // Status
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...brandNavy);
+    doc.text("STATUS", rightColX, yPos);
+
+    doc.setFontSize(10);
+    if (invoice.status === 'PAID') {
+      doc.setTextColor(20, 184, 166); // Teal
+    } else {
+      doc.setTextColor(15, 23, 42);
+    }
+    doc.text(invoice.status, 190, yPos, { align: 'right' });
+
+    // --- WEBSITE DELIVERED FIELD (NEW) ---
+    if (invoice.websiteUrl) {
+      yPos += 15;
+      doc.setFillColor(240, 253, 250); // teal-50
+      doc.setDrawColor(204, 251, 241); // teal-100
+      doc.roundedRect(rightColX - 5, yPos - 6, 60, 14, 2, 2, 'FD');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...brandTeal);
+      doc.text("DELIVERED STORE", rightColX, yPos);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(15, 23, 42);
+
+      // Truncate if too long (simple approach) or split
+      const url = invoice.websiteUrl;
+      const displayUrl = url.length > 25 ? url.substring(0, 22) + '...' : url;
+
+      doc.textWithLink(displayUrl, 190, yPos + 4, { url: url, align: 'right' });
+    }
+
+    // --- PAY TO / FROM (Left Column below Bill To) ---
+    let leftY = Math.max(90, yPos + 20);
+    if (!invoice.websiteUrl) leftY = 110;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...brandNavy);
+    doc.text("PAY TO", 20, leftY);
+
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...slateGray);
+    leftY += 5;
+    doc.text(companySettings.name, 20, leftY);
+    leftY += 5;
+    const companyAddr = doc.splitTextToSize(companySettings.address, 70);
+    doc.text(companyAddr, 20, leftY);
+    leftY += (companyAddr.length * 5);
+    doc.text(`VAT ID: ${companySettings.vatNumber}`, 20, leftY);
 
-    const companyAddressLines = doc.splitTextToSize(companySettings.address, 80);
-    doc.text(companyAddressLines, 20, 28);
 
-    let currentY = 28 + (companyAddressLines.length * 4);
-    doc.text(`VAT: ${companySettings.vatNumber}`, 20, currentY);
-    doc.text(`web: ${companySettings.website}`, 20, currentY + 5);
-
-    // Invoice Meta (Right)
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(24);
-    doc.setTextColor(...brandNavy);
-    doc.text("INVOICE", 190, 20, { align: 'right' });
-
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(15, 23, 42);
-
-    const metaX = 190;
-    let metaY = 30;
-    const lineHeight = 5;
-
-    doc.text(`Invoice #: ${invoice.invoiceNumber}`, metaX, metaY, { align: 'right' });
-    metaY += lineHeight;
-    doc.text(`Date: ${new Date(invoice.issueDate).toLocaleDateString()}`, metaX, metaY, { align: 'right' });
-    metaY += lineHeight;
-    doc.text(`Status: ${invoice.status}`, metaX, metaY, { align: 'right' });
-
-    // Divider
-    doc.setDrawColor(226, 232, 240); // slate-200
-    doc.line(20, 50, 190, 50);
-
-    // 4. Bill To
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...brandTeal);
-    doc.text("Bill To:", 20, 65);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(15, 23, 42); // slate-900
-    doc.text(invoice.billTo.name, 20, 72);
-    doc.text(invoice.billTo.email, 20, 77);
-
-    const addressLines = doc.splitTextToSize(invoice.billTo.address || '', 80);
-    doc.text(addressLines, 20, 82);
-
-    const countryY = 82 + (addressLines.length * 5);
-    if (invoice.billTo.country) {
-      doc.text(invoice.billTo.country, 20, countryY);
-    }
-
-    // 5. Table
-    const tableStartY = Math.max(countryY + 10, 100);
+    // --- ITEMS TABLE ---
+    const tableStartY = Math.max(leftY + 20, 130);
 
     // Determine Product Name (find order to get product name)
     const order = orders.find(o => o.id === invoice.orderId);
-    const description = order ? order.productName : "Trade Playbooks System";
+    const description = order ? order.productName : "Shopify Store Development Service";
 
     autoTable(doc, {
       startY: tableStartY,
-      head: [['Item Description', 'Type', 'Qty', 'Price']],
+      head: [['DESCRIPTION', 'TYPE', 'QTY', 'AMOUNT']],
       body: [
-        [description, 'Digital License', '1', `€${invoice.subtotal.toFixed(2)}`]
+        [description, 'Professional Service', '1', `€${invoice.subtotal.toFixed(2)}`]
       ],
       theme: 'grid',
       styles: {
         font: 'helvetica',
-        fontSize: 9,
-        cellPadding: 6,
+        fontSize: 10,
+        cellPadding: 10,
         textColor: [51, 65, 85], // slate-700
-        lineColor: [226, 232, 240], // slate-200
-        lineWidth: 0.1
+        lineColor: [241, 245, 249], // slate-100
+        lineWidth: 0.1,
+        valign: 'middle'
       },
       headStyles: {
-        fillColor: [15, 23, 42], // brand-navy
-        textColor: [255, 255, 255],
+        fillColor: [255, 255, 255],
+        textColor: [100, 116, 139], // slate-500
         fontStyle: 'bold',
-        fontSize: 10
+        fontSize: 8,
+        halign: 'left'
       },
       columnStyles: {
-        0: { cellWidth: 90 },
+        0: { cellWidth: 100 },
         3: { halign: 'right', fontStyle: 'bold' }
+      },
+      alternateRowStyles: {
+        fillColor: [255, 255, 255]
       }
     });
 
-    // 6. Totals
+    // --- TOTALS ---
     // @ts-ignore
-    let finalY = doc.lastAutoTable.finalY + 12;
+    let finalY = doc.lastAutoTable.finalY + 10;
+    const totalsX = 140;
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...slateGray);
-    doc.text(`Subtotal:`, 140, finalY, { align: 'right' });
+    doc.text(`Subtotal`, totalsX, finalY);
     doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.subtotal.toFixed(2)}`, 190, finalY, { align: 'right' });
 
-    finalY += 7;
+    finalY += 8;
     doc.setTextColor(...slateGray);
-    doc.text(`VAT (20%):`, 140, finalY, { align: 'right' });
+    doc.text(`VAT (20%)`, totalsX, finalY);
     doc.setTextColor(15, 23, 42);
     doc.text(`€${invoice.tax.toFixed(2)}`, 190, finalY, { align: 'right' });
 
+    // Divider
+    finalY += 5;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(totalsX, finalY, 190, finalY);
+
     finalY += 10;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
+    doc.setFontSize(16);
     doc.setTextColor(15, 23, 42);
-    doc.text(`Total Amount:`, 140, finalY, { align: 'right' });
+    doc.text(`Total`, totalsX, finalY);
     doc.setTextColor(...brandTeal);
     doc.text(`€${invoice.total.toFixed(2)}`, 190, finalY, { align: 'right' });
 
-    finalY += 12;
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(8);
-    doc.setTextColor(...slateGray);
-    doc.text("Systematic Trading Education. Non-tangible digital goods.", 105, finalY, { align: 'center' });
 
-    // 7. Audit Trail Box
-    finalY += 15;
+    // --- AUDIT TRAIL (Bottom) ---
+    // Position at bottom of page
+    const pageHeight = doc.internal.pageSize.height;
+    const auditY = pageHeight - 60;
 
-    // Calculate Box Height based on wrapped device signature
-    const maxWidth = 100; // Text width allowed for values
-    const sigText = audit.deviceSig !== '—' ? audit.deviceSig : '—';
-    const sigLines = doc.splitTextToSize(sigText, maxWidth);
+    // Light gray box
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(20, auditY, 170, 30, 2, 2, 'F');
 
-    // Content layout metrics
-    const contentStartOffset = 8;
-    const contentLineHeight = 5;
-    const standardLinesCount = 5; // Status, Link, SentTime, IP, AccessTime
-    const boxHeight = 10 + contentStartOffset + (standardLinesCount * contentLineHeight) + (sigLines.length * contentLineHeight) + 5;
-
-    // Box Background
-    doc.setFillColor(248, 250, 252); // slate-50
-    doc.setDrawColor(226, 232, 240); // slate-200
-    doc.roundedRect(20, finalY, 170, boxHeight, 3, 3, 'FD');
-
-    // Box Title
-    const auditTitleY = finalY + 10;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.setTextColor(...brandNavy);
-    let title = "DIGITAL DELIVERY AUDIT TRAIL";
-    doc.text(title, 25, auditTitleY);
+    doc.setFontSize(7);
+    doc.setTextColor(...slateGray);
+    doc.text("DELIVERY AUTHENTICATION", 25, auditY + 8);
 
-    // Box Content
     doc.setFont('courier', 'normal');
     doc.setFontSize(7);
+    doc.setTextColor(15, 23, 42);
 
-    const labels = [
-      "Status:",
-      "License Key:",
-      "Issue Date:",
-      "Gateway IP:",
-      "Access Time:",
-      "Client Signature:"
-    ];
+    const deliveryInfo = `STATUS: ${audit.deliveryStatus}  |  IP: ${audit.accessIp}  |  TIMESTAMP: ${audit.accessTime}`;
+    doc.text(deliveryInfo, 25, auditY + 15);
 
-    // Format timestamps: Sent = Date only, Access = Full
-    const sentTimeStr = audit.sentTimestamp !== '—' ? audit.sentTimestamp.split('T')[0] : '—';
-    const accessTimeStr = audit.accessTime !== '—' ? audit.accessTime.replace('T', ' ').split('.')[0] + ' UTC' : '—';
+    const auditId = `REF: ${audit.linkId}  |  SIG: ${audit.deviceSig.substring(0, 30)}...`;
+    doc.text(auditId, 25, auditY + 20);
 
-    const values = [
-      audit.deliveryStatus,
-      audit.linkId,
-      sentTimeStr,
-      audit.accessIp,
-      accessTimeStr,
-      // Signature handled separately for wrapping
-    ];
 
-    let contentY = auditTitleY + 8;
-
-    // Print first 5 items
-    for (let i = 0; i < 5; i++) {
-      doc.setTextColor(148, 163, 184); // slate-400
-      doc.text(labels[i], 25, contentY);
-
-      if (i === 0 && audit.deliveryStatus === 'DOWNLOADED') {
-        doc.setTextColor(20, 184, 166); // brand-teal (success)
-      } else {
-        doc.setTextColor(51, 65, 85); // slate-700
-      }
-      doc.text(values[i], 60, contentY);
-      contentY += 4;
-    }
-
-    // Print Device Signature (Wrapped)
-    doc.setTextColor(148, 163, 184); // slate-400
-    doc.text(labels[5], 25, contentY);
-    doc.setTextColor(51, 65, 85); // slate-700
-    doc.text(sigLines, 60, contentY);
-
-    // 8. Footer
-    const pageHeight = doc.internal.pageSize.height;
-    doc.setDrawColor(241, 245, 249); // slate-100
-    doc.line(20, pageHeight - 20, 190, pageHeight - 20);
-
+    // --- FOOTER ---
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184); // slate-400
-    doc.text("Digital product access is limited to the purchaser only. Licensing is non-transferable.", 105, pageHeight - 15, { align: 'center' });
-    doc.text(`© ${new Date().getFullYear()} ${companySettings.name} — ${companySettings.website}`, 105, pageHeight - 10, { align: 'center' });
+    doc.text(`${companySettings.footerText}`, 105, pageHeight - 15, { align: 'center' });
+    doc.text(`${companySettings.website}`, 105, pageHeight - 10, { align: 'center' });
 
     return doc.output('blob');
   },
@@ -725,7 +748,7 @@ export const MockBackend = {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(203, 213, 225); // slate-300
-      doc.text(`Trade Playbooks™ | Stocks & Crypto Edition | Page ${i}`, 105, 287, { align: 'center' });
+      doc.text(`Garsabers | Done-For-You Shopify Stores | Page ${i}`, 105, 287, { align: 'center' });
     }
 
     return doc.output('blob');

@@ -42,9 +42,9 @@ const App: React.FC = () => {
           <div className="pointer-events-auto">
             <button
               onClick={() => navigate(Route.HOME)}
-              className="font-serif font-bold text-xl tracking-tighter text-white hover:text-brand-purple transition-colors focus:outline-none"
+              className="font-serif font-bold text-2xl tracking-tighter text-black hover:text-brand-teal transition-colors focus:outline-none flex items-center gap-2"
             >
-              Trade Playbooks<span className="text-brand-teal">™</span>
+              Garsabers<span className="text-brand-teal">.</span>
             </button>
           </div>
           <div className="pointer-events-auto flex gap-4">

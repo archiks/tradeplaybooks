@@ -11,15 +11,17 @@ export default {
     extend: {
       colors: {
         brand: {
-          navy: '#000000', // Deep Black for backgrounds/text
-          teal: '#14F195', // Solana Green
-          purple: '#9945FF', // Solana Purple
-          dark: '#0F172A',
+          navy: '#002E25', // Deep Green/Navy for high contrast text
+          teal: '#008060', // Shopify Green (Primary)
+          purple: '#5E8EBD', // Accents (Soft Blue)
+          light: '#F6F6F7', // Light Gray background
+          white: '#FFFFFF',
         },
         solana: {
-          green: '#14F195',
-          purple: '#9945FF',
-          dark: '#1B1622',
+          // Kept for legacy compatibility if needed, but we are moving away
+          green: '#008060',
+          purple: '#002E25',
+          dark: '#F6F6F7',
         },
         slate: {
           50: '#F8FAFC',

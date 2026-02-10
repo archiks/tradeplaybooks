@@ -55,6 +55,7 @@ export interface Invoice {
   };
   pdfUrl?: string; // Simulated URL
   auditTrail?: InvoiceAuditTrail;
+  websiteUrl?: string; // Delivered Website Link
 }
 
 export interface InvoiceAuditTrail {
