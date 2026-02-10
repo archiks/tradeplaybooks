@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { LayoutDashboard, ShoppingCart, FileText, Download, Settings, Search, Plus, Eye, DownloadCloud, RefreshCw, Key, Shield, Link as LinkIcon, Edit3, CreditCard, Pencil, X, Save, CheckCircle2, AlertCircle, Zap } from 'lucide-react';
 import { MockBackend } from '../services/mockBackend';
-import { Order, Invoice, AccessLog, AdminStats, OrderStatus, DownloadLink, PayPalSettings, InvoiceAuditTrail, CompanySettings } from '../types';
+import { Order, Invoice, AccessLog, AdminStats, OrderStatus, DownloadLink, InvoiceAuditTrail, CompanySettings } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { COUNTRIES, PRODUCTS } from '../constants';
 

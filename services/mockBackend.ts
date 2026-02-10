@@ -165,7 +165,7 @@ export const MockBackend = {
     productId: string,
     name: string,
     email: string,
-    paymentMethod: 'PAYPAL' | 'MANUAL' | 'INVOICE' = 'MANUAL',
+    paymentMethod: 'PAYPAL' | 'STRIPE' | 'MANUAL' | 'INVOICE' = 'MANUAL',
     status: OrderStatus = OrderStatus.PENDING,
     address?: string,
     country?: string,
@@ -654,16 +654,6 @@ export const MockBackend = {
     downloadLinks = [newLink, ...downloadLinks];
     save(); // Persist
     return new Promise(resolve => setTimeout(() => resolve(newLink), 500));
-  },
-
-  getPayPalSettings: async (): Promise<PayPalSettings> => {
-    return new Promise(resolve => setTimeout(() => resolve({ ...payPalSettings }), 200));
-  },
-
-  updatePayPalSettings: async (settings: PayPalSettings): Promise<PayPalSettings> => {
-    payPalSettings = settings;
-    save(); // Persist
-    return new Promise(resolve => setTimeout(() => resolve(payPalSettings), 400));
   },
 
   getCompanySettings: async (): Promise<CompanySettings> => {
