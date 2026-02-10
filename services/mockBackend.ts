@@ -595,42 +595,8 @@ export const MockBackend = {
     doc.text(`€${invoice.total.toFixed(2)}`, 190, finalY, { align: 'right' });
 
 
-    // --- AUDIT TRAIL (Bottom) ---
-    // Position at bottom of page
-    const pageHeight = doc.internal.pageSize.height;
-    const auditY = pageHeight - 55; // Lower slightly
-
-    // Light gray box
-    doc.setFillColor(248, 250, 252);
-    // Ensure this doesn't overlap with totals if on same page
-    // If finalY (which is top of Total line) is close to auditY, we have a problem.
-    // If we added a page, finalY is small. If not, check space.
-
-    doc.roundedRect(20, auditY, 170, 30, 2, 2, 'F'); // Background
-
-    // Label
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.setTextColor(...slateGray);
-    doc.text("DELIVERY AUTHENTICATION", 25, auditY + 8);
-
-    // Divider inside box
-    // doc.setDrawColor(226, 232, 240);
-    // doc.line(25, auditY + 11, 185, auditY + 11);
-
-    // Content
-    doc.setFont('courier', 'normal'); // Monospace for technical data
-    doc.setFontSize(7);
-    doc.setTextColor(30, 41, 59); // slate-800
-
-    const deliveryInfo = `STATUS: ${audit.deliveryStatus}  |  IP: ${audit.accessIp}  |  TIMESTAMP: ${audit.timestamp || audit.accessTime}`;
-    doc.text(deliveryInfo, 25, auditY + 16);
-
-    const auditId = `REF: ${audit.linkId}  |  SIG: ${audit.deviceSig.substring(0, 30)}...`;
-    doc.text(auditId, 25, auditY + 22);
-
-
     // --- FOOTER ---
+    const pageHeight = doc.internal.pageSize.height;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7);
     doc.setTextColor(148, 163, 184); // slate-400
