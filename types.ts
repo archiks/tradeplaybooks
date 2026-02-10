@@ -97,12 +97,7 @@ export interface AdminStats {
   conversionRate: number;
 }
 
-export interface PayPalSettings {
-  enabled: boolean;
-  mode: 'SANDBOX' | 'LIVE';
-  clientId: string;
-  clientSecret: string;
-}
+
 
 export interface CompanySettings {
   name: string;

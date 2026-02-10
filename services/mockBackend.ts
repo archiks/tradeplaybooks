@@ -1,5 +1,5 @@
 
-import { Order, Invoice, AccessLog, OrderStatus, AdminStats, DownloadLink, PayPalSettings, InvoiceAuditTrail, CompanySettings } from '../types';
+import { Order, Invoice, AccessLog, OrderStatus, AdminStats, DownloadLink, InvoiceAuditTrail, CompanySettings } from '../types';
 import { PRODUCTS } from '../constants';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -43,7 +43,6 @@ const save = () => {
     localStorage.setItem('ts_invoices_v4', JSON.stringify(invoices));
     localStorage.setItem('ts_links_v4', JSON.stringify(downloadLinks));
     localStorage.setItem('ts_logs_v4', JSON.stringify(logs));
-    localStorage.setItem('ts_settings_v4', JSON.stringify(payPalSettings));
     localStorage.setItem('ts_company_settings_v4', JSON.stringify(companySettings));
   } catch (e) {
     console.error("Failed to save state", e);
@@ -131,12 +130,7 @@ const DEFAULT_LOGS: AccessLog[] = [
   }
 ];
 
-const DEFAULT_SETTINGS: PayPalSettings = {
-  enabled: true,
-  mode: 'LIVE',
-  clientId: 'Ad72enTRhPYbFneo4seAs852HeZPDoQzq3Udytfzv9cUms6rLy7kXdXkJDxRrFZ0J9mVKw1EJU14vtnd',
-  clientSecret: 'ED4VOqbnqFp5O6KDotBUkF9ZqDupUNc8XwXJ2vJLemvQkIUbOZPnWHvbXPQHJGBsHtHcYnrrTpcPKsqb'
-};
+
 
 const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
   name: 'Garsabers',
@@ -152,7 +146,7 @@ let orders: Order[] = load('ts_orders_v4', DEFAULT_ORDERS);
 let invoices: Invoice[] = load('ts_invoices_v4', DEFAULT_INVOICES);
 let downloadLinks: DownloadLink[] = load('ts_links_v4', DEFAULT_LINKS);
 let logs: AccessLog[] = load('ts_logs_v4', DEFAULT_LOGS);
-let payPalSettings: PayPalSettings = load('ts_settings_v4', DEFAULT_SETTINGS);
+
 let companySettings: CompanySettings = load('ts_company_settings_v4', DEFAULT_COMPANY_SETTINGS);
 
 

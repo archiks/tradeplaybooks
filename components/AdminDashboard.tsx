@@ -768,19 +768,12 @@ const DownloadsManager: React.FC = () => {
 };
 
 const SettingsView: React.FC = () => {
-    const [ppSettings, setPPSettings] = useState<PayPalSettings | null>(null);
     const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
-        MockBackend.getPayPalSettings().then(setPPSettings);
         MockBackend.getCompanySettings().then(setCompanySettings);
     }, []);
-
-    const updatePP = (key: keyof PayPalSettings, val: any) => {
-        if (!ppSettings) return;
-        setPPSettings({ ...ppSettings, [key]: val });
-    };
 
     const updateCompany = (key: keyof CompanySettings, val: any) => {
         if (!companySettings) return;
@@ -790,123 +783,74 @@ const SettingsView: React.FC = () => {
     const handleSaveAll = async () => {
         setIsSaving(true);
         // Simulate persistence
-        if (ppSettings && companySettings) {
+        if (companySettings) {
             await Promise.all([
-                MockBackend.updatePayPalSettings(ppSettings),
                 MockBackend.updateCompanySettings(companySettings)
             ]);
         }
         setTimeout(() => {
             setIsSaving(false);
-            alert("System settings updated successfully. Technical parameters have been synced.");
-        }, 800);
+            alert("Settings Saved!");
+        }, 500);
     };
 
-    if (!ppSettings || !companySettings) return <div className="text-slate-500">Loading...</div>;
+    if (!companySettings) return <div className="text-slate-500">Loading settings...</div>;
 
     return (
-        <div className="space-y-8 animate-in fade-in max-w-3xl">
-            <h2 className="text-2xl font-bold text-brand-navy">System Settings</h2>
-
-            <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <h3 className="text-lg font-bold text-brand-navy border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
-                    <Settings className="w-4 h-4 text-brand-teal" /> Company Information
-                </h3>
-                <div className="grid grid-cols-2 gap-6">
-                    <SettingsInput
-                        label="Company Name"
-                        value={companySettings.name}
-                        onChange={(e) => updateCompany('name', e.target.value)}
-                    />
-                    <SettingsInput
-                        label="VAT Number"
-                        value={companySettings.vatNumber}
-                        onChange={(e) => updateCompany('vatNumber', e.target.value)}
-                    />
-                    <SettingsInput
-                        label="Address"
-                        value={companySettings.address}
-                        className="col-span-2"
-                        onChange={(e) => updateCompany('address', e.target.value)}
-                    />
-                    <SettingsInput
-                        label="Invoice Prefix"
-                        value={companySettings.invoicePrefix}
-                        onChange={(e) => updateCompany('invoicePrefix', e.target.value)}
-                    />
-                    <SettingsInput
-                        label="Website"
-                        value={companySettings.website}
-                        onChange={(e) => updateCompany('website', e.target.value)}
-                    />
+        <div className="space-y-8 animate-in fade-in max-w-4xl">
+            <header className="flex justify-between items-center">
+                <div>
+                    <h2 className="text-2xl font-bold text-brand-navy">Settings</h2>
+                    <p className="text-slate-500">Manage store configuration.</p>
                 </div>
-            </section>
-
-            <section className="bg-white p-6 rounded-2xl border border-slate-200 relative overflow-hidden shadow-sm">
-                <div className="absolute top-0 right-0 p-4 opacity-5">
-                    <Shield className="w-24 h-24 text-brand-navy" />
-                </div>
-                <h3 className="text-lg font-bold text-brand-navy border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-brand-teal" /> PayPal Global Infrastructure
-                </h3>
-
-                <div className="space-y-4">
-                    <div className="bg-brand-teal/5 border border-brand-teal/20 p-4 rounded-xl mb-4">
-                        <p className="text-xs text-brand-teal/80 leading-relaxed">
-                            <Zap className="w-3 h-3 inline mr-1 mb-0.5" /> <strong>Configuration Required:</strong> To accept live payments, enter your PayPal REST API credentials. These can be obtained from the <a href="https://developer.paypal.com/dashboard/" target="_blank" className="underline hover:text-brand-navy">PayPal Developer Portal</a>.
-                        </p>
-                    </div>
-                    <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div>
-                            <p className="text-brand-navy font-bold">Enable PayPal Checkout</p>
-                            <p className="text-xs text-slate-500">Allow customers to pay via PayPal REST API</p>
-                        </div>
-                        <Toggle checked={ppSettings.enabled} onChange={(v) => updatePP('enabled', v)} />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="col-span-2">
-                            <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Environment Mode</label>
-                            <div className="flex bg-slate-100 rounded-lg p-1 w-fit border border-slate-200">
-                                <button
-                                    onClick={() => updatePP('mode', 'SANDBOX')}
-                                    className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${ppSettings.mode === 'SANDBOX' ? 'bg-white text-brand-teal shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
-                                >
-                                    Sandbox
-                                </button>
-                                <button
-                                    onClick={() => updatePP('mode', 'LIVE')}
-                                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${ppSettings.mode === 'LIVE' ? 'bg-red-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                                >
-                                    Live
-                                </button>
-                            </div>
-                        </div>
-                        <SettingsInput
-                            label="Paypal Client ID"
-                            value={ppSettings.clientId}
-                            onChange={(e) => updatePP('clientId', e.target.value)}
-                        />
-                        <SettingsInput
-                            label="Paypal Client Secret"
-                            type="password"
-                            value={ppSettings.clientSecret}
-                            onChange={(e) => updatePP('clientSecret', e.target.value)}
-                        />
-                    </div>
-                </div>
-            </section>
-
-            <div className="pt-4 flex justify-end">
                 <button
                     onClick={handleSaveAll}
                     disabled={isSaving}
-                    className="px-8 py-3 bg-brand-navy text-white font-bold rounded-xl hover:bg-brand-navy/90 transition-all shadow-lg shadow-brand-navy/10 disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-2 bg-brand-navy hover:bg-brand-navy/90 text-white font-bold rounded-lg text-sm transition-all shadow-lg shadow-brand-navy/10 disabled:opacity-50"
                 >
-                    {isSaving ? 'Syncing...' : 'Save System Changes'}
+                    {isSaving ? 'Saving...' : 'Save All Changes'}
+                    {!isSaving && <Save className="w-4 h-4" />}
                 </button>
-            </div>
-        </div >
+            </header>
+
+            <section className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-brand-teal/10 rounded-xl text-brand-teal">
+                        <FileText className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-brand-navy">Company & Invoice Details</h3>
+                        <p className="text-sm text-slate-500">These details appear on generated PDF invoices.</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                    <div className="col-span-2">
+                        <Input label="Company Name" value={companySettings.name} onChange={(v) => updateCompany('name', v)} />
+                    </div>
+                    <div>
+                        <Input label="VAT Number" value={companySettings.vatNumber} onChange={(v) => updateCompany('vatNumber', v)} />
+                    </div>
+                    <div>
+                        <Input label="Invoice Prefix" value={companySettings.invoicePrefix} onChange={(v) => updateCompany('invoicePrefix', v)} />
+                    </div>
+                    <div className="col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Company Address</label>
+                        <textarea
+                            value={companySettings.address}
+                            onChange={(e) => updateCompany('address', e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors min-h-[80px]"
+                        />
+                    </div>
+                    <div className="col-span-2">
+                        <Input label="Website URL" value={companySettings.website} onChange={(v) => updateCompany('website', v)} />
+                    </div>
+                    <div className="col-span-2">
+                        <Input label="Invoice Footer Text" value={companySettings.footerText} onChange={(v) => updateCompany('footerText', v)} />
+                    </div>
+                </div>
+            </section>
+        </div>
     );
 };
 
