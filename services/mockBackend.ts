@@ -431,46 +431,44 @@ export const MockBackend = {
     // Capture end of Right Column
     const detailsEndY = yPos;
 
-    // --- WEBSITE DELIVERED FIELD (Sequential Layout) ---
+    // --- WEBSITE DELIVERED FIELD (Compact Sequential) ---
     // Start below the lowest column to avoid overlap
     let contentEndY = Math.max(billToEndY, detailsEndY);
 
-    // Add extra spacing from content
-    contentEndY += 15;
-
     if (invoice.websiteUrl) {
-      const boxHeight = 24;
-      const boxWidth = 160;
-      const boxX = 210 - 20 - boxWidth;
-
-      const boxStartY = contentEndY;
+      contentEndY += 8; // Reduced Gap
+      const boxHeight = 22;
+      const boxWidth = 170; // Wide box
+      const boxX = 20; // Align left with margins
 
       doc.setFillColor(240, 253, 250); // teal-50
       doc.setDrawColor(204, 251, 241); // teal-100
-      doc.roundedRect(boxX, boxStartY, boxWidth, boxHeight, 2, 2, 'FD');
+      doc.roundedRect(boxX, contentEndY, boxWidth, boxHeight, 2, 2, 'FD');
 
       // Label
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7);
       doc.setTextColor(...brandTeal);
-      doc.text("DELIVERED STORE", boxX + 6, boxStartY + 9);
+      doc.text("DELIVERED STORE", boxX + 6, contentEndY + 8);
 
-      // URL
+      // URL - Fixed Rendering
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(15, 23, 42);
 
       const url = invoice.websiteUrl;
-      const displayUrl = url.length > 55 ? url.substring(0, 52) + '...' : url;
+      const displayUrl = url.length > 75 ? url.substring(0, 72) + '...' : url;
 
-      doc.textWithLink(displayUrl, boxX + 6, boxStartY + 19, { url: url });
+      // Use standard text + linkWith (or explicit rect link)
+      doc.text(displayUrl, boxX + 6, contentEndY + 16);
+      doc.link(boxX + 6, contentEndY + 10, boxWidth - 12, 10, { url: url });
 
-      contentEndY = boxStartY + boxHeight;
+      contentEndY += boxHeight;
     }
 
     // --- PAY TO / FROM (Sequential below everything) ---
     // Start below Delivered Store (or header cols if no store)
-    let leftY = contentEndY + 15;
+    let leftY = contentEndY + 10;
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
@@ -487,6 +485,7 @@ export const MockBackend = {
     doc.text(companyAddr, 20, leftY);
     leftY += (companyAddr.length * 5);
     doc.text(`VAT ID: ${companySettings.vatNumber}`, 20, leftY);
+
 
 
     // --- ITEMS TABLE ---
