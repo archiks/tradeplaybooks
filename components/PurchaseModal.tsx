@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, X, Book, FileText } from 'lucide-react';
-import { Product, OrderStatus, PayPalSettings } from '../types';
+import { Shield, X, Book, FileText, CreditCard, Calendar, Lock, User, CheckCircle } from 'lucide-react';
+import { Product, OrderStatus } from '../types';
 import { MockBackend } from '../services/mockBackend';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 interface PurchaseModalProps {
     onClose: () => void;
@@ -13,37 +12,59 @@ interface PurchaseModalProps {
 export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }) => {
     const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO'>('PAYMENT');
     const [loading, setLoading] = useState(false);
-    const [ppSettings, setPPSettings] = useState<PayPalSettings | null>(null);
 
-    useEffect(() => {
-        MockBackend.getPayPalSettings().then(setPPSettings);
-    }, []);
+    // Card Form State
+    const [cardName, setCardName] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
+    const [expiry, setExpiry] = useState('');
+    const [cvc, setCvc] = useState('');
 
-    const handlePayPalApprove = async (data: any, actions: any) => {
+    const handleCardPayment = async (e: React.FormEvent) => {
+        e.preventDefault();
         setLoading(true);
-        try {
-            const details = await actions.order.capture();
-            await MockBackend.createOrder(
-                product.id,
-                details.payer.name.given_name + ' ' + details.payer.name.surname,
-                details.payer.email_address,
-                'PAYPAL',
-                OrderStatus.COMPLETED,
-                details.purchase_units[0].shipping?.address?.address_line_1,
-                details.purchase_units[0].shipping?.address?.country_code
-            );
-            alert("PayPal Payment Successful! Please check your email for the download link.");
-            onClose();
-        } catch (e) {
-            console.error(e);
-            alert("Payment failed or was cancelled.");
-        } finally {
-            setLoading(false);
-        }
+
+        // Simulate API call to Stripe
+        setTimeout(async () => {
+            try {
+                // In a real app, this is where we'd confirm with Stripe
+                await MockBackend.createOrder(
+                    product.id,
+                    cardName,
+                    "customer@example.com", // Placeholder until we add email input or get from auth
+                    'STRIPE',
+                    OrderStatus.COMPLETED,
+                    "123 Stripe St",
+                    "US"
+                );
+
+                alert("Payment Successful! Access to your store will be sent to your email.");
+                onClose();
+            } catch (error) {
+                console.error("Payment failed", error);
+                alert("Payment processing failed. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        }, 2000);
     };
 
     const handleInvoice = async () => {
         setStep('INVOICE_INFO');
+    };
+
+    // Formatters
+    const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '').substring(0, 16);
+        const parts = value.match(/[\s\S]{1,4}/g) || [];
+        setCardNumber(parts.join(' '));
+    };
+
+    const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        setExpiry(value.substring(0, 5));
     };
 
     return (
@@ -83,55 +104,107 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
                     </div>
 
                     {step === 'PAYMENT' ? (
-                        <div className="space-y-3">
-                            {ppSettings && ppSettings.enabled ? (
-                                <div className="w-full z-0 relative">
-                                    <PayPalScriptProvider options={{
-                                        clientId: ppSettings.clientId,
-                                        currency: "EUR",
-                                        intent: "capture"
-                                    }}>
-                                        <PayPalButtons
-                                            style={{ layout: "vertical", shape: "rect", label: "pay" }}
-                                            createOrder={async (data, actions) => {
-                                                try {
-                                                    return await actions.order.create({
-                                                        intent: "CAPTURE",
-                                                        purchase_units: [{
-                                                            description: product.name,
-                                                            amount: {
-                                                                value: product.price.toString(),
-                                                                currency_code: "EUR"
-                                                            }
-                                                        }]
-                                                    });
-                                                } catch (err: any) {
-                                                    console.error("Create Order Error:", err);
-                                                    alert("Could not initiate PayPal payment: " + (err.message || JSON.stringify(err)));
-                                                    throw err;
-                                                }
-                                            }}
-                                            onApprove={handlePayPalApprove}
-                                            onError={(err: any) => {
-                                                console.error("PayPal Error:", err);
-                                                const msg = err?.message || err?.toString() || "Unknown error";
-                                                alert("PayPal Error: " + msg + "\n\nPlease try again or contact support.");
-                                            }}
+                        <div className="space-y-4">
+                            <form onSubmit={handleCardPayment} className="space-y-4">
+                                {/* Name on Card */}
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Name on Card</label>
+                                    <div className="relative">
+                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="John Doe"
+                                            value={cardName}
+                                            onChange={(e) => setCardName(e.target.value)}
+                                            className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal font-bold text-brand-navy placeholder:text-slate-300"
                                         />
-                                    </PayPalScriptProvider>
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="text-center text-red-500 text-sm bg-red-50 p-3 rounded-lg border border-red-200">
-                                    PayPal is currently unavailable.
+
+                                {/* Card Number */}
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Card Number</label>
+                                    <div className="relative">
+                                        <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="0000 0000 0000 0000"
+                                            value={cardNumber}
+                                            onChange={handleCardNumberChange}
+                                            maxLength={19}
+                                            className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal font-bold text-brand-navy placeholder:text-slate-300 font-mono"
+                                        />
+                                    </div>
                                 </div>
-                            )}
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Expiry */}
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Expiry</label>
+                                        <div className="relative">
+                                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="MM/YY"
+                                                value={expiry}
+                                                onChange={handleExpiryChange}
+                                                maxLength={5}
+                                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal font-bold text-brand-navy placeholder:text-slate-300 font-mono"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* CVC */}
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">CVC</label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="123"
+                                                value={cvc}
+                                                onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').substring(0, 4))}
+                                                maxLength={4}
+                                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal font-bold text-brand-navy placeholder:text-slate-300 font-mono"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full py-4 bg-brand-teal text-white font-bold rounded-xl hover:bg-brand-teal/90 transition-all shadow-lg shadow-brand-teal/20 flex items-center justify-center gap-2"
+                                >
+                                    {loading ? (
+                                        <>Processing...</>
+                                    ) : (
+                                        <>
+                                            <CheckCircle className="w-5 h-5" /> Pay €{product.price}
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+
+                            <div className="relative py-2">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-slate-200"></div>
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-white px-2 text-slate-400 font-bold">Or pay via</span>
+                                </div>
+                            </div>
 
                             <button
                                 onClick={handleInvoice}
                                 disabled={loading}
                                 className="w-full py-4 bg-white text-brand-navy font-bold rounded-xl border-2 border-slate-200 hover:border-brand-teal hover:text-brand-teal transition-all flex items-center justify-center gap-2"
                             >
-                                <FileText className="w-5 h-5" /> Pay via Invoice (B2B)
+                                <FileText className="w-5 h-5" /> Request Invoice (B2B)
                             </button>
                         </div>
                     ) : (
