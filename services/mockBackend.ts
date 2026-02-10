@@ -479,7 +479,7 @@ export const MockBackend = {
 
 
     // --- ITEMS TABLE ---
-    const tableStartY = Math.max(leftY + 20, 130);
+    const tableStartY = Math.max(leftY + 10, 125); // Reduced top margin
 
     // Determine Product Name (find order to get product name)
     const order = orders.find(o => o.id === invoice.orderId);
@@ -502,7 +502,7 @@ export const MockBackend = {
       styles: {
         font: 'helvetica',
         fontSize: 10,
-        cellPadding: 8,
+        cellPadding: 6, // Compact padding
         textColor: [51, 65, 85], // slate-700
         valign: 'middle',
         overflow: 'linebreak', // Allow wrapping if absolutely necessary
@@ -513,7 +513,7 @@ export const MockBackend = {
         fontStyle: 'bold',
         fontSize: 8,
         halign: 'left',
-        cellPadding: 8
+        cellPadding: 6
       },
       columnStyles: {
         0: { cellWidth: descWidth }, // Description
@@ -549,13 +549,13 @@ export const MockBackend = {
 
     // --- TOTALS ---
     // @ts-ignore
-    let finalY = doc.lastAutoTable.finalY + 15; // More spacing
+    let finalY = doc.lastAutoTable.finalY + 10; // Reduced spacing from 15
     const totalsX = 130; // Shift left slightly to make room
 
     // Ensure totals don't overlap with audit trail
     // Audit trail starts at pageHeight - 60 (~237)
     // If finalY > 210, we should push to next page or warn.
-    if (finalY > 220) {
+    if (finalY > 235) {
       doc.addPage();
       finalY = 40;
     }
@@ -574,7 +574,7 @@ export const MockBackend = {
     doc.text(`€${invoice.subtotal.toFixed(2)}`, 190, finalY, { align: 'right' });
 
     // VAT
-    finalY += 8;
+    finalY += 6; // Compact spacing
     doc.setTextColor(...slateGray);
     doc.text(`VAT (20%)`, totalsX, finalY);
     doc.setTextColor(15, 23, 42);
@@ -586,7 +586,7 @@ export const MockBackend = {
     doc.line(totalsX, finalY, 190, finalY);
 
     // Total
-    finalY += 12;
+    finalY += 10;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14); // Slightly smaller for professional look
     doc.setTextColor(15, 23, 42);
