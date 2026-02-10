@@ -204,13 +204,13 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
                                 disabled={loading}
                                 className="w-full py-4 bg-white text-brand-navy font-bold rounded-xl border-2 border-slate-200 hover:border-brand-teal hover:text-brand-teal transition-all flex items-center justify-center gap-2"
                             >
-                                <FileText className="w-5 h-5" /> Request Invoice (B2B)
+                                <img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /> Request Invoice (B2B)
                             </button>
                         </div>
                     ) : (
                         <div className="text-center py-4">
                             <div className="w-16 h-16 bg-brand-teal/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <FileText className="w-8 h-8 text-brand-teal" />
+                                <img src="/assets/paypal.png" alt="PayPal" className="h-8 w-auto" />
                             </div>
                             <h4 className="text-xl font-bold text-brand-navy mb-2">Request an Invoice</h4>
                             <p className="text-sm text-slate-500 mb-6 px-4">
