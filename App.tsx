@@ -14,21 +14,40 @@ export enum Route {
   TERMS = 'TERMS'
 }
 
+const getRouteFromPath = () => {
+  const path = window.location.pathname;
+  if (path === '/privacy-policy') return Route.PRIVACY;
+  if (path === '/terms-and-conditions') return Route.TERMS;
+  if (path === '/admin') return Route.LOGIN;
+  return Route.HOME;
+};
+
+const getPathFromRoute = (route: Route) => {
+  if (route === Route.PRIVACY) return '/privacy-policy';
+  if (route === Route.TERMS) return '/terms-and-conditions';
+  if (route === Route.ADMIN || route === Route.LOGIN) return '/admin';
+  return '/';
+};
+
 const App: React.FC = () => {
-  const [currentRoute, setCurrentRoute] = useState<Route>(Route.HOME);
+  const [currentRoute, setCurrentRoute] = useState<Route>(getRouteFromPath());
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   useEffect(() => {
+    const handlePopState = () => setCurrentRoute(getRouteFromPath());
+    window.addEventListener('popstate', handlePopState);
+
     const params = new URLSearchParams(window.location.search);
-    // User requested "???portal=admin", which parses to key "??portal"
     if (params.get('??portal') === 'admin') {
       setCurrentRoute(Route.LOGIN);
     }
+
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const navigate = (route: Route) => {
     setCurrentRoute(route);
-    // Optional: Scroll to top on route change
+    window.history.pushState({}, '', getPathFromRoute(route));
     window.scrollTo(0, 0);
   };
 
