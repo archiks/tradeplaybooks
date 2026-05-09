@@ -218,7 +218,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
                             </p>
                             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 mb-6">
                                 <span className="block text-xs text-slate-500 uppercase font-bold mb-1">Contact Email</span>
-                                <span className="font-mono text-brand-teal font-bold select-all">support@garsabers.com</span>
+                                <span className="font-mono text-brand-teal font-bold select-all">info@garsabers.com</span>
                             </div>
                             <button
                                 onClick={onClose}

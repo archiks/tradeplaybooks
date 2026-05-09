@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { LandingPage } from './components/LandingPage';
 import { AdminDashboard } from './components/AdminDashboard';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsAndConditions } from './components/TermsAndConditions';
 import { Home, LogIn } from 'lucide-react';
 
 // Simple Router
-enum Route {
+export enum Route {
   HOME = 'HOME',
   ADMIN = 'ADMIN',
-  LOGIN = 'LOGIN'
+  LOGIN = 'LOGIN',
+  PRIVACY = 'PRIVACY',
+  TERMS = 'TERMS'
 }
 
 const App: React.FC = () => {
@@ -62,7 +66,9 @@ const App: React.FC = () => {
       </nav>
 
       <main>
-        {currentRoute === Route.HOME && <LandingPage />}
+        {currentRoute === Route.HOME && <LandingPage onNavigateToPrivacy={() => navigate(Route.PRIVACY)} onNavigateToTerms={() => navigate(Route.TERMS)} />}
+        {currentRoute === Route.PRIVACY && <PrivacyPolicy onBack={() => navigate(Route.HOME)} />}
+        {currentRoute === Route.TERMS && <TermsAndConditions onBack={() => navigate(Route.HOME)} />}
         {currentRoute === Route.LOGIN && <AdminLogin onLogin={handleLogin} />}
         {currentRoute === Route.ADMIN && isAdminAuthenticated && <AdminDashboard />}
         {currentRoute === Route.ADMIN && !isAdminAuthenticated && <AdminLogin onLogin={handleLogin} />}
