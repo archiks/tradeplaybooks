@@ -314,14 +314,23 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                             </select>
                         </div>
                         <div className="col-span-1">
-                            {/* Spacer or additional field */}
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Currency</label>
+                            <select
+                                value={currency}
+                                onChange={(e) => setCurrency(e.target.value)}
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
+                            >
+                                {CURRENCIES.map(c => (
+                                    <option key={c.code} value={c.code}>{c.label}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
                     <div className="h-px bg-slate-100 my-4"></div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="col-span-1">
                             <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Product</label>
                             <select
                                 value={productId}
@@ -333,7 +342,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                                 ))}
                             </select>
                         </div>
-                        <div>
+                        <div className="col-span-1">
                             <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Status</label>
                             <select
                                 value={status}
@@ -345,7 +354,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                                 <option value={OrderStatus.DOWNLOADED}>DOWNLOADED (Simulated)</option>
                             </select>
                         </div>
-                        <div>
+                        <div className="col-span-1">
                             <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Currency</label>
                             <select
                                 value={currency}
