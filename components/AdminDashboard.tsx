@@ -8,6 +8,15 @@ import { COUNTRIES, PRODUCTS } from '../constants';
 
 type View = 'DASHBOARD' | 'ORDERS' | 'INVOICES' | 'LOGS' | 'SETTINGS';
 
+const CURRENCIES = [
+  { code: 'EUR', symbol: '€', label: 'Euro (€)' },
+  { code: 'GBP', symbol: '£', label: 'British Pound (£)' },
+];
+
+const getCurrencySymbol = (code: string): string => {
+  return CURRENCIES.find(c => c.code === code)?.symbol || '€';
+};
+
 export const AdminDashboard: React.FC = () => {
     const [currentView, setCurrentView] = useState<View>('DASHBOARD');
 
@@ -190,7 +199,7 @@ const OrdersManager: React.FC = () => {
                                     <div className="text-xs text-slate-500">{order.customerEmail}</div>
                                 </td>
                                 <td className="px-6 py-4 text-slate-600">{order.productName}</td>
-                                <td className="px-6 py-4 text-slate-900 font-medium">€{order.amount}</td>
+                                <td className="px-6 py-4 text-slate-900 font-medium">{getCurrencySymbol(order.currency)}{order.amount}</td>
                                 <td className="px-6 py-4">
                                     <StatusBadge status={order.status} />
                                 </td>
@@ -234,6 +243,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
     const [status, setStatus] = useState<OrderStatus>(OrderStatus.COMPLETED);
     const [address, setAddress] = useState('');
     const [country, setCountry] = useState('Germany');
+    const [currency, setCurrency] = useState('EUR');
     // Default to current date and time
     const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
     const [time, setTime] = useState(() => new Date().toTimeString().slice(0, 5));
@@ -259,7 +269,8 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                 address,
                 country,
                 isoDateTime, // Created At
-                isoDateTime  // Access Time
+                isoDateTime, // Access Time
+                currency
             );
             onSave();
         } catch (e) {
@@ -318,7 +329,7 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                                 className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
                             >
                                 {PRODUCTS.map(p => (
-                                    <option key={p.id} value={p.id}>{p.name} (€{p.price})</option>
+                                    <option key={p.id} value={p.id}>{p.name} ({getCurrencySymbol(currency)}{p.price})</option>
                                 ))}
                             </select>
                         </div>
@@ -332,6 +343,18 @@ const CreateOrderModal: React.FC<{ onClose: () => void, onSave: () => void }> = 
                                 <option value={OrderStatus.PENDING}>PENDING</option>
                                 <option value={OrderStatus.COMPLETED}>COMPLETED</option>
                                 <option value={OrderStatus.DOWNLOADED}>DOWNLOADED (Simulated)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Currency</label>
+                            <select
+                                value={currency}
+                                onChange={(e) => setCurrency(e.target.value)}
+                                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
+                            >
+                                {CURRENCIES.map(c => (
+                                    <option key={c.code} value={c.code}>{c.label}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -530,9 +553,21 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                     {/* Section: Amounts */}
                     <div className="space-y-4 pt-4 border-t border-slate-100">
                         <h4 className="text-xs uppercase tracking-widest text-brand-teal font-bold">Amounts & Currency</h4>
+                        <div className="mb-4">
+                            <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Currency</label>
+                            <select
+                                value={invoice.currency}
+                                onChange={(e) => setInvoice({ ...invoice, currency: e.target.value })}
+                                className="w-full max-w-[200px] bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-brand-teal focus:ring-1 focus:ring-brand-teal transition-colors"
+                            >
+                                {CURRENCIES.map(c => (
+                                    <option key={c.code} value={c.code}>{c.label}</option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="grid grid-cols-4 gap-4">
                             <Input
-                                label="Subtotal (€)"
+                                label={`Subtotal (${getCurrencySymbol(invoice.currency)})`}
                                 type="number"
                                 value={invoice.subtotal}
                                 onChange={(v) => {
@@ -548,7 +583,7 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                                 }}
                             />
                             <Input
-                                label="Discount (€)"
+                                label={`Discount (${getCurrencySymbol(invoice.currency)})`}
                                 type="number"
                                 value={invoice.discount || 0}
                                 onChange={(v) => {
@@ -564,7 +599,7 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                                 }}
                             />
                             <Input
-                                label="Tax (€)"
+                                label={`Tax (${getCurrencySymbol(invoice.currency)})`}
                                 type="number"
                                 value={invoice.tax}
                                 onChange={(v) => {
@@ -579,7 +614,7 @@ const EditInvoiceModal: React.FC<{ order: Order, onClose: () => void, onSave: ()
                                     });
                                 }}
                             />
-                            <Input label="Total (€)" type="number" value={invoice.total} disabled />
+                            <Input label={`Total (${getCurrencySymbol(invoice.currency)})`} type="number" value={invoice.total} disabled />
                         </div>
                     </div>
 
@@ -707,7 +742,7 @@ const InvoicesManager: React.FC = () => {
                         </div>
                         <div className="flex items-center gap-8">
                             <div className="text-right">
-                                <p className="text-brand-navy font-bold">€{inv.total.toFixed(2)}</p>
+                                <p className="text-brand-navy font-bold">{getCurrencySymbol(inv.currency)}{inv.total.toFixed(2)}</p>
                                 <p className="text-xs text-slate-500">{inv.billTo.name}</p>
                             </div>
                             <button
