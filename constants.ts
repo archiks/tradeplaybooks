@@ -55,6 +55,25 @@ export const PRODUCTS: Product[] = [
   }
 ];
 
+// Fourth pricing option: no fixed price, paid on a custom invoice we issue.
+// Kept out of PRODUCTS so the admin order form only lists fixed-price runs.
+export const CUSTOM_PLAN: Product = {
+  id: 'custom',
+  name: 'Custom',
+  price: 0,
+  level: 4,
+  quantity: 'Any quantity, size or finish',
+  tagline: 'For larger runs, special shapes or mixed box styles.',
+  description: 'A print run specified with you and paid on a custom invoice.',
+  features: [
+    'Any box style, size or shape',
+    'Any quantity, including 1,000+',
+    'Mix styles and finishes in one order',
+    'Bank transfer or agreed payment terms',
+    'Invoice made out to your company'
+  ]
+};
+
 export const COUNTRIES = [
   "United Kingdom", "United States", "Germany", "France", "Italy",
   "Spain", "Netherlands", "Switzerland", "Canada", "Australia",

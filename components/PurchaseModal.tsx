@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, Mail } from 'lucide-react';
 import { Product, OrderStatus } from '../types';
@@ -7,10 +7,28 @@ import { MockBackend } from '../services/mockBackend';
 interface PurchaseModalProps {
     onClose: () => void;
     product: Product;
+    initialStep?: 'PAYMENT' | 'CUSTOM_INFO';
 }
 
-export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }) => {
-    const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO' | 'CUSTOM_INFO'>('PAYMENT');
+export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, initialStep = 'PAYMENT' }) => {
+    const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO' | 'CUSTOM_INFO'>(initialStep);
+    const isCustomPlan = product.id === 'custom';
+
+    // Lock page scroll while open (pad for the scrollbar so the page doesn't shift), close on Escape
+    useEffect(() => {
+        const { body } = document;
+        const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+        const prev = { overflow: body.style.overflow, paddingRight: body.style.paddingRight };
+        body.style.overflow = 'hidden';
+        if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+        window.addEventListener('keydown', onKey);
+        return () => {
+            body.style.overflow = prev.overflow;
+            body.style.paddingRight = prev.paddingRight;
+            window.removeEventListener('keydown', onKey);
+        };
+    }, [onClose]);
     const [loading, setLoading] = useState(false);
 
     // Card Form State
@@ -72,13 +90,17 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-sm"
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/75"
             role="dialog" aria-modal="true" aria-label="Checkout"
         >
             <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
+                initial={{ y: 16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 16, opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                style={{ willChange: 'transform, opacity' }}
                 className="bg-white w-full max-w-md max-h-[92vh] overflow-y-auto border-[1.5px] border-ink"
             >
                 <div className="p-6 border-b border-board flex justify-between items-center bg-paper">
@@ -100,7 +122,9 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
                         <div>
                             <h4 className="font-bold text-ink">{product.name}</h4>
                             <p className="text-sm text-ink/60 mb-1">{product.quantity || product.tagline}</p>
-                            <span className="font-wide font-extrabold text-press">€{product.price}</span> <span className="text-xs text-ink/50">excl. VAT</span>
+                            {isCustomPlan
+                                ? <span className="font-wide font-extrabold text-press">Priced on your invoice</span>
+                                : <><span className="font-wide font-extrabold text-press">€{product.price}</span> <span className="text-xs text-ink/50">excl. VAT</span></>}
                         </div>
                     </div>
 
@@ -232,16 +256,16 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
                                 <span className="font-semibold text-press select-all">info@garsabers.com</span>
                             </div>
                             <a
-                                href={`mailto:info@garsabers.com?subject=${encodeURIComponent(`Custom invoice: ${product.name} (€${product.price})`)}&body=${encodeURIComponent(`Hello,\n\nPlease issue a custom invoice for the ${product.name} (${product.quantity || ''}, €${product.price} excl. VAT).\n\nCompany name:\nBilling address:\nVAT number:\nPreferred payment method:\n\nThank you`)}`}
+                                href={`mailto:info@garsabers.com?subject=${encodeURIComponent(isCustomPlan ? 'Custom invoice request' : `Custom invoice: ${product.name} (€${product.price})`)}&body=${encodeURIComponent(`Hello,\n\n${isCustomPlan ? 'Please issue a custom invoice for this order:\n\nBox style:\nQuantity:\nSize:\nPrint and finishes:' : `Please issue a custom invoice for the ${product.name} (${product.quantity || ''}, €${product.price} excl. VAT).`}\n\nCompany name:\nBilling address:\nVAT number:\nPreferred payment method:\n\nThank you`)}`}
                                 className="w-full py-4 mb-3 bg-press text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
                             >
                                 <Mail className="w-5 h-5" /> Email us for a custom invoice
                             </a>
                             <button
-                                onClick={() => setStep('PAYMENT')}
+                                onClick={() => (isCustomPlan ? onClose() : setStep('PAYMENT'))}
                                 className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors"
                             >
-                                Back to payment options
+                                {isCustomPlan ? 'Close' : 'Back to payment options'}
                             </button>
                         </div>
                     ) : (

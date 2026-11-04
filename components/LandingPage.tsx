@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
 import { Header, Logo } from './landing/Header';
@@ -24,6 +24,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
         setSelectedProduct(product);
         setShowPurchaseModal(true);
     };
+
+    const closePurchaseModal = useCallback(() => setShowPurchaseModal(false), []);
 
     const scrollToPricing = () => {
         document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
@@ -83,7 +85,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
 
             <AnimatePresence>
                 {showPurchaseModal && selectedProduct && (
-                    <PurchaseModal onClose={() => setShowPurchaseModal(false)} product={selectedProduct} />
+                    <PurchaseModal onClose={closePurchaseModal} product={selectedProduct} initialStep={selectedProduct.id === 'custom' ? 'CUSTOM_INFO' : 'PAYMENT'} />
                 )}
             </AnimatePresence>
         </div>
