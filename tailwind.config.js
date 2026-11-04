@@ -10,38 +10,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Print-shop palette
+        ink: '#141833',      // deep blue-black process ink
+        press: '#2433FF',    // ultramarine spot colour (primary)
+        kraft: '#B8875A',    // corrugated board
+        paper: '#F3F4F1',    // cool board white
+        board: '#E3E5E0',    // grey board / rules
+        // Legacy names remapped so admin + legal pages follow the new theme
         brand: {
-          navy: '#002E25', // Deep Green/Navy for high contrast text
-          teal: '#008060', // Shopify Green (Primary)
-          purple: '#5E8EBD', // Accents (Soft Blue)
-          light: '#F6F6F7', // Light Gray background
+          navy: '#141833',
+          teal: '#2433FF',
+          purple: '#B8875A',
+          light: '#F3F4F1',
           white: '#FFFFFF',
         },
-        solana: {
-          // Kept for legacy compatibility if needed, but we are moving away
-          green: '#008060',
-          purple: '#002E25',
-          dark: '#F6F6F7',
-        },
-        slate: {
-          50: '#F8FAFC',
-          100: '#F1F5F9',
-          200: '#E2E8F0',
-          300: '#CBD5E1',
-          400: '#94A3B8',
-          500: '#64748B',
-          600: '#475569',
-          800: '#1E293B',
-          900: '#0F172A',
-        }
+        solana: { green: '#2433FF', purple: '#141833', dark: '#F3F4F1' },
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'serif'],
-        sans: ['"Inter"', 'sans-serif'],
+        sans: ['"Archivo"', 'system-ui', 'sans-serif'],
+        serif: ['"Archivo"', 'system-ui', 'sans-serif'],
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      }
     },
   },
   plugins: [],

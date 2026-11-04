@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
+import { Header, Logo } from './landing/Header';
 import { HeroSection } from './landing/HeroSection';
+import { BoxStyles } from './landing/BoxStyles';
+import { Finishes } from './landing/Finishes';
 import { HowItWorks } from './landing/HowItWorks';
-import { WhatYouGet } from './landing/WhatYouGet';
-import { HighEndWebsites } from './landing/HighEndWebsites';
 import { Pricing } from './landing/Pricing';
-import { WhyUs } from './landing/WhyUs';
 import { FAQ } from './landing/FAQ';
 import { CallToAction } from './landing/CallToAction';
 import { PurchaseModal } from './PurchaseModal';
@@ -26,65 +26,60 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
     };
 
     const scrollToPricing = () => {
-        const pricingSection = document.getElementById('pricing');
-        if (pricingSection) {
-            pricingSection.scrollIntoView({ behavior: 'smooth' });
-        }
+        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
     };
 
     return (
-        <div className="bg-white text-brand-navy font-sans relative min-h-screen selection:bg-brand-teal selection:text-white">
+        <div className="bg-paper text-ink font-sans relative min-h-screen">
+            <Header onCtaClick={scrollToPricing} />
 
-            <HeroSection onCtaClick={scrollToPricing} />
+            <main>
+                <HeroSection onCtaClick={scrollToPricing} />
+                <BoxStyles />
+                <HowItWorks />
+                <Finishes />
+                <Pricing onSelectPlan={handleBuy} />
+                <FAQ />
+                <CallToAction onCtaClick={scrollToPricing} />
+            </main>
 
-            <HowItWorks />
-
-            <WhatYouGet />
-
-            <HighEndWebsites />
-
-            <Pricing onSelectPlan={handleBuy} />
-
-            <WhyUs />
-
-            <FAQ />
-
-            <CallToAction onCtaClick={scrollToPricing} />
-
-            {/* FOOTER */}
-            <footer className="bg-brand-navy border-t border-white/10 py-16">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-                        <div>
-                            <p className="font-serif font-bold text-2xl text-white mb-4">Garsabers<span className="text-brand-teal">.</span></p>
-                            <p className="text-slate-400 text-sm mb-4">Empowering your business with premium Shopify stores and high-end standard website builds.</p>
-                            <a href="mailto:info@garsabers.com" className="text-brand-teal hover:text-white transition-colors text-sm font-medium">info@garsabers.com</a>
-                        </div>
-                        <div>
-                            <p className="font-bold text-white mb-4 uppercase tracking-wider text-sm">Legal</p>
-                            <ul className="space-y-3">
-                                {onNavigateToPrivacy && (
-                                    <li><button onClick={onNavigateToPrivacy} className="text-slate-400 hover:text-white text-sm transition-colors">Privacy Policy</button></li>
-                                )}
-                                {onNavigateToTerms && (
-                                    <li><button onClick={onNavigateToTerms} className="text-slate-400 hover:text-white text-sm transition-colors">Terms & Conditions</button></li>
-                                )}
-                            </ul>
-                        </div>
-                        <div>
-                            <p className="font-bold text-white mb-4 uppercase tracking-wider text-sm">Partners</p>
-                            <div className="flex items-center gap-3 text-slate-400">
-                                <img src="/assets/shopify-partner-wt-customparadigm-icons2x.png" alt="Shopify Partner" className="h-16 object-contain" />
-                            </div>
+            <footer className="bg-ink text-paper border-t border-paper/10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid gap-10 md:grid-cols-12">
+                    <div className="md:col-span-5">
+                        <Logo light />
+                        <p className="mt-4 text-paper/65 max-w-sm leading-relaxed">
+                            Custom logo-printed mailer boxes, shipping cartons and rigid gift boxes for growing brands.
+                        </p>
+                        <a href="mailto:info@garsabers.com" className="mt-4 inline-block font-semibold text-[#8C95FF] hover:text-white">info@garsabers.com</a>
+                    </div>
+                    <nav className="md:col-span-3" aria-label="Footer">
+                        <p className="font-semibold mb-3">Boxes</p>
+                        <ul className="space-y-2 text-paper/65">
+                            <li><a href="#boxes" className="hover:text-white">Box styles</a></li>
+                            <li><a href="#finishes" className="hover:text-white">Finishes</a></li>
+                            <li><a href="#pricing" className="hover:text-white">Prices</a></li>
+                        </ul>
+                    </nav>
+                    <div className="md:col-span-2">
+                        <p className="font-semibold mb-3">Legal</p>
+                        <ul className="space-y-2 text-paper/65">
+                            {onNavigateToPrivacy && <li><button onClick={onNavigateToPrivacy} className="hover:text-white">Privacy policy</button></li>}
+                            {onNavigateToTerms && <li><button onClick={onNavigateToTerms} className="hover:text-white">Terms and conditions</button></li>}
+                        </ul>
+                    </div>
+                    <div className="md:col-span-2">
+                        <p className="font-semibold mb-3">We accept</p>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Card</span>
+                            <span className="h-8 px-2 inline-flex items-center bg-white"><img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /></span>
                         </div>
                     </div>
-                    <div className="pt-8 border-t border-white/10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-slate-500 text-sm">© {new Date().getFullYear()} GARSABER TECH LTD. All rights reserved.</p>
-                    </div>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-t border-paper/10 text-sm text-paper/50">
+                    © {new Date().getFullYear()} GARSABER TECH LTD. All rights reserved.
                 </div>
             </footer>
 
-            {/* PURCHASE MODAL */}
             <AnimatePresence>
                 {showPurchaseModal && selectedProduct && (
                     <PurchaseModal onClose={() => setShowPurchaseModal(false)} product={selectedProduct} />

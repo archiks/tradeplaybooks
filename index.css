@@ -3,53 +3,40 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply bg-black text-white antialiased selection:bg-brand-teal selection:text-black;
-    }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-paper text-ink antialiased;
+    font-family: 'Archivo', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  ::selection { background: #2433FF; color: #fff; }
+  :focus-visible { outline: 2px solid #2433FF; outline-offset: 3px; }
 }
 
-.font-serif {
-    font-family: 'Playfair Display', serif;
+/* Expanded cut of Archivo for display type */
+.font-wide, .font-serif {
+  font-family: 'Archivo', system-ui, sans-serif;
+  font-stretch: 125%;
 }
 
-.glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    /* Slate 200 */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+/* Die-line helpers */
+.fold { border-style: dashed; border-color: #2433FF; }
+.perforation {
+  background-image: linear-gradient(to right, currentColor 50%, transparent 0);
+  background-size: 10px 1.5px;
+  background-repeat: repeat-x;
+  height: 1.5px;
 }
 
-.glass-accent {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 168, 150, 0.2);
-    /* Teal border */
-    box-shadow: 0 4px 12px rgba(0, 168, 150, 0.1);
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
-.text-glow-navy {
-    text-shadow: 0 0 20px rgba(11, 30, 61, 0.15);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #F1F5F9;
-    /* Slate 100 */
-}
-
-::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
-    /* Slate 300 */
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #00A896;
-    /* Brand Teal */
-}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #F3F4F1; }
+::-webkit-scrollbar-thumb { background: #C9CCC5; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: #2433FF; }

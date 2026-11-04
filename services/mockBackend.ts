@@ -54,8 +54,8 @@ const DEFAULT_ORDERS: Order[] = [
   {
     id: 'ord_123',
     status: OrderStatus.COMPLETED,
-    productId: 'prod_4',
-    productName: 'Premium Shopify Store',
+    productId: 'prod_premium',
+    productName: 'Signature run',
     customerName: 'Marcus Aurelius',
     customerEmail: 'marcus@rome.com',
     amount: 1000,
@@ -71,8 +71,8 @@ const DEFAULT_ORDERS: Order[] = [
   {
     id: 'ord_124',
     status: OrderStatus.PENDING,
-    productId: 'prod_2',
-    productName: 'Starter Shopify Store',
+    productId: 'prod_starter',
+    productName: 'Starter run',
     customerName: 'Lucius Verus',
     customerEmail: 'lucius@rome.com',
     amount: 250,
@@ -135,10 +135,10 @@ const DEFAULT_LOGS: AccessLog[] = [
 const DEFAULT_COMPANY_SETTINGS: CompanySettings = {
   name: 'Garsabers',
   vatNumber: 'IE 1234567T',
-  address: 'Garsabers Inc.\nEcommerce Division',
+  address: 'GARSABER TECH LTD\nPackaging Print Division',
   invoicePrefix: 'GS',
   website: 'garsabers.com',
-  footerText: 'Done-For-You Shopify Stores. Professional Development Services.'
+  footerText: 'Custom logo-printed boxes. Mailers, cartons and rigid gift boxes.'
 };
 
 // --- INITIALIZE STATE FROM STORAGE OR DEFAULTS ---
@@ -360,7 +360,7 @@ export const MockBackend = {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(...brandTeal);
-    doc.text("ECOMMERCE DEVELOPMENT", 20, 31);
+    doc.text("CUSTOM PRINTED PACKAGING", 20, 31);
 
     // --- INVOICE LABEL ---
     doc.setFont('helvetica', 'bold');
@@ -467,7 +467,7 @@ export const MockBackend = {
 
     // Determine Product Name (find order to get product name)
     const order = orders.find(o => o.id === invoice.orderId);
-    const description = order ? order.productName : "Shopify Store Development Service";
+    const description = order ? order.productName : "Custom printed packaging";
 
     // Layout configuration
     const descWidth = 80; // Reduced from 85 to give space to QTY
@@ -480,7 +480,7 @@ export const MockBackend = {
       startY: tableStartY,
       head: [['DESCRIPTION', 'TYPE', 'QTY', 'AMOUNT']],
       body: [
-        [description, 'Professional Service', '1', `${currSym}${invoice.subtotal.toFixed(2)}`]
+        [description, 'Print run', '1', `${currSym}${invoice.subtotal.toFixed(2)}`]
       ],
       theme: 'plain', // Cleaner look, no borders by default
       styles: {
@@ -610,7 +610,7 @@ export const MockBackend = {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7);
       doc.setTextColor(...brandTeal);
-      doc.text("DELIVERED STORE", boxX + 6, boxStartY + 8);
+      doc.text("ORDER LINK", boxX + 6, boxStartY + 8);
 
       // URL - Fixed Rendering (Ensure no char spacing)
       doc.setFont('helvetica', 'normal');
