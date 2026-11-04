@@ -6,6 +6,7 @@ export interface Product {
   tagline: string;
   description: string;
   level: number; // 1-4
+  quantity?: string; // e.g. '100 boxes'
   features: string[];
   chapters?: { title: string; points: string[] }[];
 }

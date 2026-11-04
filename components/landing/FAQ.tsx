@@ -1,48 +1,38 @@
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
-export const FAQ: React.FC = () => {
-    const faqs = [
-        {
-            q: "How long does it take to get my store?",
-            a: "Depending on the plan you choose, delivery takes between 3 to 7 days. We start working immediately after your order."
-        },
-        {
-            q: "Do I have to know how to code?",
-            a: "Not at all. We handle all the technical setup. Once we hand it over, you can easily manage orders and products through the simple Shopify dashboard."
-        },
-        {
-            q: "Do I own the store 100%?",
-            a: "Yes. Once transferred, you are the legal owner of the store, domain, and all data. We just build it for you."
-        },
-        {
-            q: "What if I need help after delivery?",
-            a: "Our Premium plan includes 30 days of priority support. For other plans, we ensure everything is working perfectly upon handover and provide a guide on how to use your new store."
-        },
-        {
-            q: "Are there any monthly fees?",
-            a: "Our service is a one-time fee. However, you will need to pay Shopify's monthly subscription (usually ~$29/mo) to keep the platform active."
-        }
-    ];
+const FAQS = [
+    { q: 'What file should I send for my logo?', a: 'A vector file (AI, EPS, PDF or SVG) gives the sharpest edges. A PNG at 300 dpi at print size also works. If all you have is a small JPG, send it anyway and we will tell you whether it will print cleanly.' },
+    { q: 'Can I see my box before you print the whole run?', a: 'Yes. Every order gets a digital 3D proof showing your artwork on the actual die-line. The Signature run also includes a physical sample sent to you before the full run.' },
+    { q: 'How long does it take?', a: 'You receive your proof within one working day of uploading artwork. Production starts when you approve it and takes 7 to 10 working days, then the boxes are shipped flat-packed.' },
+    { q: 'Can you match my brand colour?', a: 'Send us your Pantone or HEX reference. One-colour runs are printed with an ink mixed to that reference; full-colour runs are matched as closely as the board allows, and the proof shows what to expect.' },
+    { q: 'Do you print boxes in custom sizes?', a: 'Brand and Signature runs can be made to any size you give us, to the millimetre. Starter runs use one of six stock mailer sizes, which fit most clothing, cosmetics and accessories.' },
+    { q: 'How do I pay?', a: 'Pay by card at checkout, or choose PayPal invoice if your company needs an invoice before paying. Your order goes into production once payment is received.' },
+];
 
-    return (
-        <section className="py-24 bg-white">
-            <div className="max-w-3xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-brand-navy mb-12 text-center">Frequently <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal to-brand-purple">Asked Questions</span></h2>
-                <div className="space-y-4">
-                    {faqs.map((item, i) => (
-                        <details key={i} className="group bg-slate-50 rounded-xl border border-slate-200 open:border-brand-teal/50 transition-colors">
-                            <summary className="flex items-center justify-between p-6 cursor-pointer font-bold text-brand-navy hover:text-brand-teal transition-colors">
-                                {item.q}
-                                <ChevronDown className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform" />
-                            </summary>
-                            <div className="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
-                                {item.a}
-                            </div>
-                        </details>
-                    ))}
-                </div>
+export const FAQ: React.FC = () => (
+    <section id="faq" className="py-20 lg:py-28 bg-paper scroll-mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-5">
+                <h2 className="font-wide font-extrabold text-4xl sm:text-5xl tracking-[-0.02em] leading-[1.02]">Questions we get before every first order.</h2>
+                <img
+                    src="/assets/boxes/proof.jpg"
+                    alt="Unfolded printed mailer box sample next to a colour proof sheet and ink swatches"
+                    loading="lazy"
+                    className="mt-10 w-full aspect-[4/3] object-cover hidden lg:block"
+                />
             </div>
-        </section>
-    );
-};
+            <div className="lg:col-span-7 border-t-[1.5px] border-ink">
+                {FAQS.map(f => (
+                    <details key={f.q} className="group border-b border-ink/20">
+                        <summary className="flex items-start justify-between gap-6 py-6 cursor-pointer text-lg sm:text-xl font-semibold hover:text-press">
+                            {f.q}
+                            <Plus className="w-6 h-6 shrink-0 mt-0.5 text-press transition-transform group-open:rotate-45" aria-hidden="true" />
+                        </summary>
+                        <p className="pb-7 -mt-1 text-ink/75 leading-relaxed max-w-[62ch]">{f.a}</p>
+                    </details>
+                ))}
+            </div>
+        </div>
+    </section>
+);

@@ -3,7 +3,7 @@ import { LandingPage } from './components/LandingPage';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsAndConditions } from './components/TermsAndConditions';
-import { Home, LogIn } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 // Simple Router
 export enum Route {
@@ -59,30 +59,28 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-brand-teal selection:text-black">
-      {/* Floating Nav for Demo purposes */}
-      <nav className="fixed top-0 left-0 w-full z-50 pointer-events-none">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="pointer-events-auto">
+    <div className="min-h-screen bg-paper text-ink font-sans">
+      {/* Admin-only top bar (the landing page renders its own header) */}
+      {(currentRoute === Route.ADMIN || currentRoute === Route.LOGIN) && (
+        <nav className="fixed top-0 left-0 w-full z-50 pointer-events-none">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <button
               onClick={() => navigate(Route.HOME)}
-              className="font-serif font-bold text-2xl tracking-tighter text-black hover:text-brand-teal transition-colors focus:outline-none flex items-center gap-2"
+              className="pointer-events-auto font-wide font-extrabold text-xl tracking-tight text-white hover:text-press transition-colors"
             >
-              Garsabers<span className="text-brand-teal">.</span>
+              Garsabers
             </button>
-          </div>
-          <div className="pointer-events-auto flex gap-4">
             {currentRoute === Route.ADMIN && (
               <button
                 onClick={() => navigate(Route.HOME)}
-                className="text-sm font-medium text-slate-400 hover:text-white flex items-center gap-2 transition-colors focus:outline-none"
+                className="pointer-events-auto text-sm font-medium text-slate-500 hover:text-ink flex items-center gap-2 transition-colors"
               >
-                <Home className="w-4 h-4" /> Exit Admin
+                <Home className="w-4 h-4" /> Exit admin
               </button>
             )}
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       <main>
         {currentRoute === Route.HOME && <LandingPage onNavigateToPrivacy={() => navigate(Route.PRIVACY)} onNavigateToTerms={() => navigate(Route.TERMS)} />}

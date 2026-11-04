@@ -1,93 +1,63 @@
-
 import { Product } from './types';
 
+// Print runs sold on the landing page. Prices are in EUR, excl. VAT.
+// IDs are shared with the checkout + admin backend, keep them stable.
 export const PRODUCTS: Product[] = [
   {
     id: 'prod_starter',
-    name: 'Starter Shopify Store',
+    name: 'Starter run',
     price: 250,
     level: 1,
-    tagline: 'Perfect for first-time merchants.',
-    description: 'A complete, ready-to-sell Shopify store with essential apps and branding.',
+    quantity: '100 boxes',
+    tagline: 'For a first branded batch or a product launch.',
+    description: '100 corrugated mailer boxes with your logo printed in one colour on the outside.',
     features: [
-      'Premium Theme Installation',
-      'Mobile Responsive Design',
-      'Payment Gateway Setup',
-      '10 Winning Products Loaded',
-      'Basic SEO Optimization',
-      'Standard Support'
+      'White or kraft mailer boxes',
+      'One-colour logo print, outside',
+      '6 stock sizes to choose from',
+      'Digital proof before printing',
+      'Ready to ship in 10 working days'
     ]
   },
   {
     id: 'prod_growth',
-    name: 'Growth Shopify Store',
+    name: 'Brand run',
     price: 500,
     level: 2,
-    tagline: 'Designed for scaling and ads.',
-    description: 'Everything in Starter plus advanced apps, email marketing setup, and higher conversion optimization.',
+    quantity: '300 boxes',
+    tagline: 'For brands shipping every week.',
+    description: '300 mailer boxes or shipping cartons, full-colour outside with a one-colour inside print.',
     features: [
-      'Everything in Starter',
-      'Advanced App Integration',
-      'Email Marketing Setup',
-      'Social Media Integration',
-      '20 Winning Products Loaded',
-      'Speed Optimization',
-      'Priority Support'
+      'Mailer boxes or shipping cartons',
+      'Full-colour print, outside',
+      'One-colour print, inside lid',
+      'Custom size to the millimetre',
+      'Two rounds of proof changes',
+      'Ready to ship in 7–10 working days'
     ]
   },
   {
     id: 'prod_premium',
-    name: 'Premium Shopify Store',
+    name: 'Signature run',
     price: 1000,
     level: 3,
-    tagline: 'The ultimate brand dominance package.',
-    description: 'A fully custom-branded store with custom coding, intense SEO, and 1-on-1 strategy.',
+    quantity: '150 rigid boxes or 750 mailers',
+    tagline: 'For gift sets, launches and premium unboxing.',
+    description: 'Rigid gift boxes or mailers with full-colour print inside and out, plus a foil or emboss finish.',
     features: [
-      'Everything in Growth',
-      'Custom Branding & Logo',
-      'Advanced SEO & Copywriting',
-      '50 Winning Products Loaded',
-      '1-on-1 Strategy Call',
-      'Dedicated Success Manager',
-      'Lifetime Updates'
+      'Rigid gift boxes or mailer boxes',
+      'Full-colour print, inside and out',
+      'Hot foil or embossed logo',
+      'Matte or soft-touch lamination',
+      'Physical sample before the full run',
+      'Priority production, 7 working days'
     ]
   }
-];
-
-export const TESTIMONIALS = [
-  {
-    initials: "MJ",
-    name: "Michael J.",
-    role: "Dropshipper",
-    text: "I tried for months to build a store myself. Garsabers built me a professional store in 3 days and I made my first sale 24 hours later."
-  },
-  {
-    initials: "Sarah K.",
-    name: "Sarah K.",
-    role: "Boutique Owner",
-    text: "The branding package was incredible. My store looks like a million dollar brand. Highly recommended."
-  },
-  {
-    initials: "DP",
-    name: "David P.",
-    role: "E-com Entrepreneur",
-    text: "The 'Growth' package paid for itself in the first week. The pre-loaded products were actually winners."
-  }
-];
-
-export const PAIN_POINTS = [
-  "Struggling to find winning products",
-  "Confused by Shopify theme customization",
-  "Wasting money on ineffective ads",
-  "Low conversion rates and high bounce rates",
-  "Technical headaches with payment gateways",
-  "Overwhelmed by fulfillment logistics",
-  "Lack of branding consistency",
-  "No clear strategy for scaling"
 ];
 
 export const COUNTRIES = [
   "United Kingdom", "United States", "Germany", "France", "Italy",
   "Spain", "Netherlands", "Switzerland", "Canada", "Australia",
-  "Japan", "Singapore", "United Arab Emirates", "South Africa", "Norway"
+  "Japan", "Singapore", "United Arab Emirates", "South Africa", "Norway",
+  "Latvia", "Lithuania", "Estonia", "Poland", "Ireland"
 ];
