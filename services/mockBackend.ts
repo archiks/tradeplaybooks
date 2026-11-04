@@ -159,7 +159,7 @@ export const MockBackend = {
     productId: string,
     name: string,
     email: string,
-    paymentMethod: 'PAYPAL' | 'STRIPE' | 'MANUAL' | 'INVOICE' = 'MANUAL',
+    paymentMethod: 'PAYPAL' | 'STRIPE' | 'MANUAL' | 'INVOICE' | 'CUSTOM' = 'MANUAL',
     status: OrderStatus = OrderStatus.PENDING,
     address?: string,
     country?: string,

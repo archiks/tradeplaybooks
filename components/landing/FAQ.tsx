@@ -7,7 +7,7 @@ const FAQS = [
     { q: 'How long does it take?', a: 'You receive your proof within one working day of uploading artwork. Production starts when you approve it and takes 7 to 10 working days, then the boxes are shipped flat-packed.' },
     { q: 'Can you match my brand colour?', a: 'Send us your Pantone or HEX reference. One-colour runs are printed with an ink mixed to that reference; full-colour runs are matched as closely as the board allows, and the proof shows what to expect.' },
     { q: 'Do you print boxes in custom sizes?', a: 'Brand and Signature runs can be made to any size you give us, to the millimetre. Starter runs use one of six stock mailer sizes, which fit most clothing, cosmetics and accessories.' },
-    { q: 'How do I pay?', a: 'Pay by card at checkout, or choose PayPal invoice if your company needs an invoice before paying. Your order goes into production once payment is received.' },
+    { q: 'How do I pay?', a: 'Pay by card at checkout, request a PayPal invoice, or choose Custom and we will issue an invoice made out for your order, payable by bank transfer or on agreed terms. Your order goes into production once payment is received.' },
 ];
 
 export const FAQ: React.FC = () => (

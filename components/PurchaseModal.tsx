@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle } from 'lucide-react';
+import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, Mail } from 'lucide-react';
 import { Product, OrderStatus } from '../types';
 import { MockBackend } from '../services/mockBackend';
 
@@ -10,7 +10,7 @@ interface PurchaseModalProps {
 }
 
 export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }) => {
-    const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO'>('PAYMENT');
+    const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO' | 'CUSTOM_INFO'>('PAYMENT');
     const [loading, setLoading] = useState(false);
 
     // Card Form State
@@ -206,6 +206,42 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product }
                                 className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors flex items-center justify-center gap-2"
                             >
                                 <img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /> Request Invoice (B2B)
+                            </button>
+
+                            <button
+                                onClick={() => setStep('CUSTOM_INFO')}
+                                disabled={loading}
+                                className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors flex items-center justify-center gap-2"
+                            >
+                                <FileText className="w-5 h-5" /> Custom
+                            </button>
+                            <p className="text-center text-sm text-ink/55 -mt-1">Bank transfer or other terms, on a custom invoice we issue for you.</p>
+                        </div>
+                    ) : step === 'CUSTOM_INFO' ? (
+                        <div className="text-center py-4">
+                            <div className="w-16 h-16 bg-press rounded-full flex items-center justify-center mx-auto mb-6">
+                                <FileText className="w-8 h-8 text-white" />
+                            </div>
+                            <h4 className="font-wide text-xl font-extrabold text-ink mb-2">Request a custom invoice</h4>
+                            <p className="text-ink/70 mb-6 px-2 leading-relaxed">
+                                We will issue an invoice made out for your order, payable by bank transfer or on terms we agree with you.
+                                Email us your company name, billing address, VAT number (if you have one) and the print run you chose.
+                            </p>
+                            <div className="p-4 bg-paper border border-board mb-4">
+                                <span className="block text-sm text-ink/60 mb-1">Email</span>
+                                <span className="font-semibold text-press select-all">info@garsabers.com</span>
+                            </div>
+                            <a
+                                href={`mailto:info@garsabers.com?subject=${encodeURIComponent(`Custom invoice: ${product.name} (€${product.price})`)}&body=${encodeURIComponent(`Hello,\n\nPlease issue a custom invoice for the ${product.name} (${product.quantity || ''}, €${product.price} excl. VAT).\n\nCompany name:\nBilling address:\nVAT number:\nPreferred payment method:\n\nThank you`)}`}
+                                className="w-full py-4 mb-3 bg-press text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Mail className="w-5 h-5" /> Email us for a custom invoice
+                            </a>
+                            <button
+                                onClick={() => setStep('PAYMENT')}
+                                className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors"
+                            >
+                                Back to payment options
                             </button>
                         </div>
                     ) : (

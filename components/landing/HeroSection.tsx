@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onCtaClick }) => {
                             Browse box styles
                         </a>
                     </div>
-                    <p className="mt-8 text-sm text-ink/60">Pay by card, or request a PayPal invoice for company orders.</p>
+                    <p className="mt-8 text-sm text-ink/60">Pay by card, PayPal invoice, or a custom invoice for company orders.</p>
                 </div>
 
                 {/* The memorable bit: the hero photo sits on an unfolded box die-line */}

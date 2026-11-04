@@ -72,6 +72,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
                         <div className="flex flex-wrap items-center gap-2">
                             <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Card</span>
                             <span className="h-8 px-2 inline-flex items-center bg-white"><img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /></span>
+                            <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Custom invoice</span>
                         </div>
                     </div>
                 </div>

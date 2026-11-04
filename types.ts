@@ -31,7 +31,7 @@ export interface Order {
   tax: number;
   createdAt: string; // ISO date
   notes?: string;
-  paymentMethod?: 'PAYPAL' | 'STRIPE' | 'MANUAL' | 'INVOICE';
+  paymentMethod?: 'PAYPAL' | 'STRIPE' | 'MANUAL' | 'INVOICE' | 'CUSTOM';
   transactionId?: string;
   billingAddress?: string;
   billingCountry?: string;
