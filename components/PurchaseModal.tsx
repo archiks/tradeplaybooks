@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, Mail } from 'lucide-react';
+import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, ExternalLink } from 'lucide-react';
 import { Product, OrderStatus } from '../types';
 import { MockBackend } from '../services/mockBackend';
+
+// Stripe payment links for custom orders, opened in a new window
+const STRIPE_LINKS = [
+    { code: 'USD', label: 'USD', symbol: '$', url: 'https://buy.stripe.com/9B66oGcMr6XMa0r43n9k400' },
+    { code: 'GBP', label: 'UK', symbol: '£', url: 'https://buy.stripe.com/4gMbJ08wb1DsdcDdDX9k401' },
+];
 
 interface PurchaseModalProps {
     onClose: () => void;
@@ -246,21 +252,27 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             <div className="w-16 h-16 bg-press rounded-full flex items-center justify-center mx-auto mb-6">
                                 <FileText className="w-8 h-8 text-white" />
                             </div>
-                            <h4 className="font-wide text-xl font-extrabold text-ink mb-2">Request a custom invoice</h4>
+                            <h4 className="font-wide text-xl font-extrabold text-ink mb-2">Pay for your custom order</h4>
                             <p className="text-ink/70 mb-6 px-2 leading-relaxed">
-                                We will issue an invoice made out for your order, payable by bank transfer or on terms we agree with you.
-                                Email us your company name, billing address, VAT number (if you have one) and the print run you chose.
+                                Choose your currency to pay securely with Stripe. The payment page opens in a new window.
                             </p>
-                            <div className="p-4 bg-paper border border-board mb-4">
-                                <span className="block text-sm text-ink/60 mb-1">Email</span>
-                                <span className="font-semibold text-press select-all">info@garsabers.com</span>
+                            <div className="grid grid-cols-2 gap-3 mb-4" role="group" aria-label="Pay with Stripe in">
+                                {STRIPE_LINKS.map(link => (
+                                    <a
+                                        key={link.code}
+                                        href={link.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="py-3 bg-press text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <span className="font-wide font-extrabold">{link.symbol}</span> {link.label}
+                                        <ExternalLink className="w-4 h-4 opacity-80" aria-hidden="true" />
+                                    </a>
+                                ))}
                             </div>
-                            <a
-                                href={`mailto:info@garsabers.com?subject=${encodeURIComponent(isCustomPlan ? 'Custom invoice request' : `Custom invoice: ${product.name} (€${product.price})`)}&body=${encodeURIComponent(`Hello,\n\n${isCustomPlan ? 'Please issue a custom invoice for this order:\n\nBox style:\nQuantity:\nSize:\nPrint and finishes:' : `Please issue a custom invoice for the ${product.name} (${product.quantity || ''}, €${product.price} excl. VAT).`}\n\nCompany name:\nBilling address:\nVAT number:\nPreferred payment method:\n\nThank you`)}`}
-                                className="w-full py-4 mb-3 bg-press text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
-                            >
-                                <Mail className="w-5 h-5" /> Email us for a custom invoice
-                            </a>
+                            <p className="text-sm text-ink/60 mb-6">
+                                Questions about your quote? Email <a href="mailto:info@garsabers.com" className="font-semibold text-press">info@garsabers.com</a>
+                            </p>
                             <button
                                 onClick={() => (isCustomPlan ? onClose() : setStep('PAYMENT'))}
                                 className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors"
