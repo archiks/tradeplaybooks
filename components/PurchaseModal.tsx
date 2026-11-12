@@ -93,7 +93,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
             onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/75"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-forest-deep/80"
             role="dialog" aria-modal="true" aria-label="Checkout"
         >
             <motion.div
@@ -102,30 +102,30 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                 exit={{ y: 16, opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 style={{ willChange: 'transform, opacity' }}
-                className="bg-white w-full max-w-md max-h-[92vh] overflow-y-auto border-[1.5px] border-ink"
+                className="bg-white w-full max-w-md max-h-[92vh] overflow-y-auto rounded-[2rem] shadow-lift"
             >
-                <div className="p-6 border-b border-board flex justify-between items-center bg-paper">
+                <div className="px-6 pt-6 pb-4 flex justify-between items-center">
                     <div>
-                        <h3 className="font-wide text-xl font-extrabold text-ink">Checkout</h3>
+                        <h3 className="font-display text-2xl font-bold text-ink">Checkout</h3>
                         <p className="text-xs text-press flex items-center gap-1 font-semibold mt-0.5"><Shield className="w-3 h-3" /> Encrypted connection</p>
                     </div>
-                    <button onClick={onClose} aria-label="Close checkout" className="p-2 hover:bg-board transition-colors text-ink/60">
+                    <button onClick={onClose} aria-label="Close checkout" className="grid place-items-center w-10 h-10 rounded-full bg-sage hover:bg-ink hover:text-white transition-colors text-ink">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <div className="p-6">
                     {/* Product Summary */}
-                    <div className="flex gap-4 p-4 bg-paper mb-6 border border-board">
-                        <div className="w-16 h-16 shrink-0 bg-press flex items-center justify-center">
-                            <Package className="w-8 h-8 text-white" />
+                    <div className="flex items-center gap-4 p-4 bg-sage mb-6 rounded-3xl">
+                        <div className="w-14 h-14 shrink-0 bg-forest rounded-2xl flex items-center justify-center">
+                            <Package className="w-7 h-7 text-lime" />
                         </div>
                         <div>
                             <h4 className="font-bold text-ink">{product.name}</h4>
                             <p className="text-sm text-ink/60 mb-1">{product.quantity || product.tagline}</p>
                             {isCustomPlan
-                                ? <span className="font-wide font-extrabold text-press">Priced on your invoice</span>
-                                : <><span className="font-wide font-extrabold text-press">€{product.price}</span> <span className="text-xs text-ink/50">excl. VAT</span></>}
+                                ? <span className="font-display font-bold text-press">Priced for your order</span>
+                                : <><span className="font-display font-bold text-lg text-ink">€{product.price}</span> <span className="text-xs text-ink/50">excl. VAT</span></>}
                         </div>
                     </div>
 
@@ -143,7 +143,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                             placeholder="John Doe"
                                             value={cardName}
                                             onChange={(e) => setCardName(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-ink/25  focus:outline-none focus:border-press font-medium text-ink placeholder:text-ink/30"
+                                            className="w-full pl-10 pr-4 py-3 bg-paper border border-mist rounded-2xl focus:outline-none focus:border-press focus:bg-white transition-colors font-medium text-ink placeholder:text-ink/30"
                                         />
                                     </div>
                                 </div>
@@ -160,7 +160,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                             value={cardNumber}
                                             onChange={handleCardNumberChange}
                                             maxLength={19}
-                                            className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-ink/25  focus:outline-none focus:border-press font-medium text-ink placeholder:text-ink/30 font-mono"
+                                            className="w-full pl-10 pr-4 py-3 bg-paper border border-mist rounded-2xl focus:outline-none focus:border-press focus:bg-white transition-colors font-medium text-ink placeholder:text-ink/30 font-mono"
                                         />
                                     </div>
                                 </div>
@@ -178,7 +178,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                                 value={expiry}
                                                 onChange={handleExpiryChange}
                                                 maxLength={5}
-                                                className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-ink/25  focus:outline-none focus:border-press font-medium text-ink placeholder:text-ink/30 font-mono"
+                                                className="w-full pl-10 pr-4 py-3 bg-paper border border-mist rounded-2xl focus:outline-none focus:border-press focus:bg-white transition-colors font-medium text-ink placeholder:text-ink/30 font-mono"
                                             />
                                         </div>
                                     </div>
@@ -195,7 +195,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                                 value={cvc}
                                                 onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').substring(0, 4))}
                                                 maxLength={4}
-                                                className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-ink/25  focus:outline-none focus:border-press font-medium text-ink placeholder:text-ink/30 font-mono"
+                                                className="w-full pl-10 pr-4 py-3 bg-paper border border-mist rounded-2xl focus:outline-none focus:border-press focus:bg-white transition-colors font-medium text-ink placeholder:text-ink/30 font-mono"
                                             />
                                         </div>
                                     </div>
@@ -204,7 +204,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-4 bg-press text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
+                                    className="w-full py-4 rounded-full bg-forest text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
                                 >
                                     {loading ? (
                                         <>Processing...</>
@@ -228,7 +228,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             <button
                                 onClick={handleInvoice}
                                 disabled={loading}
-                                className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors flex items-center justify-center gap-2"
+                                className="w-full py-4 rounded-full bg-sage text-ink font-semibold hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-2"
                             >
                                 <img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /> Request Invoice (B2B)
                             </button>
@@ -236,11 +236,11 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             <button
                                 onClick={() => setStep('CUSTOM_INFO')}
                                 disabled={loading}
-                                className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors flex items-center justify-center gap-2"
+                                className="w-full py-4 rounded-full bg-sage text-ink font-semibold hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-2"
                             >
                                 <FileText className="w-5 h-5" /> Custom
                             </button>
-                            <p className="text-center text-sm text-ink/55 -mt-1">Bank transfer or other terms, on a custom invoice we issue for you.</p>
+                            <p className="text-center text-sm text-ink/55 -mt-1">Agreed a custom quote with us? Pay it by Stripe in USD or GBP.</p>
                             <p className="text-center text-xs text-ink/55 leading-relaxed">
                                 By paying, you agree to our{' '}
                                 <a href="/user-agreement" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">User Agreement</a>{' '}and{' '}
@@ -249,24 +249,30 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                         </div>
                     ) : step === 'CUSTOM_INFO' ? (
                         <div className="text-center py-4">
-                            <div className="w-16 h-16 bg-press rounded-full flex items-center justify-center mx-auto mb-6">
-                                <FileText className="w-8 h-8 text-white" />
+                            <div className="w-16 h-16 bg-forest rounded-full flex items-center justify-center mx-auto mb-6">
+                                <FileText className="w-7 h-7 text-lime" />
                             </div>
-                            <h4 className="font-wide text-xl font-extrabold text-ink mb-2">Pay for your custom order</h4>
+                            <h4 className="font-display text-2xl font-bold text-ink mb-2">Pay for your custom order</h4>
                             <p className="text-ink/70 mb-6 px-2 leading-relaxed">
                                 Choose your currency to pay securely with Stripe. The payment page opens in a new window.
                             </p>
-                            <div className="grid grid-cols-2 gap-3 mb-4" role="group" aria-label="Pay with Stripe in">
+                            <div className="space-y-2.5 mb-5 text-left" role="group" aria-label="Pay with Stripe in">
                                 {STRIPE_LINKS.map(link => (
                                     <a
                                         key={link.code}
                                         href={link.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="py-3 bg-press text-white font-semibold hover:bg-ink transition-colors flex items-center justify-center gap-2"
+                                        className="group flex items-center gap-4 rounded-full bg-sage p-2 pr-2.5 transition-colors hover:bg-forest hover:text-white"
                                     >
-                                        <span className="font-wide font-extrabold">{link.symbol}</span> {link.label}
-                                        <ExternalLink className="w-4 h-4 opacity-80" aria-hidden="true" />
+                                        <span className="grid place-items-center w-11 h-11 rounded-full bg-forest text-lime font-display font-bold text-lg transition-colors group-hover:bg-lime group-hover:text-ink">{link.symbol}</span>
+                                        <span className="flex-1">
+                                            <span className="block font-semibold leading-tight">Pay in {link.label}</span>
+                                            <span className="block text-sm text-ink/55 leading-tight group-hover:text-white/70">{link.code}, via Stripe</span>
+                                        </span>
+                                        <span className="grid place-items-center w-11 h-11 rounded-full bg-white text-ink transition-transform group-hover:rotate-45">
+                                            <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                                        </span>
                                     </a>
                                 ))}
                             </div>
@@ -280,27 +286,27 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             </p>
                             <button
                                 onClick={() => (isCustomPlan ? onClose() : setStep('PAYMENT'))}
-                                className="w-full py-4 bg-white text-ink font-semibold border-[1.5px] border-ink hover:border-press hover:text-press transition-colors"
+                                className="w-full py-4 rounded-full bg-sage text-ink font-semibold hover:bg-ink hover:text-white transition-colors"
                             >
                                 {isCustomPlan ? 'Close' : 'Back to payment options'}
                             </button>
                         </div>
                     ) : (
                         <div className="text-center py-4">
-                            <div className="w-16 h-16 bg-paper rounded-full flex items-center justify-center mx-auto mb-6">
+                            <div className="w-16 h-16 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
                                 <img src="/assets/paypal.png" alt="PayPal" className="h-8 w-auto" />
                             </div>
-                            <h4 className="font-wide text-xl font-extrabold text-ink mb-2">Request a PayPal invoice</h4>
+                            <h4 className="font-display text-2xl font-bold text-ink mb-2">Request a PayPal invoice</h4>
                             <p className="text-ink/70 mb-6 px-2 leading-relaxed">
                                 For company orders that need an invoice first, email us with your company details and the print run you chose. We will reply with a PayPal invoice for your order.
                             </p>
-                            <div className="p-4 bg-paper border border-board mb-6">
+                            <div className="p-4 bg-sage rounded-3xl mb-6">
                                 <span className="block text-sm text-ink/60 mb-1">Email</span>
                                 <span className="font-semibold text-press select-all">info@garsabers.com</span>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="w-full py-4 bg-ink text-white font-semibold hover:bg-press transition-colors"
+                                className="w-full py-4 rounded-full bg-ink text-white font-semibold hover:bg-forest transition-colors"
                             >
                                 Close
                             </button>

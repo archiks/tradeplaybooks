@@ -12,25 +12,25 @@ const FAQS = [
 ];
 
 export const FAQ: React.FC = () => (
-    <section id="faq" className="py-20 lg:py-28 bg-paper scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-12">
+    <section id="faq" className="py-20 lg:py-28 bg-sage rounded-[2.5rem] sm:rounded-[3.5rem] mx-2 sm:mx-4 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-10">
             <div className="lg:col-span-5">
-                <h2 className="font-wide font-extrabold text-4xl sm:text-5xl tracking-[-0.02em] leading-[1.02]">Questions we get before every first order.</h2>
-                <img
-                    src="/assets/boxes/proof.jpg"
-                    alt="Unfolded printed mailer box sample next to a colour proof sheet and ink swatches"
-                    loading="lazy"
-                    className="mt-10 w-full aspect-[4/3] object-cover hidden lg:block"
-                />
+                <h2 className="h-display text-4xl sm:text-5xl lg:text-6xl">Good questions, straight answers.</h2>
+                <p className="mt-5 text-lg text-ink/65 leading-relaxed max-w-md">
+                    Something else on your mind? Email{' '}
+                    <a href="mailto:info@garsabers.com" className="font-semibold text-press underline underline-offset-4">info@garsabers.com</a>.
+                </p>
             </div>
-            <div className="lg:col-span-7 border-t-[1.5px] border-ink">
+            <div className="lg:col-span-7 space-y-3">
                 {FAQS.map(f => (
-                    <details key={f.q} className="group border-b border-ink/20">
-                        <summary className="flex items-start justify-between gap-6 py-6 cursor-pointer text-lg sm:text-xl font-semibold hover:text-press">
+                    <details key={f.q} className="group rounded-3xl bg-white border border-mist open:shadow-soft transition-shadow">
+                        <summary className="flex items-center justify-between gap-6 px-6 py-5 cursor-pointer text-lg font-semibold">
                             {f.q}
-                            <Plus className="w-6 h-6 shrink-0 mt-0.5 text-press transition-transform group-open:rotate-45" aria-hidden="true" />
+                            <span className="grid place-items-center w-9 h-9 shrink-0 rounded-full bg-sage text-ink transition-all group-open:rotate-45 group-open:bg-forest group-open:text-lime">
+                                <Plus className="w-5 h-5" aria-hidden="true" />
+                            </span>
                         </summary>
-                        <p className="pb-7 -mt-1 text-ink/75 leading-relaxed max-w-[62ch]">{f.a}</p>
+                        <p className="px-6 pb-6 -mt-1 text-ink/70 leading-relaxed max-w-[62ch]">{f.a}</p>
                     </details>
                 ))}
             </div>

@@ -1,96 +1,87 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowUpRight, Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
     onCtaClick: () => void;
 }
 
-/** Corner crop mark, like the ones on a press sheet */
-const Crop: React.FC<{ className: string }> = ({ className }) => (
-    <span aria-hidden="true" className={`absolute w-5 h-5 ${className}`}>
-        <span className="absolute inset-x-0 top-1/2 h-px bg-ink/60" />
-        <span className="absolute inset-y-0 left-1/2 w-px bg-ink/60" />
-    </span>
-);
+const FACTS = [
+    { big: '100', small: 'boxes minimum order' },
+    { big: '24 h', small: 'to your free proof' },
+    { big: '7–10', small: 'working days to print' },
+];
 
-const Flap: React.FC<{ className?: string; children: React.ReactNode; from: { x?: number; y?: number }; delay: number }> = ({ className = '', children, from, delay }) => {
-    const reduce = useReducedMotion();
-    return (
-        <motion.div
-            initial={reduce ? false : { opacity: 0, ...from }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.6, delay, ease: [0.2, 0.7, 0.2, 1] }}
-            className={`bg-white border-[1.5px] border-ink p-4 sm:p-5 flex flex-col justify-end text-sm leading-snug ${className}`}
-        >
-            {children}
-        </motion.div>
-    );
-};
+const TICKER = ['Mailer boxes', 'Shipping cartons', 'Rigid gift boxes', 'Full-colour print', 'Inside print', 'Hot foil', 'Embossing', 'Soft-touch finish', 'Custom sizes'];
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onCtaClick }) => {
+    const reduce = useReducedMotion();
+    const rise = (delay: number) => ({
+        initial: reduce ? false : { opacity: 0, y: 28 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.7, delay, ease: [0.2, 0.7, 0.2, 1] as [number, number, number, number] },
+    });
+
     return (
-        <section id="top" className="relative pt-28 lg:pt-36 pb-20 lg:pb-28 bg-paper overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-                <div className="lg:col-span-5">
-                    <h1 className="font-wide font-extrabold text-[2.6rem] sm:text-6xl xl:text-[4.6rem] leading-[0.98] tracking-[-0.025em] text-ink">
-                        Your logo on every box you ship.
-                    </h1>
-                    <p className="mt-7 text-lg text-ink/75 max-w-[34rem] leading-relaxed">
-                        Mailer boxes, shipping cartons and rigid gift boxes printed with your artwork, from 100 units.
-                        You approve a free proof before anything goes to press.
-                    </p>
-                    <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-                        <button
-                            onClick={onCtaClick}
-                            className="h-14 px-8 bg-press text-white font-semibold text-[17px] hover:bg-ink transition-colors"
-                        >
-                            See print run prices
-                        </button>
-                        <a href="#boxes" className="font-semibold underline decoration-2 underline-offset-[6px] decoration-press hover:text-press">
-                            Browse box styles
-                        </a>
-                    </div>
-                    <p className="mt-8 text-sm text-ink/60">Pay by card, PayPal invoice, or a custom invoice for company orders.</p>
+        <section id="top" className="relative bg-forest text-white rounded-b-[2.5rem] sm:rounded-b-[3.5rem] overflow-hidden">
+            {/* soft glow */}
+            <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[70rem] h-[40rem] rounded-full bg-lime/15 blur-[120px]" />
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-32 sm:pt-40 text-center">
+                <motion.p {...rise(0)} className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-1.5 text-sm font-medium text-white/90">
+                    <Sparkles className="w-4 h-4 text-lime" aria-hidden="true" />
+                    Custom printed packaging, from 100 boxes
+                </motion.p>
+
+                <motion.h1 {...rise(0.08)} className="h-display mt-7 text-[2.9rem] sm:text-7xl lg:text-[6.25rem] max-w-5xl mx-auto">
+                    Boxes that look like your brand.
+                </motion.h1>
+
+                <motion.p {...rise(0.16)} className="mt-7 text-lg sm:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed">
+                    We print your logo on mailer boxes, shipping cartons and rigid gift boxes.
+                    You approve a free proof before anything goes to press.
+                </motion.p>
+
+                <motion.div {...rise(0.24)} className="mt-9 flex flex-wrap items-center justify-center gap-3">
+                    <button onClick={onCtaClick} className="btn-lime h-14 px-8 text-[17px]">
+                        See pricing <ArrowUpRight className="w-5 h-5" aria-hidden="true" />
+                    </button>
+                    <a href="#boxes" className="btn-ghost h-14 px-8 text-[17px]">Explore box styles</a>
+                </motion.div>
+            </div>
+
+            <motion.div {...rise(0.34)} className="relative max-w-7xl mx-auto px-4 sm:px-6 mt-14 sm:mt-16">
+                <div className="relative rounded-[2rem] sm:rounded-[2.75rem] overflow-hidden ring-1 ring-white/10">
+                    <img
+                        src="/assets/boxes/hero.jpg"
+                        alt="Custom printed boxes in different brand colours: lime, white, kraft, black and pink"
+                        className="block w-full aspect-[4/3] sm:aspect-[16/9] object-cover"
+                        fetchPriority="high"
+                    />
                 </div>
-
-                {/* The memorable bit: the hero photo sits on an unfolded box die-line */}
-                <div className="lg:col-span-7 relative p-4 sm:p-6">
-                    <Crop className="-top-0 -left-0" />
-                    <Crop className="-top-0 -right-0" />
-                    <Crop className="-bottom-0 -left-0" />
-                    <Crop className="-bottom-0 -right-0" />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-[1fr_2.7fr_1fr]">
-                        <Flap from={{ y: 40 }} delay={0.15} className="sm:col-start-2 sm:row-start-1 border-b-0 rounded-t-[2.25rem] min-h-[88px]">
-                            <span className="text-ink/60">Lid</span>
-                            <span className="font-semibold">Printed outside, and inside on Brand and Signature runs</span>
-                        </Flap>
-
-                        <Flap from={{ x: 40 }} delay={0.3} className="hidden sm:flex sm:col-start-1 sm:row-start-2 border-r-0 rounded-l-2xl my-6">
-                            <span className="font-wide font-extrabold text-3xl text-press">100</span>
-                            <span>boxes minimum</span>
-                        </Flap>
-
-                        <div className="relative sm:col-start-2 sm:row-start-2 border-[1.5px] border-ink bg-white">
-                            <div className="absolute inset-0 border-2 fold pointer-events-none z-10" aria-hidden="true" />
-                            <img
-                                src="/assets/boxes/hero.jpg"
-                                alt="Stack of white and kraft mailer boxes printed with a blue logo, one open with a printed interior"
-                                className="block w-full aspect-[16/11] object-cover"
-                                fetchPriority="high"
-                            />
+                <dl className="mt-3 sm:mt-4 grid grid-cols-3 gap-2 sm:gap-4">
+                    {FACTS.map(f => (
+                        <div key={f.small} className="rounded-2xl sm:rounded-3xl bg-white/[0.08] border border-white/15 px-3 py-3 sm:px-7 sm:py-5 text-left">
+                            <dt className="font-display font-bold text-xl sm:text-4xl tracking-[-0.03em]">{f.big}</dt>
+                            <dd className="text-xs sm:text-base text-white/70 leading-snug">{f.small}</dd>
                         </div>
+                    ))}
+                </dl>
+            </motion.div>
 
-                        <Flap from={{ x: -40 }} delay={0.3} className="hidden sm:flex sm:col-start-3 sm:row-start-2 border-l-0 rounded-r-2xl my-6">
-                            <span className="font-wide font-extrabold text-3xl text-press">24 h</span>
-                            <span>to your digital proof</span>
-                        </Flap>
-
-                        <Flap from={{ y: -40 }} delay={0.45} className="sm:col-start-2 sm:row-start-3 border-t-0 min-h-[80px] flex-row items-end justify-between gap-4">
-                            <span><span className="text-ink/60 block">Base</span><span className="font-semibold">Ships in 7–10 working days</span></span>
-                            <span className="hidden sm:block text-right text-ink/60">Fold lines in blue,<br />cut lines in black</span>
-                        </Flap>
-                    </div>
+            {/* What we print, as a slow ticker */}
+            <div className="relative mt-12 sm:mt-14 pb-10 sm:pb-12 overflow-hidden" aria-hidden="true">
+                <div className="flex w-max animate-marquee">
+                    {[0, 1].map(i => (
+                        <ul key={i} className="flex shrink-0 items-center">
+                            {TICKER.map(t => (
+                                <li key={t} className="flex items-center font-display font-semibold text-2xl sm:text-3xl text-white/35 whitespace-nowrap">
+                                    <span className="px-6 sm:px-8">{t}</span>
+                                    <span className="w-2.5 h-2.5 rounded-full bg-lime/70" />
+                                </li>
+                            ))}
+                        </ul>
+                    ))}
                 </div>
             </div>
         </section>

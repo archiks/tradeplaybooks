@@ -1,7 +1,8 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+import { Check, ArrowUpRight } from 'lucide-react';
 import { Product } from '../../types';
 import { PRODUCTS, CUSTOM_PLAN } from '../../constants';
+import { SectionHead } from './SectionHead';
 
 interface PricingProps {
     onSelectPlan: (plan: Product) => void;
@@ -10,84 +11,57 @@ interface PricingProps {
 const RECOMMENDED = 'prod_growth';
 const PLANS: Product[] = [...PRODUCTS, CUSTOM_PLAN];
 
-type Tone = 'plain' | 'hot' | 'dark';
-
-const TONES: Record<Tone, { card: string; muted: string; soft: string; notch: string; perf: string; check: string; button: string }> = {
-    plain: {
-        card: 'bg-paper border-ink text-ink',
-        muted: 'text-ink/65', soft: 'text-ink/60',
-        notch: 'bg-white border-ink', perf: 'text-ink/40', check: 'text-press',
-        button: 'bg-ink text-paper hover:bg-press',
-    },
-    hot: {
-        card: 'bg-press border-press text-white',
-        muted: 'text-white/80', soft: 'text-white/75',
-        notch: 'bg-white border-press', perf: 'text-white/60', check: 'text-white',
-        button: 'bg-white text-press hover:bg-ink hover:text-white',
-    },
-    dark: {
-        card: 'bg-ink border-ink text-paper',
-        muted: 'text-paper/70', soft: 'text-paper/60',
-        notch: 'bg-white border-ink', perf: 'text-paper/40', check: 'text-[#8C95FF]',
-        button: 'bg-paper text-ink hover:bg-press hover:text-white',
-    },
-};
-
 export const Pricing: React.FC<PricingProps> = ({ onSelectPlan }) => (
-    <section id="pricing" className="py-20 lg:py-28 bg-white border-y border-board scroll-mt-16">
+    <section id="pricing" className="py-20 lg:py-28 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="max-w-2xl">
-                <h2 className="font-wide font-extrabold text-4xl sm:text-5xl tracking-[-0.02em] leading-[1.02]">Pick a print run.</h2>
-                <p className="mt-5 text-lg text-ink/70 leading-relaxed">
-                    One fixed price per run, paid once, or a custom order paid on an invoice we issue for you.
-                    Prices exclude VAT; delivery is confirmed with your proof.
-                </p>
-            </div>
+            <SectionHead title="Simple pricing per print run.">
+                One fixed price, paid once, or a custom quote for bigger and special orders. Prices exclude VAT; delivery is confirmed with your proof.
+            </SectionHead>
 
-            <div className="mt-14 grid sm:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+            <div className="mt-12 grid sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 items-stretch">
                 {PLANS.map(plan => {
                     const isCustom = plan.id === CUSTOM_PLAN.id;
-                    const tone: Tone = isCustom ? 'dark' : plan.id === RECOMMENDED ? 'hot' : 'plain';
-                    const t = TONES[tone];
+                    const hot = plan.id === RECOMMENDED;
                     return (
-                        <article key={plan.id} className={`relative flex flex-col border-[1.5px] ${t.card}`}>
-                            <div className="p-6 pb-6">
-                                {tone === 'hot' && (
-                                    <span className="absolute -top-3.5 left-6 text-sm font-semibold bg-white text-press border-[1.5px] border-press px-2.5 py-0.5">Most ordered</span>
-                                )}
-                                <h3 className="font-wide font-bold text-2xl">{plan.name}</h3>
-                                <p className={`mt-2 min-h-[3rem] ${t.muted}`}>{plan.tagline}</p>
-                                <p className="mt-6 font-wide font-extrabold text-5xl tracking-[-0.02em]">
-                                    {isCustom ? 'Quote' : `€${plan.price}`}
-                                </p>
-                                <p className={`mt-1 text-sm min-h-[2.5rem] ${t.soft}`}>
-                                    {isCustom ? 'Priced on your custom invoice' : `${plan.quantity}, excl. VAT`}
-                                </p>
+                        <article
+                            key={plan.id}
+                            className={`relative flex flex-col rounded-[2rem] p-7 transition-transform duration-300 hover:-translate-y-1 ${hot
+                                ? 'bg-forest text-white shadow-lift'
+                                : isCustom
+                                    ? 'bg-lime text-ink'
+                                    : 'bg-white text-ink border border-mist shadow-soft'}`}
+                        >
+                            <div className="flex items-center justify-between gap-3 min-h-[1.75rem]">
+                                <h3 className="font-display font-bold text-2xl tracking-[-0.03em]">{plan.name}</h3>
+                                {hot && <span className="rounded-full bg-lime text-ink text-xs font-semibold px-3 py-1">Most ordered</span>}
                             </div>
+                            <p className={`mt-2 min-h-[3rem] ${hot ? 'text-white/70' : 'text-ink/65'}`}>{plan.tagline}</p>
 
-                            {/* Perforated tear line, like an order ticket */}
-                            <div className="relative" aria-hidden="true">
-                                <span className={`absolute -left-[11px] -top-[10px] w-5 h-5 rounded-full border-[1.5px] ${t.notch} [clip-path:inset(0_0_0_50%)]`} />
-                                <span className={`absolute -right-[11px] -top-[10px] w-5 h-5 rounded-full border-[1.5px] ${t.notch} [clip-path:inset(0_50%_0_0)]`} />
-                                <div className={`perforation mx-5 ${t.perf}`} />
-                            </div>
+                            <p className="mt-6 font-display font-bold text-6xl tracking-[-0.045em] leading-none">
+                                {isCustom ? 'Quote' : <><span className="text-3xl align-top mr-0.5">€</span>{plan.price}</>}
+                            </p>
+                            <p className={`mt-2 text-sm min-h-[2.5rem] ${hot ? 'text-white/65' : 'text-ink/60'}`}>
+                                {isCustom ? 'Priced for your order' : `${plan.quantity}, excl. VAT`}
+                            </p>
 
-                            <div className="p-6 pt-6 flex-1 flex flex-col">
-                                <ul className="space-y-3 flex-1">
-                                    {plan.features.map(f => (
-                                        <li key={f} className="flex gap-3">
-                                            <Check className={`w-5 h-5 mt-0.5 shrink-0 ${t.check}`} aria-hidden="true" />
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button
-                                    onClick={() => onSelectPlan(plan)}
-                                    className={`mt-9 py-4 w-full font-semibold transition-colors ${t.button}`}
-                                >
-                                    {isCustom ? 'Request a custom invoice' : `Order the ${plan.name}`}
-                                </button>
-                            </div>
+                            <ul className={`mt-5 pt-6 space-y-3 flex-1 border-t ${hot ? 'border-white/15' : isCustom ? 'border-ink/15' : 'border-mist'}`}>
+                                {plan.features.map(f => (
+                                    <li key={f} className="flex gap-3">
+                                        <span className={`mt-0.5 grid place-items-center w-5 h-5 shrink-0 rounded-full ${hot ? 'bg-lime text-ink' : isCustom ? 'bg-ink text-lime' : 'bg-sage text-press'}`}>
+                                            <Check className="w-3 h-3" strokeWidth={3} aria-hidden="true" />
+                                        </span>
+                                        <span className={hot ? 'text-white/90' : ''}>{f}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <button
+                                onClick={() => onSelectPlan(plan)}
+                                className={`mt-8 h-[3.25rem] w-full ${hot ? 'btn-lime' : isCustom ? 'btn-dark' : 'btn bg-sage text-ink hover:bg-ink hover:text-white'}`}
+                            >
+                                {isCustom ? 'Pay a custom order' : `Order ${plan.name}`}
+                                <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+                            </button>
                         </article>
                     );
                 })}

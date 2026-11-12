@@ -69,7 +69,7 @@ export const CUSTOM_PLAN: Product = {
     'Any box style, size or shape',
     'Any quantity, including 1,000+',
     'Mix styles and finishes in one order',
-    'Bank transfer or agreed payment terms',
+    'Pay by Stripe in USD or GBP',
     'Invoice made out to your company'
   ]
 };
