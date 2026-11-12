@@ -10,13 +10,16 @@ import { Pricing } from './landing/Pricing';
 import { FAQ } from './landing/FAQ';
 import { CallToAction } from './landing/CallToAction';
 import { PurchaseModal } from './PurchaseModal';
+import { COMPANY } from './legal/LegalLayout';
 
 interface LandingPageProps {
     onNavigateToPrivacy?: () => void;
     onNavigateToTerms?: () => void;
+    onNavigateToRefund?: () => void;
+    onNavigateToAgreement?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, onNavigateToTerms }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, onNavigateToTerms, onNavigateToRefund, onNavigateToAgreement }) => {
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -65,8 +68,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
                     <div className="md:col-span-2">
                         <p className="font-semibold mb-3">Legal</p>
                         <ul className="space-y-2 text-paper/65">
-                            {onNavigateToPrivacy && <li><button onClick={onNavigateToPrivacy} className="hover:text-white">Privacy policy</button></li>}
-                            {onNavigateToTerms && <li><button onClick={onNavigateToTerms} className="hover:text-white">Terms and conditions</button></li>}
+                            {onNavigateToAgreement && <li><button onClick={onNavigateToAgreement} className="hover:text-white text-left">User agreement</button></li>}
+                            {onNavigateToRefund && <li><button onClick={onNavigateToRefund} className="hover:text-white text-left">Refund policy</button></li>}
+                            {onNavigateToPrivacy && <li><button onClick={onNavigateToPrivacy} className="hover:text-white text-left">Privacy policy</button></li>}
+                            {onNavigateToTerms && <li><button onClick={onNavigateToTerms} className="hover:text-white text-left">Terms and conditions</button></li>}
                         </ul>
                     </div>
                     <div className="md:col-span-2">
@@ -74,12 +79,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
                         <div className="flex flex-wrap items-center gap-2">
                             <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Card</span>
                             <span className="h-8 px-2 inline-flex items-center bg-white"><img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /></span>
-                            <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Custom invoice</span>
+                            <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Stripe</span>
                         </div>
                     </div>
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-t border-paper/10 text-sm text-paper/50">
-                    © {new Date().getFullYear()} GARSABER TECH LTD. All rights reserved.
+                    <p>© {new Date().getFullYear()} {COMPANY.name}. All rights reserved. Garsabers is a trading name of {COMPANY.name}.</p>
+                    <p className="mt-1">Registered in {COMPANY.registeredIn}, company number {COMPANY.number}. Registered office: {COMPANY.address}.</p>
                 </div>
             </footer>
 

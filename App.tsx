@@ -3,6 +3,8 @@ import { LandingPage } from './components/LandingPage';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsAndConditions } from './components/TermsAndConditions';
+import { RefundPolicy } from './components/legal/RefundPolicy';
+import { UserAgreement } from './components/legal/UserAgreement';
 import { Home } from 'lucide-react';
 
 // Simple Router
@@ -11,13 +13,17 @@ export enum Route {
   ADMIN = 'ADMIN',
   LOGIN = 'LOGIN',
   PRIVACY = 'PRIVACY',
-  TERMS = 'TERMS'
+  TERMS = 'TERMS',
+  REFUND = 'REFUND',
+  AGREEMENT = 'AGREEMENT'
 }
 
 const getRouteFromPath = () => {
   const path = window.location.pathname;
   if (path === '/privacy-policy') return Route.PRIVACY;
   if (path === '/terms-and-conditions') return Route.TERMS;
+  if (path === '/refund-policy') return Route.REFUND;
+  if (path === '/user-agreement') return Route.AGREEMENT;
   if (path === '/admin') return Route.LOGIN;
   return Route.HOME;
 };
@@ -25,6 +31,8 @@ const getRouteFromPath = () => {
 const getPathFromRoute = (route: Route) => {
   if (route === Route.PRIVACY) return '/privacy-policy';
   if (route === Route.TERMS) return '/terms-and-conditions';
+  if (route === Route.REFUND) return '/refund-policy';
+  if (route === Route.AGREEMENT) return '/user-agreement';
   if (route === Route.ADMIN || route === Route.LOGIN) return '/admin';
   return '/';
 };
@@ -83,7 +91,9 @@ const App: React.FC = () => {
       )}
 
       <main>
-        {currentRoute === Route.HOME && <LandingPage onNavigateToPrivacy={() => navigate(Route.PRIVACY)} onNavigateToTerms={() => navigate(Route.TERMS)} />}
+        {currentRoute === Route.HOME && <LandingPage onNavigateToPrivacy={() => navigate(Route.PRIVACY)} onNavigateToTerms={() => navigate(Route.TERMS)} onNavigateToRefund={() => navigate(Route.REFUND)} onNavigateToAgreement={() => navigate(Route.AGREEMENT)} />}
+        {currentRoute === Route.REFUND && <RefundPolicy onBack={() => navigate(Route.HOME)} />}
+        {currentRoute === Route.AGREEMENT && <UserAgreement onBack={() => navigate(Route.HOME)} />}
         {currentRoute === Route.PRIVACY && <PrivacyPolicy onBack={() => navigate(Route.HOME)} />}
         {currentRoute === Route.TERMS && <TermsAndConditions onBack={() => navigate(Route.HOME)} />}
         {currentRoute === Route.LOGIN && <AdminLogin onLogin={handleLogin} />}

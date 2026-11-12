@@ -21,7 +21,7 @@ export const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onBack }
                 </button>
                 
                 <h1 className="font-serif font-bold text-4xl md:text-5xl mb-4">Terms and Conditions</h1>
-                <p className="text-slate-500 mb-12">Last updated: {new Date().toLocaleDateString()}</p>
+                <p className="text-slate-500 mb-12">Last updated: 12 November 2026</p>
                 
                 <div className="prose prose-slate max-w-none prose-headings:font-serif prose-headings:font-bold prose-headings:text-brand-navy prose-a:text-brand-teal">
                     <p className="text-lg leading-relaxed text-slate-600 mb-8">
@@ -59,11 +59,13 @@ export const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onBack }
                     <p className="mb-6 text-slate-600">GARSABER TECH LTD is permitted to revise these Terms at any time as it sees fit, and by using this Website you are expected to review these Terms on a regular basis.</p>
 
                     <h2 className="text-2xl mt-12 mb-4">8. Governing Law & Jurisdiction</h2>
-                    <p className="mb-6 text-slate-600">These Terms will be governed by and interpreted in accordance with the laws of the jurisdiction in which GARSABER TECH LTD operates, and you submit to the non-exclusive jurisdiction of the state and federal courts located there for the resolution of any disputes.</p>
+                    <p className="mb-6 text-slate-600">These Terms are governed by the law of England and Wales, and the courts of England and Wales have non-exclusive jurisdiction over any dispute. Orders and payments are also covered by our User Agreement (garsabers.com/user-agreement) and Refund Policy (garsabers.com/refund-policy).</p>
 
                     <h2 className="text-2xl mt-12 mb-4">9. Contact Information</h2>
                     <p className="mb-6 text-slate-600">If you have any inquiries regarding our Terms and Conditions, please contact us at:</p>
                     <p className="text-slate-600 font-medium">GARSABER TECH LTD</p>
+                    <p className="text-slate-600">Registered in England and Wales, company number 17151348</p>
+                    <p className="text-slate-600">Unit A, 82 James Carter Road, Mildenhall, Suffolk, IP28 7DE, United Kingdom</p>
                     <p className="text-slate-600">info@garsabers.com</p>
                 </div>
             </div>

@@ -21,7 +21,7 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
                 </button>
                 
                 <h1 className="font-serif font-bold text-4xl md:text-5xl mb-4">Privacy Policy</h1>
-                <p className="text-slate-500 mb-12">Last updated: {new Date().toLocaleDateString()}</p>
+                <p className="text-slate-500 mb-12">Last updated: 12 November 2026</p>
                 
                 <div className="prose prose-slate max-w-none prose-headings:font-serif prose-headings:font-bold prose-headings:text-brand-navy prose-a:text-brand-teal">
                     <p className="text-lg leading-relaxed text-slate-600 mb-8">
@@ -41,7 +41,7 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
                         <li>To personalize your experience (your information helps us to better respond to your individual needs)</li>
                         <li>To improve our website (we continually strive to improve our website offerings based on the information and feedback we receive from you)</li>
                         <li>To improve customer service (your information helps us to more effectively respond to your customer service requests and support needs)</li>
-                        <li>To process transactions: We use third-party payment processors (such as PayPal). We do not store or collect your payment card details. That information is provided directly to our third-party payment processors whose use of your personal information is governed by their Privacy Policy.</li>
+                        <li>To process transactions: We use third-party payment processors (Stripe and PayPal). We do not store or collect your payment card details. That information is provided directly to our third-party payment processors whose use of your personal information is governed by their Privacy Policy.</li>
                         <li>To send periodic emails</li>
                     </ul>
 
@@ -68,6 +68,8 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
                     <h2 className="text-2xl mt-12 mb-4">7. Contact Us</h2>
                     <p className="mb-6 text-slate-600">If there are any questions regarding this privacy policy, you may contact us using the information below:</p>
                     <p className="text-slate-600 font-medium">GARSABER TECH LTD</p>
+                    <p className="text-slate-600">Registered in England and Wales, company number 17151348</p>
+                    <p className="text-slate-600">Unit A, 82 James Carter Road, Mildenhall, Suffolk, IP28 7DE, United Kingdom</p>
                     <p className="text-slate-600">info@garsabers.com</p>
                 </div>
             </div>

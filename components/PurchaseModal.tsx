@@ -246,6 +246,11 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                 <FileText className="w-5 h-5" /> Custom
                             </button>
                             <p className="text-center text-sm text-ink/55 -mt-1">Bank transfer or other terms, on a custom invoice we issue for you.</p>
+                            <p className="text-center text-xs text-ink/55 leading-relaxed">
+                                By paying, you agree to our{' '}
+                                <a href="/user-agreement" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">User Agreement</a>{' '}and{' '}
+                                <a href="/refund-policy" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">Refund Policy</a>.
+                            </p>
                         </div>
                     ) : step === 'CUSTOM_INFO' ? (
                         <div className="text-center py-4">
@@ -270,6 +275,11 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                     </a>
                                 ))}
                             </div>
+                            <p className="text-center text-xs text-ink/55 leading-relaxed mb-3">
+                                By paying, you agree to our{' '}
+                                <a href="/user-agreement" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">User Agreement</a>{' '}and{' '}
+                                <a href="/refund-policy" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">Refund Policy</a>.
+                            </p>
                             <p className="text-sm text-ink/60 mb-6">
                                 Questions about your quote? Email <a href="mailto:info@garsabers.com" className="font-semibold text-press">info@garsabers.com</a>
                             </p>
