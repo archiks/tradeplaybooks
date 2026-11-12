@@ -8,7 +8,7 @@ const FAQS = [
     { q: 'Can you match my brand colour?', a: 'Send us your Pantone or HEX reference. One-colour runs are printed with an ink mixed to that reference; full-colour runs are matched as closely as the board allows, and the proof shows what to expect.' },
     { q: 'Do you print boxes in custom sizes?', a: 'Brand and Signature runs can be made to any size you give us, to the millimetre. Starter runs use one of six stock mailer sizes, which fit most clothing, cosmetics and accessories.' },
     { q: 'Can I cancel or get a refund?', a: 'You can cancel for a full refund any time before you approve your proof. After approval your boxes are made to order, so we cannot refund a change of mind, but we reprint or refund anything faulty, misprinted, damaged or late. The full details are in our Refund Policy at garsabers.com/refund-policy.' },
-    { q: 'How do I pay?', a: 'Pay by card at checkout or request a PayPal invoice. Custom orders are paid through a secure Airwallex payment link once we have agreed your quote, or by bank transfer on a custom invoice. Your order goes into production once payment is received.' },
+    { q: 'How do I pay?', a: 'Pay by card at checkout. Custom orders are paid through a secure Airwallex payment link once we have agreed your quote, or by bank transfer on a custom invoice. Your order goes into production once payment is received.' },
 ];
 
 export const FAQ: React.FC = () => (

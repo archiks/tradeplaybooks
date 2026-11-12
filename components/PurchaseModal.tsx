@@ -12,7 +12,7 @@ interface PurchaseModalProps {
 }
 
 export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, initialStep = 'PAYMENT' }) => {
-    const [step, setStep] = useState<'PAYMENT' | 'INVOICE_INFO' | 'CUSTOM_INFO'>(initialStep);
+    const [step, setStep] = useState<'PAYMENT' | 'CUSTOM_INFO'>(initialStep);
     const isCustomPlan = product.id === 'custom';
 
     // Lock page scroll while open (pad for the scrollbar so the page doesn't shift), close on Escape
@@ -65,10 +65,6 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                 setLoading(false);
             }
         }, 2000);
-    };
-
-    const handleInvoice = async () => {
-        setStep('INVOICE_INFO');
     };
 
     // Formatters
@@ -226,14 +222,6 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             </div>
 
                             <button
-                                onClick={handleInvoice}
-                                disabled={loading}
-                                className="w-full py-4 rounded-full bg-sage text-ink font-semibold hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-2"
-                            >
-                                <img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /> Request Invoice (B2B)
-                            </button>
-
-                            <button
                                 onClick={() => setStep('CUSTOM_INFO')}
                                 disabled={loading}
                                 className="w-full py-4 rounded-full bg-sage text-ink font-semibold hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-2"
@@ -298,27 +286,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                                 {isCustomPlan ? 'Close' : 'Back to payment options'}
                             </button>
                         </div>
-                    ) : (
-                        <div className="text-center py-4">
-                            <div className="w-16 h-16 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
-                                <img src="/assets/paypal.png" alt="PayPal" className="h-8 w-auto" />
-                            </div>
-                            <h4 className="font-display text-2xl font-bold text-ink mb-2">Request a PayPal invoice</h4>
-                            <p className="text-ink/70 mb-6 px-2 leading-relaxed">
-                                For company orders that need an invoice first, email us with your company details and the print run you chose. We will reply with a PayPal invoice for your order.
-                            </p>
-                            <div className="p-4 bg-sage rounded-3xl mb-6">
-                                <span className="block text-sm text-ink/60 mb-1">Email</span>
-                                <span className="font-semibold text-press select-all">info@garsabers.com</span>
-                            </div>
-                            <button
-                                onClick={onClose}
-                                className="w-full py-4 rounded-full bg-ink text-white font-semibold hover:bg-forest transition-colors"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    )}
+                    ) : null}
                 </div>
             </motion.div>
         </motion.div>
