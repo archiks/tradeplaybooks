@@ -1,16 +1,18 @@
 import React from 'react';
 import { ArrowUpRight, ShieldCheck } from 'lucide-react';
-import { siVisa, siMastercard, siAmericanexpress, siPaypal, siStripe } from 'simple-icons';
-import { STRIPE_LINKS } from '../../constants';
 
-type Icon = { title: string; path: string };
+// Payment marks shown in the footer (official full-colour logos in /public/assets/pay)
+const METHODS = [
+    { name: 'Visa', src: '/assets/pay/visa.svg', size: 'w-11' },
+    { name: 'Mastercard', src: '/assets/pay/mastercard.svg', size: 'h-7' },
+    { name: 'American Express', src: '/assets/pay/amex.svg', size: 'h-8 rounded-[5px]' },
+    { name: 'PayPal', src: '/assets/pay/paypal.svg', size: 'h-7' },
+    { name: 'Airwallex', src: '/assets/pay/airwallex.png', size: 'h-6' },
+];
 
-// Accepted payment marks (official brand paths from the simple-icons set)
-const METHODS: Icon[] = [siVisa, siMastercard, siAmericanexpress, siPaypal, siStripe];
+const QUOTE_MAILTO = `mailto:info@garsabers.com?subject=${encodeURIComponent('Custom box quote')}&body=${encodeURIComponent('Hello,\n\nI would like a quote for custom boxes:\n\nBox style:\nQuantity:\nSize:\nPrint and finishes:\n\nCompany name:\nBilling address:\n\nThank you')}`;
 
-const CURRENCY_NAMES: Record<string, string> = { USD: 'US Dollar', GBP: 'British Pound' };
-
-/** Footer payment area: accepted methods + Stripe links for custom orders */
+/** Footer payment area: accepted methods + custom quote request */
 export const PaymentStrip: React.FC = () => (
     <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
         <div className="rounded-[2rem] bg-white/[0.06] border border-white/10 p-7 sm:p-8 flex flex-col">
@@ -18,50 +20,39 @@ export const PaymentStrip: React.FC = () => (
                 <ShieldCheck className="w-6 h-6 text-lime" aria-hidden="true" /> Secure checkout
             </p>
             <p className="mt-2 text-white/65 leading-relaxed max-w-sm">
-                Pay by card, PayPal or Stripe. Payments are encrypted and we never store your card details.
+                Pay by card or PayPal. Payments are encrypted and we never store your card details.
             </p>
-            <ul className="mt-auto pt-7 grid grid-cols-5 gap-2 sm:gap-2.5 max-w-[23rem]" aria-label="Accepted payment methods">
+            <ul className="mt-auto pt-7 grid grid-cols-5 gap-2 sm:gap-3 max-w-[26rem]" aria-label="Accepted payment methods">
                 {METHODS.map(m => (
                     <li
-                        key={m.title}
-                        title={m.title}
-                        className="grid place-items-center h-12 rounded-2xl bg-white/[0.08] border border-white/10 text-white transition-colors hover:bg-lime hover:text-ink hover:border-lime"
+                        key={m.name}
+                        title={m.name}
+                        className="grid place-items-center h-12 sm:h-14 rounded-2xl bg-white shadow-soft transition-transform duration-200 hover:-translate-y-1"
                     >
-                        <svg viewBox="0 0 24 24" className="h-7 w-7" role="img" aria-label={m.title}>
-                            <path d={m.path} fill="currentColor" />
-                        </svg>
+                        <img src={m.src} alt={m.name} loading="lazy" className={`${m.size} max-w-[70%] object-contain`} />
                     </li>
                 ))}
             </ul>
         </div>
 
-        <div className="rounded-[2rem] bg-white/[0.06] border border-white/10 p-7 sm:p-8">
-            <p className="font-display font-bold text-2xl tracking-[-0.02em]">Pay a custom quote</p>
+        <div className="rounded-[2rem] bg-white/[0.06] border border-white/10 p-7 sm:p-8 flex flex-col">
+            <p className="font-display font-bold text-2xl tracking-[-0.02em]">Need a custom quote?</p>
             <p className="mt-2 text-white/65 leading-relaxed max-w-sm">
-                Already agreed a price with us? Pay it with Stripe in your currency.
+                Bigger runs, special shapes or mixed styles. Tell us what you need and we will price it for you.
             </p>
-            <div className="mt-6 space-y-2.5">
-                {STRIPE_LINKS.map(link => (
-                    <a
-                        key={link.code}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Pay in ${CURRENCY_NAMES[link.code] || link.code} with Stripe (opens in a new window)`}
-                        className="group flex items-center gap-4 rounded-full bg-white/[0.08] border border-white/10 p-2 pr-2.5 transition-colors hover:bg-lime hover:border-lime hover:text-ink"
-                    >
-                        <span className="grid place-items-center w-11 h-11 rounded-full bg-lime text-ink font-display font-bold text-lg transition-colors group-hover:bg-ink group-hover:text-lime">
-                            {link.symbol}
-                        </span>
-                        <span className="flex-1 min-w-0">
-                            <span className="block font-semibold leading-tight">{CURRENCY_NAMES[link.code] || link.label}</span>
-                            <span className="block text-sm text-white/60 leading-tight group-hover:text-ink/70">{link.code}, via Stripe</span>
-                        </span>
-                        <span className="grid place-items-center w-11 h-11 rounded-full bg-white/10 transition-all group-hover:bg-ink group-hover:text-lime group-hover:rotate-45">
-                            <ArrowUpRight className="w-5 h-5" aria-hidden="true" />
-                        </span>
-                    </a>
-                ))}
+            <div className="mt-auto pt-7">
+                <a
+                    href={QUOTE_MAILTO}
+                    className="group flex items-center gap-4 rounded-full bg-lime text-ink p-2 pl-6 transition-colors hover:bg-white"
+                >
+                    <span className="flex-1 min-w-0">
+                        <span className="block font-semibold leading-tight">Request a custom quote</span>
+                        <span className="block text-sm text-ink/65 leading-tight truncate">info@garsabers.com</span>
+                    </span>
+                    <span className="grid place-items-center w-11 h-11 rounded-full bg-ink text-lime transition-transform group-hover:rotate-45">
+                        <ArrowUpRight className="w-5 h-5" aria-hidden="true" />
+                    </span>
+                </a>
             </div>
         </div>
     </div>

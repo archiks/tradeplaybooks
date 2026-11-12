@@ -59,7 +59,7 @@ export const Pricing: React.FC<PricingProps> = ({ onSelectPlan }) => (
                                 onClick={() => onSelectPlan(plan)}
                                 className={`mt-8 h-[3.25rem] w-full ${hot ? 'btn-lime' : isCustom ? 'btn-dark' : 'btn bg-sage text-ink hover:bg-ink hover:text-white'}`}
                             >
-                                {isCustom ? 'Pay a custom order' : `Order ${plan.name}`}
+                                {isCustom ? 'Request a custom quote' : `Order ${plan.name}`}
                                 <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
                             </button>
                         </article>

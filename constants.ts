@@ -69,7 +69,7 @@ export const CUSTOM_PLAN: Product = {
     'Any box style, size or shape',
     'Any quantity, including 1,000+',
     'Mix styles and finishes in one order',
-    'Pay by Stripe in USD or GBP',
+    'Bank transfer or agreed payment terms',
     'Invoice made out to your company'
   ]
 };
@@ -79,10 +79,4 @@ export const COUNTRIES = [
   "Spain", "Netherlands", "Switzerland", "Canada", "Australia",
   "Japan", "Singapore", "United Arab Emirates", "South Africa", "Norway",
   "Latvia", "Lithuania", "Estonia", "Poland", "Ireland"
-];
-
-// Stripe payment links for custom orders (open in a new window)
-export const STRIPE_LINKS = [
-  { code: 'USD', label: 'USD', symbol: '$', url: 'https://buy.stripe.com/9B66oGcMr6XMa0r43n9k400' },
-  { code: 'GBP', label: 'UK', symbol: '£', url: 'https://buy.stripe.com/4gMbJ08wb1DsdcDdDX9k401' },
 ];

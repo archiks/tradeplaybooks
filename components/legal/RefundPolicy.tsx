@@ -78,14 +78,14 @@ export const RefundPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => (
 
         <Clause n={6} title="Custom orders">
             <p>
-                Custom orders paid through a Stripe payment link or a custom invoice follow this same policy. If your custom
+                Custom orders paid on a custom invoice follow this same policy. If your custom
                 quote sets out different terms, such as a deposit or staged payments, the terms in that quote apply where they differ.
             </p>
         </Clause>
 
         <Clause n={7} title="How refunds are paid">
             <p>
-                Refunds go back to the original payment method (card, PayPal or Stripe) within <strong>14 days</strong> of us
+                Refunds go back to the original payment method (card, PayPal or bank transfer) within <strong>14 days</strong> of us
                 agreeing the refund. We refund in the currency you paid in. Your bank or payment provider may take a few
                 more days to show it. We do not refund currency conversion fees charged by your bank.
             </p>

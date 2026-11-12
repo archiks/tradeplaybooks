@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, ExternalLink } from 'lucide-react';
+import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, Mail } from 'lucide-react';
 import { Product, OrderStatus } from '../types';
 import { MockBackend } from '../services/mockBackend';
-import { STRIPE_LINKS } from '../constants';
 
 interface PurchaseModalProps {
     onClose: () => void;
@@ -240,7 +239,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             >
                                 <FileText className="w-5 h-5" /> Custom
                             </button>
-                            <p className="text-center text-sm text-ink/55 -mt-1">Agreed a custom quote with us? Pay it by Stripe in USD or GBP.</p>
+                            <p className="text-center text-sm text-ink/55 -mt-1">Bank transfer or other terms, on a custom invoice we issue for you.</p>
                             <p className="text-center text-xs text-ink/55 leading-relaxed">
                                 By paying, you agree to our{' '}
                                 <a href="/user-agreement" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">User Agreement</a>{' '}and{' '}
@@ -252,37 +251,27 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onClose, product, 
                             <div className="w-16 h-16 bg-forest rounded-full flex items-center justify-center mx-auto mb-6">
                                 <FileText className="w-7 h-7 text-lime" />
                             </div>
-                            <h4 className="font-display text-2xl font-bold text-ink mb-2">Pay for your custom order</h4>
+                            <h4 className="font-display text-2xl font-bold text-ink mb-2">Request a custom invoice</h4>
                             <p className="text-ink/70 mb-6 px-2 leading-relaxed">
-                                Choose your currency to pay securely with Stripe. The payment page opens in a new window.
+                                Tell us what you need and we will send a quote and an invoice made out for your order,
+                                payable by bank transfer or on terms we agree with you.
                             </p>
-                            <div className="space-y-2.5 mb-5 text-left" role="group" aria-label="Pay with Stripe in">
-                                {STRIPE_LINKS.map(link => (
-                                    <a
-                                        key={link.code}
-                                        href={link.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group flex items-center gap-4 rounded-full bg-sage p-2 pr-2.5 transition-colors hover:bg-forest hover:text-white"
-                                    >
-                                        <span className="grid place-items-center w-11 h-11 rounded-full bg-forest text-lime font-display font-bold text-lg transition-colors group-hover:bg-lime group-hover:text-ink">{link.symbol}</span>
-                                        <span className="flex-1">
-                                            <span className="block font-semibold leading-tight">Pay in {link.label}</span>
-                                            <span className="block text-sm text-ink/55 leading-tight group-hover:text-white/70">{link.code}, via Stripe</span>
-                                        </span>
-                                        <span className="grid place-items-center w-11 h-11 rounded-full bg-white text-ink transition-transform group-hover:rotate-45">
-                                            <ExternalLink className="w-4 h-4" aria-hidden="true" />
-                                        </span>
-                                    </a>
-                                ))}
-                            </div>
-                            <p className="text-center text-xs text-ink/55 leading-relaxed mb-3">
-                                By paying, you agree to our{' '}
+                            <a
+                                href={`mailto:info@garsabers.com?subject=${encodeURIComponent(isCustomPlan ? 'Custom invoice request' : `Custom invoice: ${product.name} (€${product.price})`)}&body=${encodeURIComponent(`Hello,\n\n${isCustomPlan ? 'Please send a quote and custom invoice for this order:\n\nBox style:\nQuantity:\nSize:\nPrint and finishes:' : `Please issue a custom invoice for the ${product.name} (${product.quantity || ''}, €${product.price} excl. VAT).`}\n\nCompany name:\nBilling address:\nVAT number:\n\nThank you`)}`}
+                                className="group flex items-center gap-4 rounded-full bg-forest text-white p-2 pl-6 mb-5 text-left transition-colors hover:bg-ink"
+                            >
+                                <span className="flex-1">
+                                    <span className="block font-semibold leading-tight">Email us your request</span>
+                                    <span className="block text-sm text-white/65 leading-tight">info@garsabers.com</span>
+                                </span>
+                                <span className="grid place-items-center w-11 h-11 rounded-full bg-lime text-ink transition-transform group-hover:rotate-12">
+                                    <Mail className="w-5 h-5" aria-hidden="true" />
+                                </span>
+                            </a>
+                            <p className="text-center text-xs text-ink/55 leading-relaxed mb-5">
+                                By ordering, you agree to our{' '}
                                 <a href="/user-agreement" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">User Agreement</a>{' '}and{' '}
                                 <a href="/refund-policy" target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-press">Refund Policy</a>.
-                            </p>
-                            <p className="text-sm text-ink/60 mb-6">
-                                Questions about your quote? Email <a href="mailto:info@garsabers.com" className="font-semibold text-press">info@garsabers.com</a>
                             </p>
                             <button
                                 onClick={() => (isCustomPlan ? onClose() : setStep('PAYMENT'))}
