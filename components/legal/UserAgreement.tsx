@@ -73,7 +73,7 @@ export const UserAgreement: React.FC<{ onBack: () => void }> = ({ onBack }) => (
             <ul>
                 <li>Prices are shown in euros and exclude VAT unless stated. VAT is added where it applies.</li>
                 <li>Fixed print runs are paid in full when you order, by card or by PayPal invoice.</li>
-                <li>Custom orders are paid on a custom invoice, by bank transfer or as set out in your quote.</li>
+                <li>Custom orders are paid through our online payment link (processed by Airwallex) or on a custom invoice by bank transfer, as set out in your quote.</li>
                 <li>Delivery costs, if any, are confirmed with your proof before you approve it.</li>
                 <li>Card and PayPal payments are processed by our payment providers. We do not store your full card details.</li>
                 <li>If a price on our site is clearly wrong, we will contact you before production and you may cancel for a full refund.</li>

@@ -69,7 +69,7 @@ export const CUSTOM_PLAN: Product = {
     'Any box style, size or shape',
     'Any quantity, including 1,000+',
     'Mix styles and finishes in one order',
-    'Bank transfer or agreed payment terms',
+    'Pay online or by bank transfer',
     'Invoice made out to your company'
   ]
 };
@@ -80,3 +80,6 @@ export const COUNTRIES = [
   "Japan", "Singapore", "United Arab Emirates", "South Africa", "Norway",
   "Latvia", "Lithuania", "Estonia", "Poland", "Ireland"
 ];
+
+// Airwallex payment link for custom orders (opens in a new window)
+export const AIRWALLEX_PAY_URL = 'https://pay.airwallex.com/sgho3sgjkwu4';

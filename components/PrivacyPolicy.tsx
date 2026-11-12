@@ -41,7 +41,7 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
                         <li>To personalize your experience (your information helps us to better respond to your individual needs)</li>
                         <li>To improve our website (we continually strive to improve our website offerings based on the information and feedback we receive from you)</li>
                         <li>To improve customer service (your information helps us to more effectively respond to your customer service requests and support needs)</li>
-                        <li>To process transactions: We use third-party payment processors (such as PayPal). We do not store or collect your payment card details. That information is provided directly to our third-party payment processors whose use of your personal information is governed by their Privacy Policy.</li>
+                        <li>To process transactions: We use third-party payment processors (such as PayPal and Airwallex). We do not store or collect your payment card details. That information is provided directly to our third-party payment processors whose use of your personal information is governed by their Privacy Policy.</li>
                         <li>To send periodic emails</li>
                     </ul>
 

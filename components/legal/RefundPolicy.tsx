@@ -78,7 +78,7 @@ export const RefundPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => (
 
         <Clause n={6} title="Custom orders">
             <p>
-                Custom orders paid on a custom invoice follow this same policy. If your custom
+                Custom orders paid through our online payment link or on a custom invoice follow this same policy. If your custom
                 quote sets out different terms, such as a deposit or staged payments, the terms in that quote apply where they differ.
             </p>
         </Clause>
