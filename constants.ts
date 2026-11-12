@@ -80,3 +80,9 @@ export const COUNTRIES = [
   "Japan", "Singapore", "United Arab Emirates", "South Africa", "Norway",
   "Latvia", "Lithuania", "Estonia", "Poland", "Ireland"
 ];
+
+// Stripe payment links for custom orders (open in a new window)
+export const STRIPE_LINKS = [
+  { code: 'USD', label: 'USD', symbol: '$', url: 'https://buy.stripe.com/9B66oGcMr6XMa0r43n9k400' },
+  { code: 'GBP', label: 'UK', symbol: '£', url: 'https://buy.stripe.com/4gMbJ08wb1DsdcDdDX9k401' },
+];

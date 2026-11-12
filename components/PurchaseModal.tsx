@@ -3,12 +3,7 @@ import { motion } from 'framer-motion';
 import { Shield, X, Package, CreditCard, Calendar, Lock, User, CheckCircle, FileText, ExternalLink } from 'lucide-react';
 import { Product, OrderStatus } from '../types';
 import { MockBackend } from '../services/mockBackend';
-
-// Stripe payment links for custom orders, opened in a new window
-const STRIPE_LINKS = [
-    { code: 'USD', label: 'USD', symbol: '$', url: 'https://buy.stripe.com/9B66oGcMr6XMa0r43n9k400' },
-    { code: 'GBP', label: 'UK', symbol: '£', url: 'https://buy.stripe.com/4gMbJ08wb1DsdcDdDX9k401' },
-];
+import { STRIPE_LINKS } from '../constants';
 
 interface PurchaseModalProps {
     onClose: () => void;

@@ -11,6 +11,7 @@ import { FAQ } from './landing/FAQ';
 import { CallToAction } from './landing/CallToAction';
 import { PurchaseModal } from './PurchaseModal';
 import { COMPANY } from './legal/LegalLayout';
+import { PaymentStrip } from './landing/PaymentStrip';
 
 interface LandingPageProps {
     onNavigateToPrivacy?: () => void;
@@ -50,7 +51,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
 
             <footer className="bg-ink text-paper border-t border-paper/10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid gap-10 md:grid-cols-12">
-                    <div className="md:col-span-5">
+                    <div className="md:col-span-6">
                         <Logo light />
                         <p className="mt-4 text-paper/65 max-w-sm leading-relaxed">
                             Custom logo-printed mailer boxes, shipping cartons and rigid gift boxes for growing brands.
@@ -65,7 +66,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
                             <li><a href="#pricing" className="hover:text-white">Prices</a></li>
                         </ul>
                     </nav>
-                    <div className="md:col-span-2">
+                    <div className="md:col-span-3">
                         <p className="font-semibold mb-3">Legal</p>
                         <ul className="space-y-2 text-paper/65">
                             {onNavigateToAgreement && <li><button onClick={onNavigateToAgreement} className="hover:text-white text-left">User agreement</button></li>}
@@ -74,15 +75,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
                             {onNavigateToTerms && <li><button onClick={onNavigateToTerms} className="hover:text-white text-left">Terms and conditions</button></li>}
                         </ul>
                     </div>
-                    <div className="md:col-span-2">
-                        <p className="font-semibold mb-3">We accept</p>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Card</span>
-                            <span className="h-8 px-2 inline-flex items-center bg-white"><img src="/assets/paypal.png" alt="PayPal" className="h-5 w-auto" /></span>
-                            <span className="h-8 px-2.5 inline-flex items-center bg-white text-ink text-xs font-bold">Stripe</span>
-                        </div>
-                    </div>
                 </div>
+                <PaymentStrip />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-t border-paper/10 text-sm text-paper/50">
                     <p>© {new Date().getFullYear()} {COMPANY.name}. All rights reserved. Garsabers is a trading name of {COMPANY.name}.</p>
                     <p className="mt-1">Registered in {COMPANY.registeredIn}, company number {COMPANY.number}. Registered office: {COMPANY.address}.</p>
