@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { CartButton } from '../shop/ShopHeader';
 
 const LINKS = [
-    { href: '#boxes', label: 'Boxes' },
+    { href: '#catalog', label: 'Catalog' },
     { href: '#finishes', label: 'Finishes' },
     { href: '#process', label: 'Process' },
     { href: '#pricing', label: 'Pricing' },
@@ -59,6 +60,7 @@ export const Header: React.FC<{ onCtaClick: () => void }> = ({ onCtaClick }) => 
                     </nav>
 
                     <div className="flex items-center gap-1.5">
+                        <CartButton light={!solid} />
                         <button
                             onClick={onCtaClick}
                             className={`hidden sm:inline-flex h-11 px-5 text-[15px] ${solid ? 'btn-dark' : 'btn-lime'}`}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LandingPage } from './components/LandingPage';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
@@ -6,6 +6,12 @@ import { TermsAndConditions } from './components/TermsAndConditions';
 import { RefundPolicy } from './components/legal/RefundPolicy';
 import { UserAgreement } from './components/legal/UserAgreement';
 import { Home } from 'lucide-react';
+import { CartProvider } from './components/shop/cart';
+import { NavContext } from './components/shop/nav';
+import { CartDrawer } from './components/shop/CartDrawer';
+import { ProductPage } from './components/shop/ProductPage';
+import { CheckoutPage } from './components/shop/CheckoutPage';
+import { OrderConfirmed } from './components/shop/OrderConfirmed';
 
 // Simple Router
 export enum Route {
@@ -15,7 +21,10 @@ export enum Route {
   PRIVACY = 'PRIVACY',
   TERMS = 'TERMS',
   REFUND = 'REFUND',
-  AGREEMENT = 'AGREEMENT'
+  AGREEMENT = 'AGREEMENT',
+  PRODUCT = 'PRODUCT',
+  CHECKOUT = 'CHECKOUT',
+  CONFIRMED = 'CONFIRMED'
 }
 
 const getRouteFromPath = () => {
@@ -25,7 +34,15 @@ const getRouteFromPath = () => {
   if (path === '/refund-policy') return Route.REFUND;
   if (path === '/user-agreement') return Route.AGREEMENT;
   if (path === '/admin') return Route.LOGIN;
+  if (path.startsWith('/product/')) return Route.PRODUCT;
+  if (path === '/checkout') return Route.CHECKOUT;
+  if (path === '/order-confirmed') return Route.CONFIRMED;
   return Route.HOME;
+};
+
+const getSlugFromPath = () => {
+  const m = window.location.pathname.match(/^\/product\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : '';
 };
 
 const getPathFromRoute = (route: Route) => {
@@ -39,10 +56,11 @@ const getPathFromRoute = (route: Route) => {
 
 const App: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<Route>(getRouteFromPath());
+  const [productSlug, setProductSlug] = useState(getSlugFromPath());
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   useEffect(() => {
-    const handlePopState = () => setCurrentRoute(getRouteFromPath());
+    const handlePopState = () => { setCurrentRoute(getRouteFromPath()); setProductSlug(getSlugFromPath()); };
     window.addEventListener('popstate', handlePopState);
 
     const params = new URLSearchParams(window.location.search);
@@ -59,6 +77,21 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
+  // Path-based navigation for the shop pages: go('/product/pizza-box'), go('/#catalog')
+  const go = useCallback((to: string) => {
+    const [path, hash] = to.split('#');
+    window.history.pushState({}, '', to);
+    setCurrentRoute(getRouteFromPath());
+    setProductSlug(getSlugFromPath());
+    if (hash) {
+      // wait for the home page to render, then jump to the section
+      setTimeout(() => document.getElementById(hash)?.scrollIntoView(), 60);
+    } else {
+      window.scrollTo(0, 0);
+    }
+    void path;
+  }, []);
+
   const handleLogin = (success: boolean) => {
     if (success) {
       setIsAdminAuthenticated(true);
@@ -66,7 +99,11 @@ const App: React.FC = () => {
     }
   };
 
+  const isShopSurface = currentRoute !== Route.ADMIN && currentRoute !== Route.LOGIN;
+
   return (
+    <NavContext.Provider value={go}>
+    <CartProvider>
     <div className="min-h-screen bg-paper text-ink font-sans">
       {/* Admin-only top bar (the landing page renders its own header) */}
       {(currentRoute === Route.ADMIN || currentRoute === Route.LOGIN) && (
@@ -92,6 +129,9 @@ const App: React.FC = () => {
 
       <main>
         {currentRoute === Route.HOME && <LandingPage onNavigateToPrivacy={() => navigate(Route.PRIVACY)} onNavigateToTerms={() => navigate(Route.TERMS)} onNavigateToRefund={() => navigate(Route.REFUND)} onNavigateToAgreement={() => navigate(Route.AGREEMENT)} />}
+        {currentRoute === Route.PRODUCT && <ProductPage slug={productSlug} />}
+        {currentRoute === Route.CHECKOUT && <CheckoutPage />}
+        {currentRoute === Route.CONFIRMED && <OrderConfirmed />}
         {currentRoute === Route.REFUND && <RefundPolicy onBack={() => navigate(Route.HOME)} />}
         {currentRoute === Route.AGREEMENT && <UserAgreement onBack={() => navigate(Route.HOME)} />}
         {currentRoute === Route.PRIVACY && <PrivacyPolicy onBack={() => navigate(Route.HOME)} />}
@@ -100,7 +140,10 @@ const App: React.FC = () => {
         {currentRoute === Route.ADMIN && isAdminAuthenticated && <AdminDashboard />}
         {currentRoute === Route.ADMIN && !isAdminAuthenticated && <AdminLogin onLogin={handleLogin} />}
       </main>
+      {isShopSurface && <CartDrawer />}
     </div>
+    </CartProvider>
+    </NavContext.Provider>
   );
 };
 

@@ -46,7 +46,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onCtaClick }) => {
                     <button onClick={onCtaClick} className="btn-lime h-14 px-8 text-[17px]">
                         See pricing <ArrowUpRight className="w-5 h-5" aria-hidden="true" />
                     </button>
-                    <a href="#boxes" className="btn-ghost h-14 px-8 text-[17px]">Explore box styles</a>
+                    <a href="#catalog" className="btn-ghost h-14 px-8 text-[17px]">Browse the catalog</a>
                 </motion.div>
             </div>
 

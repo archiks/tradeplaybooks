@@ -4,6 +4,7 @@ import { Product } from '../types';
 import { Header, Logo } from './landing/Header';
 import { HeroSection } from './landing/HeroSection';
 import { BoxStyles } from './landing/BoxStyles';
+import { Catalog } from './landing/Catalog';
 import { Finishes } from './landing/Finishes';
 import { HowItWorks } from './landing/HowItWorks';
 import { Pricing } from './landing/Pricing';
@@ -42,6 +43,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
             <main>
                 <HeroSection onCtaClick={scrollToPricing} />
                 <BoxStyles />
+                <Catalog />
                 <HowItWorks />
                 <Finishes />
                 <Pricing onSelectPlan={handleBuy} />
@@ -66,6 +68,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToPrivacy, o
                         <nav className="md:col-span-3" aria-label="Footer">
                             <p className="text-sm text-white/45 mb-4">Explore</p>
                             <ul className="space-y-2.5 text-white/80">
+                                <li><a href="#catalog" className="hover:text-lime transition-colors">Product catalog</a></li>
                                 <li><a href="#boxes" className="hover:text-lime transition-colors">Box styles</a></li>
                                 <li><a href="#finishes" className="hover:text-lime transition-colors">Finishes</a></li>
                                 <li><a href="#process" className="hover:text-lime transition-colors">How it works</a></li>
