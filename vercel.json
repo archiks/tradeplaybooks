@@ -4,7 +4,17 @@
       "source": "/go/thank-you",
       "destination": "https://www.alluvi.es/thank-you.html",
       "permanent": false
+    },
+    {
+      "source": "/go/cancel",
+      "destination": "https://www.alluvi.es/checkout.html",
+      "permanent": false
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
