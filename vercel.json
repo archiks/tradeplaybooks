@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/go/thank-you",
-      "destination": "https://alluvi.es/thank-you.html",
+      "destination": "https://www.alluvi.es/thank-you.html",
       "permanent": false
     }
   ],
