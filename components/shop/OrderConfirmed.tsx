@@ -28,6 +28,8 @@ export const OrderConfirmed: React.FC = () => {
 
     useEffect(() => {
         document.title = 'Order confirmed | Garsabers';
+        /* The order is placed, so the bag must not linger. */
+        try { localStorage.removeItem('garsabers_cart_v1'); } catch { /* ignore */ }
         const ref = new URLSearchParams(location.search).get('ref');
         try {
             const saved = JSON.parse(sessionStorage.getItem('garsabers_last_order') || 'null');
