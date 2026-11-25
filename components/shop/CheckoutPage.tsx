@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Calendar, CheckCircle, CreditCard, Lock, ShieldCheck, User } from 'lucide-react';
-import { COUNTRIES } from '../../constants';
-import { findProduct, formatEUR, imageFor, lineTotalFor, PRINTS } from '../../catalog';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CheckCircle, CreditCard, Lock, ShieldCheck, Truck, Wallet } from 'lucide-react';
+import { COUNTRIES, API_BASE } from '../../constants';
+import { findProduct, formatEUR, imageFor, lineTotalFor, PRINTS, unitPriceFor } from '../../catalog';
 import { ShopHeader } from './ShopHeader';
 import { Link, useNav } from './nav';
 import { useCart } from './cart';
 
 const field = 'w-full h-12 px-4 bg-paper border border-mist rounded-2xl placeholder:text-ink/30 focus:outline-none focus:border-press focus:bg-white transition-colors';
 const label = 'block text-sm font-medium text-ink/70 mb-1.5';
+
+const CARD_FEE_RATE = 0.04;
+const INSURANCE = 7.99;
+const ORDER_KEY = 'garsabers_last_order';
 
 const Step: React.FC<{ n: number; title: string; children: React.ReactNode }> = ({ n, title, children }) => (
     <section className="rounded-[2rem] bg-white border border-mist shadow-soft p-6 sm:p-8">
@@ -19,51 +23,99 @@ const Step: React.FC<{ n: number; title: string; children: React.ReactNode }> = 
     </section>
 );
 
+const Method: React.FC<{
+    value: string; current: string; onPick: (v: string) => void;
+    title: string; note: string; icons: string[]; disabled?: boolean;
+}> = ({ value, current, onPick, title, note, icons, disabled }) => (
+    <label className={`flex items-start gap-4 rounded-2xl border p-4 cursor-pointer transition-colors ${current === value ? 'border-press bg-paper' : 'border-mist hover:border-press/40'} ${disabled ? 'opacity-60' : ''}`}>
+        <input type="radio" name="pay" value={value} checked={current === value} disabled={disabled} onChange={() => onPick(value)} className="mt-1 w-4 h-4 accent-press" />
+        <span className="flex-1">
+            <span className="block font-medium">{title}</span>
+            <span className="block text-sm text-ink/55 mt-0.5">{note}</span>
+            <span className="flex items-center gap-1.5 mt-2.5">
+                {icons.map(i => <span key={i} className="grid place-items-center w-10 h-7 rounded-md bg-white border border-mist"><img src={`/assets/pay/${i}`} alt="" className="max-h-4 max-w-[1.6rem]" /></span>)}
+            </span>
+        </span>
+    </label>
+);
+
 export const CheckoutPage: React.FC = () => {
     const { items, subtotal, clear } = useCart();
     const go = useNav();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [method, setMethod] = useState('card');
+    const [insurance, setInsurance] = useState(false);
     const [f, setF] = useState({ email: '', phone: '', name: '', company: '', address: '', city: '', postcode: '', country: 'United Kingdom', notes: '' });
-    const [cardName, setCardName] = useState('');
-    const [cardNumber, setCardNumber] = useState('');
-    const [expiry, setExpiry] = useState('');
-    const [cvc, setCvc] = useState('');
 
     useEffect(() => {
         document.title = 'Checkout | Garsabers';
         return () => { document.title = 'Garsabers | Custom logo-printed boxes'; };
     }, []);
 
+    /* Came back from the card page: put the details back instead of asking for
+       them twice. */
+    useEffect(() => {
+        if (!new URLSearchParams(location.search).get('resume')) return;
+        try {
+            const raw = JSON.parse(sessionStorage.getItem(ORDER_KEY) || 'null');
+            if (raw?.form) { setF(prev => ({ ...prev, ...raw.form })); setError(''); }
+            if (raw?.insurance) setInsurance(true);
+        } catch { /* best effort */ }
+    }, []);
+
     const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF(prev => ({ ...prev, [k]: e.target.value }));
 
-    // Same card formatting as the print-run checkout
-    const onCardNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.replace(/\D/g, '').substring(0, 16);
-        setCardNumber((value.match(/[\s\S]{1,4}/g) || []).join(' '));
-    };
-    const onExpiry = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 2) value = value.substring(0, 2) + '/' + value.substring(2, 4);
-        setExpiry(value.substring(0, 5));
-    };
+    const fee = useMemo(() => Math.round(subtotal * CARD_FEE_RATE * 100) / 100, [subtotal]);
+    const total = useMemo(() => Math.round((subtotal + (method === 'bank_transfer' ? 0 : fee) + (insurance ? INSURANCE : 0)) * 100) / 100, [subtotal, fee, insurance, method]);
 
-    const submit = (e: React.FormEvent) => {
+    const submit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
         setLoading(true);
-        // Same simulated card step as the print-run checkout: no payment processor is connected yet
-        setTimeout(() => {
-            const order = {
-                ref: 'GB-' + Date.now().toString(36).toUpperCase().slice(-6),
-                email: f.email,
-                name: f.name,
-                items,
-                subtotal,
+
+        const ref = 'GB-' + Date.now().toString(36).toUpperCase().slice(-6) + Math.random().toString(36).slice(2, 4).toUpperCase();
+        const lines = items.flatMap(item => {
+            const p = findProduct(item.slug);
+            if (!p) return [];
+            return [{
+                code: p.code,
+                size: p.sizes[item.sizeIndex].label,
+                print: PRINTS.find(x => x.id === item.print)?.id === 'full' ? 'FC' : '1C',
+                qty: item.qty,
+                unit_amount: Math.round(unitPriceFor(p, item.qty, item.sizeIndex, item.print) * 100),
+            }];
+        });
+
+        try {
+            sessionStorage.setItem(ORDER_KEY, JSON.stringify({
+                ref, form: f, insurance, method,
+                items, subtotal, total,
                 placedAt: new Date().toISOString(),
-            };
-            try { sessionStorage.setItem('garsabers_last_order', JSON.stringify(order)); } catch { /* storage unavailable */ }
+            }));
+        } catch { /* storage may be blocked */ }
+
+        if (method === 'bank_transfer') {
             clear();
-            go('/order-confirmed');
-        }, 2000);
+            go(`/order-confirmed?ref=${ref}&method=bank`);
+            return;
+        }
+
+        try {
+            const r = await fetch(`${API_BASE}/stripe/create-session-lines`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                    ref, email: f.email, items, shipping: 0, insurance,
+                }),
+            });
+            const j = await r.json().catch(() => ({}));
+            if (!r.ok || !j.url) throw new Error(j.message || 'Could not start the card payment.');
+            window.location.href = j.url;
+        } catch (err: any) {
+            setError(err?.message || 'Could not start the card payment.');
+            setLoading(false);
+        }
     };
 
     if (items.length === 0 && !loading) {
@@ -139,43 +191,18 @@ export const CheckoutPage: React.FC = () => {
                         </Step>
 
                         <Step n={3} title="Payment">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className={label} htmlFor="co-cardname">Name on card</label>
-                                    <div className="relative">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink/40" aria-hidden="true" />
-                                        <input id="co-cardname" required autoComplete="cc-name" value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Doe" className={`${field} pl-12`} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className={label} htmlFor="co-cardnumber">Card number</label>
-                                    <div className="relative">
-                                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink/40" aria-hidden="true" />
-                                        <input id="co-cardnumber" required inputMode="numeric" autoComplete="cc-number" value={cardNumber} onChange={onCardNumber} placeholder="0000 0000 0000 0000" className={`${field} pl-12 font-mono`} />
-                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1.5">
-                                            {['visa.svg', 'mastercard.svg', 'amex.svg'].map(m => (
-                                                <span key={m} className="grid place-items-center w-10 h-7 rounded-md bg-white border border-mist"><img src={`/assets/pay/${m}`} alt="" className="max-h-4 max-w-[1.6rem]" /></span>
-                                            ))}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className={label} htmlFor="co-expiry">Expiry</label>
-                                        <div className="relative">
-                                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink/40" aria-hidden="true" />
-                                            <input id="co-expiry" required inputMode="numeric" autoComplete="cc-exp" value={expiry} onChange={onExpiry} placeholder="MM/YY" className={`${field} pl-12 font-mono`} />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className={label} htmlFor="co-cvc">CVC</label>
-                                        <div className="relative">
-                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink/40" aria-hidden="true" />
-                                            <input id="co-cvc" required inputMode="numeric" autoComplete="cc-csc" value={cvc} onChange={e => setCvc(e.target.value.replace(/\D/g, '').substring(0, 4))} placeholder="123" className={`${field} pl-12 font-mono`} />
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="space-y-3">
+                                <Method value="card" current={method} onPick={setMethod}
+                                    title="Pay with card" note="You are redirected to our payment provider to pay securely, then brought straight back."
+                                    icons={['visa.svg', 'mastercard.svg', 'amex.svg']} />
+                                <Method value="wallet" current={method} onPick={setMethod}
+                                    title="Apple Pay / Google Pay" note="Use the wallet on your device — no card details typed."
+                                    icons={['paypal.svg']} />
+                                <Method value="bank_transfer" current={method} onPick={setMethod}
+                                    title="Direct bank transfer" note="We email the invoice and bank details; printing starts when it clears."
+                                    icons={[]} />
                             </div>
+                            {error && <p className="mt-4 text-sm text-red-600" role="alert">{error}</p>}
                         </Step>
                     </div>
 
@@ -203,16 +230,24 @@ export const CheckoutPage: React.FC = () => {
                         <dl className="mt-6 pt-6 border-t border-white/15 space-y-2.5">
                             <div className="flex justify-between"><dt className="text-white/70">Subtotal</dt><dd>{formatEUR(subtotal)}</dd></div>
                             <div className="flex justify-between"><dt className="text-white/70">Delivery</dt><dd className="text-white/70">Confirmed with your proof</dd></div>
+                            {method !== 'bank_transfer' && (
+                                <div className="flex justify-between"><dt className="text-white/70">Card fee (4%)</dt><dd>{formatEUR(fee)}</dd></div>
+                            )}
+                            <label className="flex items-center gap-3 pt-3 border-t border-white/15 cursor-pointer text-sm text-white/75">
+                                <input type="checkbox" checked={insurance} onChange={e => setInsurance(e.target.checked)} className="w-4 h-4 accent-lime" />
+                                <span className="flex-1">Delivery parcel insurance (optional)</span>
+                                <span className="text-white">{formatEUR(INSURANCE)}</span>
+                            </label>
                             <div className="flex justify-between items-baseline pt-4 mt-2 border-t border-white/15">
                                 <dt className="font-semibold">Total <span className="font-normal text-white/60">excl. VAT</span></dt>
-                                <dd className="font-display font-bold text-4xl tracking-[-0.03em]">{formatEUR(subtotal)}</dd>
+                                <dd className="font-display font-bold text-4xl tracking-[-0.03em]">{formatEUR(total)}</dd>
                             </div>
                         </dl>
 
                         <button type="submit" disabled={loading} className="btn-lime mt-7 w-full h-14 text-[17px] disabled:opacity-70 disabled:cursor-wait">
                             {loading
                                 ? <span className="w-5 h-5 border-2 border-ink/30 border-t-ink rounded-full animate-spin" aria-label="Processing" />
-                                : <><CheckCircle className="w-5 h-5" aria-hidden="true" /> Pay {formatEUR(subtotal)}</>}
+                                : <><CheckCircle className="w-5 h-5" aria-hidden="true" /> Pay {formatEUR(total)}</>}
                         </button>
                         <p className="mt-4 text-center text-xs text-white/55 leading-relaxed">
                             By paying, you agree to our{' '}

@@ -1,3 +1,6 @@
+// Medusa/Stripe backend (Railway).
+export const API_BASE = 'https://garsabers-production.up.railway.app';
+
 import { Product } from './types';
 
 // Print runs sold on the landing page. Prices are in EUR, excl. VAT.

@@ -19,7 +19,13 @@ export const OrderConfirmed: React.FC = () => {
 
     useEffect(() => {
         document.title = 'Order confirmed | Garsabers';
-        try { setOrder(JSON.parse(sessionStorage.getItem('garsabers_last_order') || 'null')); } catch { setOrder(null); }
+        const ref = new URLSearchParams(location.search).get('ref');
+        try {
+            const saved = JSON.parse(sessionStorage.getItem('garsabers_last_order') || 'null');
+            if (saved && (!ref || saved.ref === ref)) return setOrder(saved);
+            if (ref) return setOrder({ ref, email: '', name: '', items: [], subtotal: 0 } as LastOrder);
+        } catch { /* ignore */ }
+        setOrder(ref ? ({ ref, email: '', name: '', items: [], subtotal: 0 } as LastOrder) : null);
         return () => { document.title = 'Garsabers | Custom logo-printed boxes'; };
     }, []);
 
