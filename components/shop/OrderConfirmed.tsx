@@ -7,6 +7,15 @@ import type { CartItem } from './cart';
 
 interface LastOrder { ref: string; email: string; name: string; items: CartItem[]; subtotal: number }
 
+/* The checkout stores the whole form under `form`; flatten what this page needs. */
+const shape = (raw: any): LastOrder => ({
+    ref: String(raw?.ref || ''),
+    email: String(raw?.email || raw?.form?.email || ''),
+    name: String(raw?.name || raw?.form?.name || ''),
+    items: Array.isArray(raw?.items) ? raw.items : [],
+    subtotal: Number(raw?.subtotal || 0),
+});
+
 const STEPS = [
     ['Send your logo', 'We email you an upload link for your artwork.'],
     ['Approve the proof', 'You get a 3D proof within one working day of upload.'],
@@ -22,7 +31,7 @@ export const OrderConfirmed: React.FC = () => {
         const ref = new URLSearchParams(location.search).get('ref');
         try {
             const saved = JSON.parse(sessionStorage.getItem('garsabers_last_order') || 'null');
-            if (saved && (!ref || saved.ref === ref)) return setOrder(saved);
+            if (saved && (!ref || saved.ref === ref)) return setOrder(shape(saved));
             if (ref) return setOrder({ ref, email: '', name: '', items: [], subtotal: 0 } as LastOrder);
         } catch { /* ignore */ }
         setOrder(ref ? ({ ref, email: '', name: '', items: [], subtotal: 0 } as LastOrder) : null);
@@ -34,7 +43,7 @@ export const OrderConfirmed: React.FC = () => {
             <ShopHeader />
             <main className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
                 <span className="grid place-items-center w-16 h-16 rounded-full bg-lime text-ink"><Check className="w-8 h-8" strokeWidth={3} aria-hidden="true" /></span>
-                <h1 className="h-display mt-6 text-5xl sm:text-6xl">{order ? `Thank you, ${order.name.split(' ')[0]}.` : 'Thank you.'}</h1>
+                <h1 className="h-display mt-6 text-5xl sm:text-6xl">{order?.name ? `Thank you, ${order.name.split(' ')[0]}.` : 'Thank you.'}</h1>
                 <p className="mt-4 text-lg text-ink/70 leading-relaxed">
                     {order
                         ? <>Your order reference is <strong className="text-ink">{order.ref}</strong>. Keep it for your records; we will contact you at <strong className="text-ink">{order.email}</strong>.</>
