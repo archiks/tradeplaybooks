@@ -106,7 +106,7 @@ export const CheckoutPage: React.FC = () => {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({
-                    ref, email: f.email, items, shipping: 0, insurance,
+                    ref, email: f.email, items: lines, shipping: 0, insurance,
                 }),
             });
             const j = await r.json().catch(() => ({}));
