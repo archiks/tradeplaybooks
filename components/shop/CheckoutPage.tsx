@@ -197,7 +197,7 @@ export const CheckoutPage: React.FC = () => {
                                     icons={['visa.svg', 'mastercard.svg', 'amex.svg']} />
                                 <Method value="wallet" current={method} onPick={setMethod}
                                     title="Apple Pay / Google Pay" note="Use the wallet on your device — no card details typed."
-                                    icons={['paypal.svg']} />
+                                    icons={[]} />
                                 <Method value="bank_transfer" current={method} onPick={setMethod}
                                     title="Direct bank transfer" note="We email the invoice and bank details; printing starts when it clears."
                                     icons={[]} />
